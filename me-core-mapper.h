@@ -14,16 +14,20 @@
 
 // me core functions
 #define meCoreDcacheWritebackInvalidateAll  ((void(*)(void))sysCall(_meCoreDcacheWritebackInvalidateAll))
+#define meCoreBusClockEnable                ((int(*)(u32))sysCall(_meCoreBusClockEnable))
+#define meCoreBusClockFilterEnabled         ((int(*)(u32))sysCall(_meCoreBusClockFilterEnabled))
 
 
 enum {
   _meCoreDcacheWritebackInvalidateAll,
-  _meCore_00001,
-  _meCore_00002,
+  _meCoreBusClockEnable,
+  _meCoreBusClockFilterEnabled,
   count
 };
 
 // core tables
+
+// img (fat)
 const u32 meImgTable[count] __attribute__((aligned(64))) = {
   (ME_CORE_KERNEL_ADDR | 0),
   (ME_CORE_KERNEL_ADDR | 0),
@@ -31,40 +35,32 @@ const u32 meImgTable[count] __attribute__((aligned(64))) = {
   //...
 };
 
+/*
 const u32 blImgTable[count] __attribute__((aligned(64))) = {
-  (ME_CORE_KERNEL_ADDR | 0),
-  (ME_CORE_KERNEL_ADDR | 0),
-  (ME_CORE_KERNEL_ADDR | 0)
-  //...
 };
-
 const u32 sdImgTable[count] __attribute__((aligned(64))) = {
-  (ME_CORE_KERNEL_ADDR | 0),
-  (ME_CORE_KERNEL_ADDR | 0),
-  (ME_CORE_KERNEL_ADDR | 0)
-  //...
 };
+*/
 
 // t2img (slim+)
 const u32 t2ImgTable[count] __attribute__((aligned(64))) = {
   (ME_CORE_KERNEL_ADDR | 0x0008bc10),
-  (ME_CORE_KERNEL_ADDR | 0),
-  (ME_CORE_KERNEL_ADDR | 0x00001a78)
-  //...
+  (ME_CORE_KERNEL_ADDR | 0x000019a4),
+  (ME_CORE_KERNEL_ADDR | 0x000019f4)
 };
 
 u32* systemTable = (u32*)t2ImgTable;
 
 inline void meCoreSelectSystemTable(const u32 id) {
   switch(id) {
-    case 0:
+    case ME_CORE_T2_IMG_TABLE:
       systemTable = (u32*)t2ImgTable;
       break;
-    case 1:
-      systemTable = (u32*)sdImgTable;
+    case ME_CORE_SD_IMG_TABLE:
+      systemTable = NULL; //(u32*)sdImgTable;
       break;
-    case 2:
-      systemTable = (u32*)blImgTable;
+    case ME_CORE_BL_IMG_TABLE:
+      systemTable = NULL; //(u32*)blImgTable;
       break;
     default:
       systemTable = (u32*)meImgTable;
