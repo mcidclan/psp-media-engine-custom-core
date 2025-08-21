@@ -1,0 +1,1 @@
+A project to map the PSP's Media Engine core functions with the purpose of using them in our code.
