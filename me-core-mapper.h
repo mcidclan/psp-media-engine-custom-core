@@ -29,10 +29,9 @@ enum {
 
 // img (fat)
 const u32 meImgTable[count] __attribute__((aligned(64))) = {
-  (ME_CORE_KERNEL_ADDR | 0),
-  (ME_CORE_KERNEL_ADDR | 0),
-  (ME_CORE_KERNEL_ADDR | 0)
-  //...
+  (ME_CORE_KERNEL_ADDR | 0x0007b3bc), // _meCoreDcacheWritebackInvalidateAll
+  (ME_CORE_KERNEL_ADDR | 0x00001970), // _meCoreBusClockEnable
+  (ME_CORE_KERNEL_ADDR | 0x000019c0), // _meCoreBusClockFilterEnabled
 };
 
 /*
@@ -44,9 +43,9 @@ const u32 sdImgTable[count] __attribute__((aligned(64))) = {
 
 // t2img (slim+)
 const u32 t2ImgTable[count] __attribute__((aligned(64))) = {
-  (ME_CORE_KERNEL_ADDR | 0x0008bc10),
-  (ME_CORE_KERNEL_ADDR | 0x000019a4),
-  (ME_CORE_KERNEL_ADDR | 0x000019f4)
+  (ME_CORE_KERNEL_ADDR | 0x0008bc10), // _meCoreDcacheWritebackInvalidateAll
+  (ME_CORE_KERNEL_ADDR | 0x000019a4), // _meCoreBusClockEnable
+  (ME_CORE_KERNEL_ADDR | 0x000019f4), // _meCoreBusClockFilterEnabled
 };
 
 u32* systemTable = (u32*)t2ImgTable;

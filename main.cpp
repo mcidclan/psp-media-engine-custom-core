@@ -44,7 +44,8 @@ void meHandler() {
 }
 
 int initMe() {
-  meCoreSelectSystemTable(ME_CORE_T2_IMG_TABLE);
+  const u32 version = HW_SYS_TACHYON_CONFIG_STATUS & 0xFF000000;
+  meCoreSelectSystemTable(version ? ME_CORE_T2_IMG_TABLE : ME_CORE_IMG_TABLE);
   #define me_section_size (&__stop__me_section - &__start__me_section)
   memcpy((void *)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
   sceKernelDcacheWritebackInvalidateAll();
