@@ -4,7 +4,6 @@
 #include <malloc.h>
 #include <string.h>
 #include "me-core-mapper.h"
-#include "hw-registers.h"
 
 #define ME_HANDLER_BASE                   0xbfc00000
 #define ME_EDRAM_BASE                     0x00000000

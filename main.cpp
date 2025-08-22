@@ -43,16 +43,21 @@ void meHandler() {
   meLibHalt();
 }
 
+u32 version = 0;
+
 int initMe() {
-  const u32 version = HW_SYS_TACHYON_CONFIG_STATUS & 0xFF000000;
-  meCoreSelectSystemTable(version ? ME_CORE_T2_IMG_TABLE : ME_CORE_IMG_TABLE);
+  const int tableId = meCoreGetTableIdFromWitnessWord();
+  if (tableId < 0) {
+    return -1;
+  }
+  meCoreSelectSystemTable(tableId);
   #define me_section_size (&__stop__me_section - &__start__me_section)
   memcpy((void *)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
   sceKernelDcacheWritebackInvalidateAll();
   HW_SYS_RESET_ENABLE = 0x04;
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
-  return 0;
+  return tableId;
 }
 
 int main() {
@@ -63,7 +68,7 @@ int main() {
   
   pspDebugScreenInit();
   
-  kcall(initMe);
+  const int tableId = kcall(initMe);
   meLibGetUncached32(&mem, 2);
   
   pspDebugScreenSetXY(1, 1);
@@ -73,6 +78,8 @@ int main() {
   do {
     pspDebugScreenSetXY(1, 1);
     pspDebugScreenPrintf("clock buses enabled: 0x%08x", clockBuses);
+    pspDebugScreenSetXY(1, 2);
+    pspDebugScreenPrintf("table Id: %i", tableId);
     sceCtrlPeekBufferPositive(&ctl, 1);
   } while(!meExit && !(ctl.Buttons & PSP_CTRL_HOME));
   
