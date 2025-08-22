@@ -47,7 +47,7 @@ u32 version = 0;
 
 int initMe() {
   const int tableId = meCoreGetTableIdFromWitnessWord();
-  if (tableId < 0) {
+  if (tableId < 2) {
     return -1;
   }
   meCoreSelectSystemTable(tableId);
