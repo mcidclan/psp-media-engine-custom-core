@@ -1,4 +1,4 @@
-## PSP Media Engine's Core: Hardware Mutex
+## PSP Media Engine Custom Core: Hardware Mutex
 
 
 ## Usage

@@ -1,6 +1,6 @@
-## PSP Media Engine's Core: POC
+## PSP Media Engine Custom Core: POC
 
-Poc using demonstrating the use of meCoreDcacheWritebackInvalidateAll and meCoreBusClockFilterEnabled.
+Poc demonstrating the use of meCoreDcacheWritebackInvalidateAll and meCoreBusClockFilterEnabled.
 
 ## Usage
 Build it with CMake, then copy the EBOOT.PBP and kcall.prx (available in the /build folder) into the same folder within the GAME directory.  
