@@ -13,6 +13,12 @@ add_custom_command(
 
 add_executable(mecore kcall.S main.cpp)
 target_compile_options(mecore PRIVATE -Ofast -G0 -Wall -fno-pic -std=c++11 -fno-rtti -fno-exceptions)
+
+target_include_directories(mecore PRIVATE 
+    kernel/src
+    ${CMAKE_SOURCE_DIR}/../..
+)
+
 target_include_directories(mecore PRIVATE kernel/src)
 target_link_libraries(mecore psppower pspge pspdisplay pspctrl pspdebug)
 

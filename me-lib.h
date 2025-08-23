@@ -3,7 +3,9 @@
 
 #include <malloc.h>
 #include <string.h>
+
 #include "me-core-mapper.h"
+#include "kcall.h"
 
 #define ME_HANDLER_BASE                   0xbfc00000
 #define ME_EDRAM_BASE                     0x00000000
@@ -32,5 +34,45 @@ inline void meLibGetUncached32(volatile u32** const mem, const u32 size) {
   *mem = nullptr;
   return;
 }
+
+extern void meLibExec(void);
+
+extern char __start__me_section;
+extern char __stop__me_section;
+
+__attribute__((section("_me_section")))
+void meLibHandler() {
+  asm volatile(
+    "li          $t0, 0x30000000\n"
+    "mtc0        $t0, $12\n"
+    "sync\n"
+    : : : "t0"
+  );
+  meLibExec();
+}
+
+inline int meLibInit() {
+  const int tableId = meCoreGetTableIdFromWitnessWord();
+  if (tableId < 2) {
+    return -1;
+  }
+  meCoreSelectSystemTable(tableId);
+  #define me_section_size (&__stop__me_section - &__start__me_section)
+  memcpy((void *)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
+  sceKernelDcacheWritebackInvalidateAll();
+  HW_SYS_RESET_ENABLE = 0x04;
+  HW_SYS_RESET_ENABLE = 0x00;
+  meLibSync();
+  return tableId;
+}
+
+inline int meLibDefaultInit() {
+  if (pspSdkLoadStartModule("./kcall.prx", PSP_MEMORY_PARTITION_KERNEL) < 0){
+    sceKernelExitGame();
+    return -3;
+  }
+  return kcall(meLibInit);
+}
+  
 
 #endif
