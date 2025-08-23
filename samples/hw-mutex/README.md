@@ -1,4 +1,4 @@
-## PSP Media Engine's Core Mapper, Hardware Mutex
+## PSP Media Engine's Core: Hardware Mutex
 
 
 ## Usage

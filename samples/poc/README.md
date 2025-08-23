@@ -1,4 +1,4 @@
-## PSP Media Engine's Core Mapper, POC
+## PSP Media Engine's Core: POC
 
 Poc using demonstrating the use of meCoreDcacheWritebackInvalidateAll and meCoreBusClockFilterEnabled.
 
