@@ -40,8 +40,12 @@ This project and code are provided as-is without warranty. Users assume full res
 
 ## Thanks
 Thanks to:
-- All contributors to the PSP Hardware Register's page + the wiki
-- Anyone else who contributed through documentation or reverse engineering
+- crazyc, hlide and other ps2dev members for being pioneers on that subject
+- CelestBlue, artart78, zecoxao, davee, xerpi and John (Hedge) for all the information available on psdevwiki and for reversing things
+- Kotcrab for reversing things and for Ghidra scripts
 - z2442 for the idea!
+- Acid_Snake for testing
+- All contributors to the PSP Hardware Registers page + the wiki
+- Anyone else who contributed through documentation or reverse engineering
 
 *m-c/d*
