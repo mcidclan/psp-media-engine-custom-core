@@ -15,31 +15,34 @@
 #define sysCall(index)        ((void*)(meCoreBaseAddr + meCoreSystemTable[(index)]))
 
 // me core functions
-#define meCoreBusClockKirkEnable              ((int(*)(void))sysCall(0))
+#define meCoreBusClockKirkEnable              ((void(*)(void))sysCall(0))
 #define meCoreBusClockEnable                  ((int(*)(u32))sysCall(1))
 #define meCoreBusClockFilterEnabled           ((int(*)(u32))sysCall(2))
 #define meCoreBusClockATAHDDEnable            ((int(*)(void))sysCall(3))
-#define meCoreEnableDisableStorageBusClock    ((int(*)(u32, u32))sysCall(4))
-#define meCoreSelectMemoryStickBusClock       ((int(*)(u32))sysCall(5))
-#define meCoreDMACMuxStatusWait_0x800         ((void*(*)(void))sysCall(6))
-#define meCoreDMACMuxCtrlInit_0x002           ((void*(*)(void))sysCall(7))
-#define meCoreDMACMuxCtrlStart_0x018          ((void*(*)(void))sysCall(8))
-#define meCoreDMACMuxStatusWait               ((int(*)(u32))sysCall(9))
-#define meCoreMemcpy                          ((u32*(*)(u32*, u32*, u32))sysCall(10))
-#define meCoreMemset                          ((u32*(*)(u32*, u32, u32))sysCall(11))
-#define meCoreUnknown                         ((int(*)(void))sysCall(12))
-#define meCorePriorityQueueInsert             ((int(*)(u32, u32, int*))sysCall(13))
-#define meCorePriorityQueueDefaultInit        ((u32(*)(void))sysCall(14))
-#define meCorePriorityQueueDispatch           ((int(*)(void))sysCall(15))
-#define meCoreInterruptSetMask                ((int(*)(u32))sysCall(16))
-#define meCoreInterruptClearMask              ((int(*)(void))sysCall(17))
-#define meCoreInterruptSetMask2               ((int(*)(u32))sysCall(18))
-#define meCoreExceptionInitHandlers           ((int(*)(void))sysCall(19))
-#define meCorePriorityQueueDefaultInsert      ((int(*)(void))sysCall(20))
-#define meCoreEmitSoftwareInterrupt           ((int(*)(void))sysCall(21))
-#define meCoreHwMutexTryLock                  ((int(*)(void))sysCall(22))
-#define meCoreHwMutexUnlock                   ((int(*)(void))sysCall(23))
-#define meCoreDcacheWritebackInvalidateAll    ((void(*)(void))sysCall(24))
+#define meCoreEnableStorageATA                ((int(*)(void))sysCall(4))
+#define meCoreEnableDisableStorageBusClock    ((int(*)(u32, u32))sysCall(5))
+#define meCoreSelectMemoryStickBusClock       ((int(*)(u32))sysCall(6))
+#define meCoreDMACMuxStatusWait_0x800         ((void(*)(void))sysCall(7))
+#define meCoreDMACMuxCtrlSet_0x002            ((void(*)(void))sysCall(8)) // init
+#define meCoreDMACMuxCtrlSet_0x008            ((void(*)(void))sysCall(9))
+#define meCoreDMACMuxCtrlSet_0x003            ((void(*)(void))sysCall(10))
+#define meCoreDMACMuxCtrlSet_0x018            ((void(*)(void))sysCall(11)) // start
+#define meCoreDMACMuxStatusWait               ((void(*)(u32))sysCall(12))
+#define meCoreMemcpy                          ((u32*(*)(u32*, u32*, u32))sysCall(13))
+#define meCoreMemset                          ((u32*(*)(u32*, u32, u32))sysCall(14))
+#define meCoreUnknown                         ((int(*)(void))sysCall(15))
+#define meCorePriorityQueueInsert             ((int(*)(u32, u32, int*))sysCall(16))
+#define meCorePriorityQueueDefaultInit        ((u32(*)(void))sysCall(17))
+#define meCorePriorityQueueDispatch           ((int(*)(void))sysCall(18))
+#define meCoreInterruptSetMask                ((int(*)(u32))sysCall(19))
+#define meCoreInterruptClearMask              ((int(*)(void))sysCall(20))
+#define meCoreInterruptSetMask2               ((int(*)(u32))sysCall(21))
+#define meCoreExceptionInitHandlers           ((int(*)(void))sysCall(22))
+#define meCorePriorityQueueDefaultInsert      ((int(*)(void))sysCall(23))
+#define meCoreEmitSoftwareInterrupt           ((int(*)(void))sysCall(24))
+#define meCoreHwMutexTryLock                  ((int(*)(void))sysCall(25))
+#define meCoreHwMutexUnlock                   ((int(*)(void))sysCall(26))
+#define meCoreDcacheWritebackInvalidateAll    ((void(*)(void))sysCall(27))
 
 
 // me core tables
@@ -68,9 +71,11 @@ const u32 t2ImgTable[] __attribute__((aligned(64))) = {
   0x00001b14, //      _meCoreBusClockSelectMemoryStick(u32)
 
   // dmac
-  0x000209d0, // void *meCoreDMACMuxStatusWait_0x800(void)
-  0x00020ca8, // void *meCoreDMACMuxCtrlInit_0x002(void)
-  0x00020cd8, // void *meCoreDMACMuxCtrlStart_0x018(void)
+  0x000209d0, // void _meCoreDMACMuxStatusWait_0x800(void)
+  0x00020ca8, // void _meCoreDMACMuxCtrlSet_0x002(void) // init
+  0x00020cb8, // void _meCoreDMACMuxCtrlSet_0x008(void) // ?
+  0x00020cc8, // void _meCoreDMACMuxCtrlSet_0x003(void) // ?
+  0x00020cd8, // void _meCoreDMACMuxCtrlSet_0x018(void) // start
   0x00021168, // void _meCoreDMACMuxStatusWait(u32)
   
   // mem
