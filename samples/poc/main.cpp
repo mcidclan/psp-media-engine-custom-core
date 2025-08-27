@@ -19,7 +19,7 @@ void meLibExec() {
   HW_SYS_TACHYON_CONFIG_STATUS = 0x02;
   meLibSync();
   
-  meCoreBusClockFilterEnabled(0x0f);
+  meCoreBusClockPreserve(0x0f);
 
   // Wait until mem is ready
   while (!mem) {
