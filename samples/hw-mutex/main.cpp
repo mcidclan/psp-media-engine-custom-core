@@ -14,12 +14,7 @@ static volatile u32* mem = nullptr;
 #define meExit           (mem[0])
 
 void libMeExec() {
-  HW_SYS_BUS_CLOCK_ENABLE      = 0x0f;
-  HW_SYS_NMI_FLAGS             = 0xffffffff;
-  HW_SYS_TACHYON_CONFIG_STATUS = 0x02;
-  meLibSync();
-  
-  // Wait until mem is ready
+  // wait until mem is ready
   while (!mem) {
     meCoreDcacheWritebackInvalidateAll();
   }
@@ -37,13 +32,11 @@ int main() {
   meLibGetUncached32(&mem, 2);
   
   pspDebugScreenSetXY(1, 1);
-  pspDebugScreenPrintf("Me Core Demo");
+  pspDebugScreenPrintf("Me Core Mutex Demo");
   
   SceCtrlData ctl;
   do {
     pspDebugScreenSetXY(1, 1);
-    pspDebugScreenPrintf("clock buses enabled: 0x%08x", clockBuses);
-    pspDebugScreenSetXY(1, 2);
     pspDebugScreenPrintf("table Id: %i", tableId);
     sceCtrlPeekBufferPositive(&ctl, 1);
   } while(!meExit && !(ctl.Buttons & PSP_CTRL_HOME));
