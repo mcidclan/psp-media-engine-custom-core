@@ -15,6 +15,7 @@
 
 // Lib
 #define meLibSync()                       asm volatile("sync")
+#define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop;")
 
 inline void meLibHalt() {
   asm volatile(".word 0x70000000");

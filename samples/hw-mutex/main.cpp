@@ -16,29 +16,33 @@ volatile u32* mem    __attribute__((aligned(64))) = nullptr;
 volatile u32* shared __attribute__((aligned(64))) = nullptr;
 
 #define meExit           (mem[0])
+#define meCounter        (mem[1])
 
 void meLibExec() {
   // wait until mem is ready
-  while (!mem) {
-    meCoreDcacheWritebackInvalidateAll();
-  }
-  
   do {
-    const int acquired = meCoreHwMutexTryLock();
-    if (acquired) {
-      // invalidate cache, forcing next read to fetch from memory
-      meCoreDcacheInvalidateRange((u32)shared, sizeof(u32)*4);
-      
-      shared[0]++;
-      if (mem[1] > 100) {
-        shared[1] = 0;
-      }
-      meCoreHwMutexUnlock();
-      
-      // write modified cache data back to memory
-      meCoreDcacheWritebackRange((u32)shared, sizeof(u32)*4);
+    meCoreDcacheWritebackInvalidateAll();
+  } while (!mem || !shared);
+  
+  unsigned int a = 0;
+  do {
+    meCounter++;
+    
+    int acquired = -1;
+    do {
+      acquired = meCoreHwMutexTryLock();
+    } while (acquired < 0);
+    
+    // invalidate cache, forcing next read to fetch from memory
+    meCoreDcacheInvalidateRange((u32)shared, sizeof(u32)*4);
+    shared[0]++;
+    if (shared[1] > 100) {
+      shared[1] = 0;
     }
     
+    meCoreHwMutexUnlock();
+    // write modified cache data back to memory
+    meCoreDcacheWritebackRange((u32)shared, sizeof(u32)*4);
   } while (meExit == 0);
   
   meExit = 2;
@@ -112,7 +116,7 @@ int main() {
     }
     
     // push cache to memory and invalidate it, refill cache during the next access
-    sceKernelDcacheWritebackInvalidateRange((void*)mem, sizeof(u32) * 4);
+    sceKernelDcacheWritebackInvalidateRange((void*)shared, sizeof(u32) * 4);
 
     sceCtrlPeekBufferPositive(&ctl, 1);
     
@@ -121,11 +125,13 @@ int main() {
     pspDebugScreenSetXY(1, 3);
     pspDebugScreenPrintf("Sc counter %u   ", counter++);
     pspDebugScreenSetXY(1, 4);
-    pspDebugScreenPrintf("Me counter %u   ", mem[0]);
+    pspDebugScreenPrintf("Me counter %u   ", meCounter);
     pspDebugScreenSetXY(1, 5);
-    pspDebugScreenPrintf("Shared counters %u, %u  ", mem[1], mem[2]);
-    
+    pspDebugScreenPrintf("Me locked counter %u   ", shared[0]);
     pspDebugScreenSetXY(1, 6);
+    pspDebugScreenPrintf("Shared counters %u, %u  ", shared[1], shared[2]);
+    
+    pspDebugScreenSetXY(1, 7);
     if (switchMessage) {
       pspDebugScreenPrintf("Hello!");
     } else {
