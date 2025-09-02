@@ -17,6 +17,7 @@ volatile u32* shared __attribute__((aligned(64))) = nullptr;
 
 #define meExit           (mem[0])
 #define meCounter        (mem[1])
+#define meStart          (mem[2])
 
 void meLibExec() {
   // wait until mem is ready
@@ -24,25 +25,35 @@ void meLibExec() {
     meCoreDcacheWritebackInvalidateAll();
   } while (!mem || !shared);
   
-  unsigned int a = 0;
+  do {
+    meLibDelayPipeline();
+    meLibSync();
+  } while (!meStart);
+  
+  const u32 sharedSize = (sizeof(u32) * 4 + 63) & ~63;
   do {
     meCounter++;
     
     int acquired = -1;
     do {
       acquired = meCoreHwMutexTryLock();
+      meLibDelayPipeline();
+      meLibSync();
     } while (acquired < 0);
     
     // invalidate cache, forcing next read to fetch from memory
-    meCoreDcacheInvalidateRange((u32)shared, sizeof(u32)*4);
+    meCoreDcacheInvalidateRange((u32)shared, sharedSize);
     shared[0]++;
     if (shared[1] > 100) {
       shared[1] = 0;
     }
     
     meCoreHwMutexUnlock();
+    meLibSync();
+    meLibDelayPipeline();
+    
     // write modified cache data back to memory
-    meCoreDcacheWritebackRange((u32)shared, sizeof(u32)*4);
+    meCoreDcacheWritebackRange((u32)shared, sharedSize);
   } while (meExit == 0);
   
   meExit = 2;
@@ -78,10 +89,12 @@ static void meWaitExit() {
 }
 
 int main() {
+  scePowerSetClockFrequency(333, 333, 166);
+
   pspDebugScreenInit();
   const int tableId = meLibDefaultInit();
   
-  meLibGetUncached32(&mem, 2);
+  meLibGetUncached32(&mem, 3);
   
   // 64-byte alignment is required while using to use Dcache... Range
   shared = (u32*)memalign(64, (sizeof(u32) * 4 + 63) & ~63);
@@ -95,11 +108,13 @@ int main() {
   u32 counter = 0;
   bool switchMessage = false;
   
+  // start the process on the Me just before the main loop
+  meStart = true;
   do {
     // invalidate cache, forcing next read to fetch from memory
     sceKernelDcacheInvalidateRange((void*)shared, sizeof(u32) * 4);
     
-    // functions that use spinlock
+    // try to lock and modify shared variable
     if (!sysHwMutexTryLock()) {
       switchMessage = false;
       if (shared[1] > 50) {

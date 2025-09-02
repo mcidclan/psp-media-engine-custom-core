@@ -22,7 +22,7 @@ target_include_directories(mecore PRIVATE
 target_include_directories(mecore PRIVATE kernel/src)
 target_link_libraries(mecore psppower pspge pspdisplay pspctrl pspdebug)
 
-create_pbp_file(TARGET mecore TITLE "Me Core Demo")
+create_pbp_file(TARGET mecore TITLE "Me Hw Mutex Demo")
 
 add_custom_command(TARGET mecore POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different

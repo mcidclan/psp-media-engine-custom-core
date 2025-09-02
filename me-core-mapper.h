@@ -61,7 +61,6 @@
 #define meCoreDcacheWritebackRange                ((void  (*)(u32, u32))sysCall(41))
 #define meCoreDcacheInvalidateRange               ((void  (*)(u32, u32))sysCall(42))
 
-
 // t2img (slim+)
 const u32 t2ImgTable[] __attribute__((aligned(64))) = {
   0x00000570, // int  _meCoreConfigureTransferMode(int, int)        // ?

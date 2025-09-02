@@ -21,6 +21,7 @@ inline void meLibHalt() {
   asm volatile(".word 0x70000000");
 }
 
+//
 inline void meLibDcacheWritebackInvalidateAll() {
   asm volatile ("sync");
   for (int i = 0; i < 8192; i += 64) {
@@ -29,6 +30,43 @@ inline void meLibDcacheWritebackInvalidateAll() {
   }
   asm volatile ("sync");
 }
+
+static inline void meLibDcacheWritebackInvalidateRange(const u32 addr, const u32 size) {
+  asm volatile("sync");
+  for (volatile u32 i = addr; i < addr + size; i += 64) {
+    asm volatile(
+      "cache 0x1b, 0(%0)\n"
+      "cache 0x1b, 0(%0)\n"
+      :: "r"(i)
+    );
+  }
+  asm volatile("sync");
+}
+
+static inline void meLibDcacheInvalidateRange(const u32 addr, const u32 size) {
+  asm volatile("sync");
+  for (volatile u32 i = addr; i < addr + size; i += 64) {
+    asm volatile(
+      "cache 0x19, 0(%0)\n"
+      "cache 0x19, 0(%0)\n"
+      :: "r"(i)
+    );
+  }
+  asm volatile("sync");
+}
+
+static inline void meLibDcacheWritebackRange(const u32 addr, const u32 size) {
+  asm volatile("sync");
+  for (volatile u32 i = addr; i < addr + size; i += 64) {
+    asm volatile(
+      "cache 0x1a, 0(%0)\n"
+      "cache 0x1a, 0(%0)\n"
+      :: "r"(i)
+    );
+  }
+  asm volatile("sync");
+}
+//
 
 inline void meLibGetUncached32(volatile u32** const mem, const u32 size) {
   static void* _base = nullptr;
@@ -59,8 +97,8 @@ extern char __stop__me_section;
 __attribute__((section("_me_section")))
 void meLibHandler() {
   HW_SYS_BUS_CLOCK_ENABLE      = 0x0f;
-  HW_SYS_NMI_FLAGS             = 0xffffffff;
   HW_SYS_TACHYON_CONFIG_STATUS = 0x02;
+  HW_SYS_NMI_FLAGS             = 0xffffffff;
   meLibSync();
     
   asm volatile(
