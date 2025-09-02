@@ -53,6 +53,9 @@
 #define meCoreHwMutexTryLock                  ((int   (*)(void))sysCall(35))
 #define meCoreHwMutexUnlock                   ((int   (*)(void))sysCall(36))
 #define meCoreDcacheWritebackInvalidateAll    ((int   (*)(void))sysCall(37))
+#define meCoreDcacheInvalidateRange           ((void  (*)(u32, u32))sysCall(38))
+#define meCoreDcacheWritebackRange            ((void  (*)(u32, u32))sysCall(39))
+  
 
 // t2img (slim+)
 const u32 t2ImgTable[] __attribute__((aligned(64))) = {
@@ -100,6 +103,10 @@ const u32 t2ImgTable[] __attribute__((aligned(64))) = {
   0x00021bd8, // int  _meCoreHwMutexTryLock(void)
   0x00021c04, // int  _meCoreHwMutexUnlock(void)
   0x0008bc10, // int  _meCoreDcacheWritebackInvalidateAll(void)
+  
+  0x00000000, // void _meCoreDcacheInvalidateRange(u32, u32) 
+  0x00000000, // void _meCoreDcacheWritebackRange(u32, u32) 
+  
 };
 
 // img (fat), Todo:

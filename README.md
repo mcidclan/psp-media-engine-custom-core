@@ -12,10 +12,6 @@ As a solution, we have several static correspondence tables and the code will se
 #include "me-lib.h"
 
 void meLibExec() {
-  HW_SYS_BUS_CLOCK_ENABLE      = 0x0f;
-  HW_SYS_NMI_FLAGS             = 0xffffffff;
-  HW_SYS_TACHYON_CONFIG_STATUS = 0x02;
-  meLibSync();
   // ... your me code
 }
 
@@ -30,7 +26,7 @@ int main() {
 1. Include the library header
 2. Implement `meLibExec()` with your Media Engine code
 3. Initialize the library in `main()` with `meLibDefaultInit()`
-4. Add hardware initialization as needed in `meLibExec()`
+4. Add hardware initialization if needed in `meLibExec()`
   
 See related samples available in the `samples` folder for more information.
 
