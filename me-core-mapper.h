@@ -62,130 +62,17 @@
 
 // t2img (slim+)
 const u32* const t2ImgTable __attribute__((aligned(64))) = meCoreMapping0;
-
 // img (fat), Todo:
 const u32* const meImgTable __attribute__((aligned(64))) = meCoreMapping1;
-  
-/*
-
-const u32 t2ImgTable[] __attribute__((aligned(64))) = {
-  0x00000570, // int  _meCoreConfigureTransferMode(int, int)        // ?
-  0x00000948, // int  _meCoreDspActivateAndSync()                   // ?
-  
-  0x000018fc, // void _meCoreBusClockEnableDMACPrimMux()
-  0x00001918, // int  _meCoreBusClockPreserveDMACPrimMux()
-  0x0000196c, // void _meCoreBusClockEnableKirk(void)               // _meCoreBusClockEnableDSP(void) ?
-  0x00001988, // void _meCoreBusClockPreserveKirk(void)             // _meCoreBusClockPreserveDSP(void) ?
-  0x000019a4, // int  _meCoreBusClockEnable(u32)
-  0x000019f4, // int  _meCoreBusClockPreserve(u32)                  // takes a mask which preserves the specified bits
-  0x00001a38, // int  _meCoreBusClockStorageEnableATAHDD()          // dsp related clock instead ?
-  0x00001a58, // void _meCoreBusClockStorageDisableATAHDD()         // dsp related clock instead ?
-  0x00001a78, // void _meCoreBusClockStorageEnableATA()             // dsp related clock instead ?
-  0x00001a98, // void _meCoreBusClockStorageDisableATA()            // dsp related clock instead ?
-  0x00001ab8, // int  _meCoreBusClockStorageEnableDisable(u32, u32) // mask, value
-  0x00001b14, // int  _meCoreBusClockMemoryStickSelect(u32)
-  0x00001bc4, // int  _meCoreSetBusFrequency(u32, u32);
-  
-  // dmac
-  0x000209d0, // void _meCoreDMACPrimMuxWaitStatus_0x800(void)
-  0x00020a08, // void _meCoreDMACPrimMuxSetState(u32)               // not sure
-  0x00020ca8, // void _meCoreDMACPrimMuxSetCtrl_0x002(void)         // init
-  0x00020cb8, // void _meCoreDMACPrimMuxSetCtrl_0x008(void)         // ?
-  0x00020cc8, // void _meCoreDMACPrimMuxSetCtrl_0x003(void)         // ?
-  0x00020cd8, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start
-  0x00020ce8, // void _meCoreDMACPrimarySetupBuffers(void)          // but why ?
-  0x00021168, // void _meCoreDMACPrimMuxWaitStatus(u32)
-  0x000212cc, // u32* _meCoreMemcpy(u32*, u32*, u32)
-  0x00021338, // u32* _meCoreMemset(u32*, u32, u32)
-  0x00021884, // int  _meCore ?
-  
-  // thread related ?
-  0x00021910, // int  _meCorePriorityQueueInsert(u32,u32, int*)
-  0x000219b4, // u32  _meCorePriorityQueueDefaultInit(void)
-  0x00021a30, // int  _meCorePriorityQueueDispatch(void)
-  
-  0x00021ad8, // int  _meCoreInterruptSetMask(u32)
-  0x00021ae4, // int  _meCoreInterruptClearMask(void)
-  0x00021af4, // int  _meCoreInterruptSetMask(u32)
-  0x00021b34, // int  _meCoreExceptionInitHandlers(void)
-  0x00021b7c, // int  _meCorePriorityQueueDefaultInsert(void)
-  0x00021bbc, // int  _meCoreEmitSoftwareInterrupt(void)
-  
-  // mutex
-  0x00021bd8, // int _meCoreHwMutexTryLock(void)
-  0x00021c04, // int _meCoreHwMutexUnlock(void)
-  0x00021c20, // u32 _meCoreHwMutexAtomicRead(u32*) // target
-  0x00021c6c, // u32 _meCoreHwMutexAtomicWrite(u32*, u32, u32) // target, mask, value
-  
-  // cache
-  0x0008bc10, // int _meCoreDcacheWritebackInvalidateAll(void)
-  0x0008bc38, // int _meCoreDcacheWritebackInvalidateRange(u32, u32)
-  0x0008bd4c, // int _meCoreDcacheWritebackRange(u32, u32)
-  0x0008bcbc, // int _meCoreDcacheInvalidateRange(u32, u32)
-};
-
-
-const u32 meImgTable[] __attribute__((aligned(64))) = {
-  0x00000000, // int  _meCoreConfigureTransferMode(int, int)        // ?
-  0x00000000, // int  _meCoreDspActivateAndSync()                   // ?
-  
-  0x00000000, // void _meCoreBusClockEnableDMACPrimMux()
-  0x00000000, // int  _meCoreBusClockPreserveDMACPrimMux()
-  0x00000000, // void _meCoreBusClockEnableKirk(void)               // _meCoreBusClockEnableDSP(void) ?
-  0x00000000, // void _meCoreBusClockPreserveKirk(void)             // _meCoreBusClockPreserveDSP(void) ?
-  0x00001970, // int  _meCoreBusClockEnable(u32)
-  0x000019c0, // int  _meCoreBusClockPreserve(u32)                  // takes a mask which preserves the specified bits
-  0x00000000, // int  _meCoreBusClockStorageEnableATAHDD()          // dsp related clock instead ?
-  0x00000000, // void _meCoreBusClockStorageDisableATAHDD()         // dsp related clock instead ?
-  0x00000000, // void _meCoreBusClockStorageEnableATA()             // dsp related clock instead ?
-  0x00000000, // void _meCoreBusClockStorageDisableATA()            // dsp related clock instead ?
-  0x00000000, // int  _meCoreBusClockStorageEnableDisable(u32, u32) // mask, value
-  0x00000000, // int  _meCoreBusClockMemoryStickSelect(u32)
-  0x00000000, // int  _meCoreSetBusFrequency(u32, u32);
-  
-  // dmac
-  0x00000000, // void _meCoreDMACPrimMuxWaitStatus_0x800(void)
-  0x00000000, // void _meCoreDMACPrimMuxSetState(u32)               // not sure
-  0x00000000, // void _meCoreDMACPrimMuxSetCtrl_0x002(void)         // init
-  0x00000000, // void _meCoreDMACPrimMuxSetCtrl_0x008(void)         // ?
-  0x00000000, // void _meCoreDMACPrimMuxSetCtrl_0x003(void)         // ?
-  0x00000000, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start
-  0x00000000, // void _meCoreDMACPrimarySetupBuffers(void)          // but why ?
-  0x00000000, // void _meCoreDMACPrimMuxWaitStatus(u32)
-  0x00000000, // u32* _meCoreMemcpy(u32*, u32*, u32)
-  0x00000000, // u32* _meCoreMemset(u32*, u32, u32)
-  0x00000000, // int  _meCore ?
-  
-  // thread related ?
-  0x00000000, // int  _meCorePriorityQueueInsert(u32,u32, int*)
-  0x00000000, // u32  _meCorePriorityQueueDefaultInit(void)
-  0x00000000, // int  _meCorePriorityQueueDispatch(void)
-  
-  0x00000000, // int  _meCoreInterruptSetMask(u32)
-  0x00000000, // int  _meCoreInterruptClearMask(void)
-  0x00000000, // int  _meCoreInterruptSetMask(u32)
-  0x00000000, // int  _meCoreExceptionInitHandlers(void)
-  0x00000000, // int  _meCorePriorityQueueDefaultInsert(void)
-  0x00000000, // int  _meCoreEmitSoftwareInterrupt(void)
-  0x00000000, // int  _meCoreHwMutexTryLock(void)
-  0x00000000, // int  _meCoreHwMutexUnlock(void)
-  0x0007b3bc, // int  _meCoreDcacheWritebackInvalidateAll(void)
-  
-  0x00000000, // int _meCoreDcacheWritebackInvalidateRange(u32, u32)
-  0x00000000, // int _meCoreDcacheWritebackRange(u32, u32)
-  0x00000000, // int _meCoreDcacheInvalidateRange(u32, u32)
-};
-*/
 // bl (?)
 const u32 blImgTable[] __attribute__((aligned(64))) = {};
-
 // sd (?)
 const u32 sdImgTable[] __attribute__((aligned(64))) = {};
 
 u32* meCoreSystemTable __attribute__((aligned(64))) = (u32*)t2ImgTable;
 u32 meCoreBaseAddr __attribute__((aligned(64))) = ME_CORE_KERNEL_ADDR;
 
-inline void meCoreSelectSystemTable(const u32 id) {
+static inline void meCoreSelectSystemTable(const u32 id) {
   switch(id) {
     case ME_CORE_BL_IMG_TABLE:
       meCoreSystemTable = (u32*)blImgTable;
@@ -202,7 +89,7 @@ inline void meCoreSelectSystemTable(const u32 id) {
 }
 
 // select table Id according the word at 0x88300018
-inline int meCoreGetTableIdFromWitnessWord() {
+static inline int meCoreGetTableIdFromWitnessWord() {
   const u32 word = hw(ME_CORE_KERNEL_ADDR | 0x00000018);
   switch(word) {
     case 0x279ccba8: return ME_CORE_BL_IMG_TABLE;
