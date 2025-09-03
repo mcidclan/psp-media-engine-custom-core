@@ -17,59 +17,12 @@
 #define meLibSync()                       asm volatile("sync")
 #define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop;")
 
-inline void meLibHalt() {
+static inline void meLibHalt() {
   asm volatile(".word 0x70000000");
 }
 
-//
-inline void meLibDcacheWritebackInvalidateAll() {
-  asm volatile ("sync");
-  for (int i = 0; i < 8192; i += 64) {
-    asm("cache 0x14, 0(%0)" :: "r"(i));
-    asm("cache 0x14, 0(%0)" :: "r"(i));
-  }
-  asm volatile ("sync");
-}
-
-static inline void meLibDcacheWritebackInvalidateRange(const u32 addr, const u32 size) {
-  asm volatile("sync");
-  for (volatile u32 i = addr; i < addr + size; i += 64) {
-    asm volatile(
-      "cache 0x1b, 0(%0)\n"
-      "cache 0x1b, 0(%0)\n"
-      :: "r"(i)
-    );
-  }
-  asm volatile("sync");
-}
-
-static inline void meLibDcacheInvalidateRange(const u32 addr, const u32 size) {
-  asm volatile("sync");
-  for (volatile u32 i = addr; i < addr + size; i += 64) {
-    asm volatile(
-      "cache 0x19, 0(%0)\n"
-      "cache 0x19, 0(%0)\n"
-      :: "r"(i)
-    );
-  }
-  asm volatile("sync");
-}
-
-static inline void meLibDcacheWritebackRange(const u32 addr, const u32 size) {
-  asm volatile("sync");
-  for (volatile u32 i = addr; i < addr + size; i += 64) {
-    asm volatile(
-      "cache 0x1a, 0(%0)\n"
-      "cache 0x1a, 0(%0)\n"
-      :: "r"(i)
-    );
-  }
-  asm volatile("sync");
-}
-//
-
-inline void meLibGetUncached32(volatile u32** const mem, const u32 size) {
-  static void* _base = nullptr;
+static inline void meLibGetUncached32(volatile u32** const mem, const u32 size) {
+  static void* _base = NULL;
   if (!_base) {
     const u32 byteCount = size * 4;
     _base = memalign(16, byteCount);
@@ -85,7 +38,7 @@ inline void meLibGetUncached32(volatile u32** const mem, const u32 size) {
   } else if (!size) {
     free(_base);
   }
-  *mem = nullptr;
+  *mem = NULL;
   return;
 }
 
@@ -134,7 +87,7 @@ void meLibHandler() {
   );
 }
 
-inline int meLibInit() {
+static inline int meLibInit() {
   const int tableId = meCoreGetTableIdFromWitnessWord();
   if (tableId < 2) {
     return -1;
@@ -149,7 +102,7 @@ inline int meLibInit() {
   return tableId;
 }
 
-inline int meLibDefaultInit() {
+static inline int meLibDefaultInit() {
   if (pspSdkLoadStartModule("./kcall.prx", PSP_MEMORY_PARTITION_KERNEL) < 0){
     sceKernelExitGame();
     return -3;

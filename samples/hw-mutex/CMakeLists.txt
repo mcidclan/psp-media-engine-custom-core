@@ -11,20 +11,20 @@ add_custom_command(
   COMMENT "Generating imports"
 )
 
-add_executable(mecore kcall.S main.cpp)
-target_compile_options(mecore PRIVATE -Ofast -G0 -Wall -fno-pic -std=c++11 -fno-rtti -fno-exceptions)
+add_executable(mehwmutex kcall.S main.cpp)
+target_compile_options(mehwmutex PRIVATE -Ofast -G0 -Wall -fno-pic -std=c++11 -fno-rtti -fno-exceptions)
 
-target_include_directories(mecore PRIVATE 
+target_include_directories(mehwmutex PRIVATE 
     kernel/src
     ${CMAKE_SOURCE_DIR}/../..
 )
 
-target_include_directories(mecore PRIVATE kernel/src)
-target_link_libraries(mecore psppower pspge pspdisplay pspctrl pspdebug)
+target_include_directories(mehwmutex PRIVATE kernel/src)
+target_link_libraries(mehwmutex psppower pspge pspdisplay pspctrl pspdebug)
 
-create_pbp_file(TARGET mecore TITLE "Me Hw Mutex Demo")
+create_pbp_file(TARGET mehwmutex TITLE "Me Hw Mutex Demo")
 
-add_custom_command(TARGET mecore POST_BUILD
+add_custom_command(TARGET mehwmutex POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
   ${CMAKE_BINARY_DIR}/kernel/kcall.prx
   ${CMAKE_BINARY_DIR}/kcall.prx
