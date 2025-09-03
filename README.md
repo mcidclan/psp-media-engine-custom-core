@@ -12,6 +12,8 @@ As a solution, we have several static correspondence tables and the code will se
 ### Basic Integration
 
 Include the header in your build file as follows:
+
+**CMakeLists.txt:**
 ```cmake
 target_include_directories(project PRIVATE 
   kernel/src
@@ -19,7 +21,7 @@ target_include_directories(project PRIVATE
 )
 ```
 
-**Makefile:**
+**Or using Makefile:**
 ```makefile
 -I kernel/src -I ./me-custom-core
 ```
