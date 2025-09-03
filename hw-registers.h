@@ -1,9 +1,11 @@
 #ifndef HW_REGISTERS_H
 #define HW_REGISTERS_H
 
-#define hwp                           volatile u32*
-#define hw(addr)                      (*((hwp)(addr)))
-#define uhw(addr)                     ((u32*)(0x40000000 | ((u32)addr)))
+#define u32                               unsigned int
+
+#define hwp                               volatile u32*
+#define hw(addr)                          (*((hwp)(addr)))
+#define uhw(addr)                         ((u32*)(0x40000000 | ((u32)addr)))
 
 #define HW_MEM_PROTECT_KERNEL_LOW_0       hw(0xbc000000)
 #define HW_MEM_PROTECT_KERNEL_LOW_1       hw(0xbc000004)
@@ -15,4 +17,3 @@
 #define HW_SYS_TACHYON_CONFIG_STATUS      hw(0xbc100040)
 
 #endif
-

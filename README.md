@@ -50,6 +50,12 @@ int main() {
   
 See related samples available in the `samples` folder for more information.
 
+### Generate me-core-mapping.h
+
+```bash
+awk -f convert-mapping.awk me-core-mapping.def.h > me-core-mapping.h
+```
+
 ## Disclamer
 This project and code are provided as-is without warranty. Users assume full responsibility for any implementation or consequences. Use at your own discretion and risk
 

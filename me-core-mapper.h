@@ -2,13 +2,12 @@
 #define ME_CORE_MAPPER_H
 
 #include "hw-registers.h"
+#include "me-core-mapping.h"
 
-#define u32 unsigned          int
-
-#define ME_CORE_IMG_TABLE     3
-#define ME_CORE_T2_IMG_TABLE  2
-#define ME_CORE_SD_IMG_TABLE  1
 #define ME_CORE_BL_IMG_TABLE  0
+#define ME_CORE_SD_IMG_TABLE  1
+#define ME_CORE_T2_IMG_TABLE  2
+#define ME_CORE_IMG_TABLE     3
 
 #define ME_CORE_KERNEL_ADDR   0x88300000
 
@@ -62,6 +61,13 @@
 #define meCoreDcacheInvalidateRange               ((void  (*)(u32, u32))sysCall(42))
 
 // t2img (slim+)
+const u32* const t2ImgTable __attribute__((aligned(64))) = meCoreMapping0;
+
+// img (fat), Todo:
+const u32* const meImgTable __attribute__((aligned(64))) = meCoreMapping1;
+  
+/*
+
 const u32 t2ImgTable[] __attribute__((aligned(64))) = {
   0x00000570, // int  _meCoreConfigureTransferMode(int, int)        // ?
   0x00000948, // int  _meCoreDspActivateAndSync()                   // ?
@@ -74,7 +80,7 @@ const u32 t2ImgTable[] __attribute__((aligned(64))) = {
   0x000019f4, // int  _meCoreBusClockPreserve(u32)                  // takes a mask which preserves the specified bits
   0x00001a38, // int  _meCoreBusClockStorageEnableATAHDD()          // dsp related clock instead ?
   0x00001a58, // void _meCoreBusClockStorageDisableATAHDD()         // dsp related clock instead ?
-  0x00001a78, // void _meCoreBusClockStorageEnableATA()            // dsp related clock instead ?
+  0x00001a78, // void _meCoreBusClockStorageEnableATA()             // dsp related clock instead ?
   0x00001a98, // void _meCoreBusClockStorageDisableATA()            // dsp related clock instead ?
   0x00001ab8, // int  _meCoreBusClockStorageEnableDisable(u32, u32) // mask, value
   0x00001b14, // int  _meCoreBusClockMemoryStickSelect(u32)
@@ -118,7 +124,7 @@ const u32 t2ImgTable[] __attribute__((aligned(64))) = {
   0x0008bcbc, // int _meCoreDcacheInvalidateRange(u32, u32)
 };
 
-// img (fat), Todo:
+
 const u32 meImgTable[] __attribute__((aligned(64))) = {
   0x00000000, // int  _meCoreConfigureTransferMode(int, int)        // ?
   0x00000000, // int  _meCoreDspActivateAndSync()                   // ?
@@ -131,7 +137,7 @@ const u32 meImgTable[] __attribute__((aligned(64))) = {
   0x000019c0, // int  _meCoreBusClockPreserve(u32)                  // takes a mask which preserves the specified bits
   0x00000000, // int  _meCoreBusClockStorageEnableATAHDD()          // dsp related clock instead ?
   0x00000000, // void _meCoreBusClockStorageDisableATAHDD()         // dsp related clock instead ?
-  0x00000000, // void _meCoreBusClockStorageEnableATA()            // dsp related clock instead ?
+  0x00000000, // void _meCoreBusClockStorageEnableATA()             // dsp related clock instead ?
   0x00000000, // void _meCoreBusClockStorageDisableATA()            // dsp related clock instead ?
   0x00000000, // int  _meCoreBusClockStorageEnableDisable(u32, u32) // mask, value
   0x00000000, // int  _meCoreBusClockMemoryStickSelect(u32)
@@ -169,7 +175,7 @@ const u32 meImgTable[] __attribute__((aligned(64))) = {
   0x00000000, // int _meCoreDcacheWritebackRange(u32, u32)
   0x00000000, // int _meCoreDcacheInvalidateRange(u32, u32)
 };
-
+*/
 // bl (?)
 const u32 blImgTable[] __attribute__((aligned(64))) = {};
 
@@ -181,14 +187,14 @@ u32 meCoreBaseAddr __attribute__((aligned(64))) = ME_CORE_KERNEL_ADDR;
 
 inline void meCoreSelectSystemTable(const u32 id) {
   switch(id) {
-    case ME_CORE_T2_IMG_TABLE:
-      meCoreSystemTable = (u32*)t2ImgTable;
+    case ME_CORE_BL_IMG_TABLE:
+      meCoreSystemTable = (u32*)blImgTable;
       break;
     case ME_CORE_SD_IMG_TABLE:
       meCoreSystemTable = (u32*)sdImgTable;
       break;
-    case ME_CORE_BL_IMG_TABLE:
-      meCoreSystemTable = (u32*)blImgTable;
+    case ME_CORE_T2_IMG_TABLE:
+      meCoreSystemTable = (u32*)t2ImgTable;
       break;
     default:
       meCoreSystemTable = (u32*)meImgTable;
@@ -199,9 +205,9 @@ inline void meCoreSelectSystemTable(const u32 id) {
 inline int meCoreGetTableIdFromWitnessWord() {
   const u32 word = hw(ME_CORE_KERNEL_ADDR | 0x00000018);
   switch(word) {
-    case 0x279c637c: return ME_CORE_T2_IMG_TABLE;
-    case 0x279cb300: return ME_CORE_SD_IMG_TABLE;
     case 0x279ccba8: return ME_CORE_BL_IMG_TABLE;
+    case 0x279cb300: return ME_CORE_SD_IMG_TABLE;
+    case 0x279c637c: return ME_CORE_T2_IMG_TABLE;
     case 0x279c1d44: return ME_CORE_IMG_TABLE;
     default: return -1;
   }
