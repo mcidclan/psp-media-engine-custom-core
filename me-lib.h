@@ -16,6 +16,8 @@
 // Lib
 #define meLibSync()                       asm volatile("sync")
 #define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop;")
+#define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexTryLock)))
+#define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexUnlock)))
 
 static inline void meLibHalt() {
   asm volatile(".word 0x70000000");

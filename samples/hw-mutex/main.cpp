@@ -60,14 +60,6 @@ void meLibExec() {
   meLibHalt();
 }
 
-int sysHwMutexTryLock() {
-  return kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexTryLock));
-}
-
-void sysHwMutexUnlock() {
-  kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexUnlock));
-}
-
 // function used to hold the mutex in the main loop as a proof
 static bool holdMutex() {
   static u32 hold = 100;
@@ -80,7 +72,7 @@ static bool holdMutex() {
 
 static void meWaitExit() {
   // make sure the mutex is unlocked
-  sysHwMutexUnlock();
+  meLibCallHwMutexUnlock();
   // wait the me to exit
   meExit = 1;
   do {
@@ -115,7 +107,7 @@ int main() {
     sceKernelDcacheInvalidateRange((void*)shared, sizeof(u32) * 4);
     
     // try to lock and modify shared variable
-    if (!sysHwMutexTryLock()) {
+    if (!meLibCallHwMutexTryLock()) {
       switchMessage = false;
       if (shared[1] > 50) {
         switchMessage = true;
@@ -126,7 +118,7 @@ int main() {
       
       // proof to visualize the release of the mutex and its effect on the counter (mem[0]) running on the Me
       if (!holdMutex()) {
-        sysHwMutexUnlock();
+        meLibCallHwMutexUnlock();
       }
     }
     

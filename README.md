@@ -5,6 +5,8 @@ The idea is simply to make the native kernel/core functions of the media engine 
 The media engine core is loaded at address 0x88300000, however depending on the device model, it is loaded from a different image which means that addresses are not the same for models prior to the slim.
 As a solution, we have several static correspondence tables and the code will select the table corresponding to our device before launching the Media Engine.
 
+**Note:** This is a work in progress, and the mapping table for newer device generations is evolving faster than for older ones.
+
 ## Usage
 
 ### Basic Integration
