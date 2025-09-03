@@ -43,7 +43,6 @@ void meLibExec() {
     
     // invalidate cache, forcing next read to fetch from memory
     meCoreDcacheInvalidateRange((u32)shared, sharedSize);
-    shared[0]++;
     if (shared[1] > 100) {
       shared[1] = 0;
     }
@@ -64,10 +63,10 @@ void meLibExec() {
 static bool holdMutex() {
   static u32 hold = 100;
   if (hold-- > 0) {
-    return false;
+    return true;
   }
   hold = 100;
-  return true;
+  return false;
 }
 
 static void meWaitExit() {
@@ -107,14 +106,14 @@ int main() {
     sceKernelDcacheInvalidateRange((void*)shared, sizeof(u32) * 4);
     
     // try to lock and modify shared variable
-    if (!meLibCallHwMutexTryLock()) {
+    if (meLibCallHwMutexTryLock() >= 0) {
       switchMessage = false;
       if (shared[1] > 50) {
         switchMessage = true;
       }
       shared[2]++;
       shared[1]++;
-      // sceKernelDelayThread(10000);
+      // sceKernelDelayThread(1000000);
       
       // proof to visualize the release of the mutex and its effect on the counter (mem[0]) running on the Me
       if (!holdMutex()) {
@@ -134,11 +133,9 @@ int main() {
     pspDebugScreenSetXY(1, 4);
     pspDebugScreenPrintf("Me counter %u   ", meCounter);
     pspDebugScreenSetXY(1, 5);
-    pspDebugScreenPrintf("Me locked counter %u   ", shared[0]);
-    pspDebugScreenSetXY(1, 6);
     pspDebugScreenPrintf("Shared counters %u, %u  ", shared[1], shared[2]);
     
-    pspDebugScreenSetXY(1, 7);
+    pspDebugScreenSetXY(1, 6);
     if (switchMessage) {
       pspDebugScreenPrintf("Hello!");
     } else {
