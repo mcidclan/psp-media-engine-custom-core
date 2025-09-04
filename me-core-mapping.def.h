@@ -43,14 +43,14 @@
   {0x00021bbc, 0x00000000}, // int  _meCoreEmitSoftwareInterrupt(void)
   
   // mutex
-  {0x00021bd8, 0x00000000}, // int _meCoreHwMutexTryLock(void)
-  {0x00021c04, 0x00000000}, // int _meCoreHwMutexUnlock(void)
-  {0x00021c20, 0x00000000}, // u32 _meCoreHwMutexAtomicRead(u32*)                 // target
-  {0x00021c6c, 0x00000000}, // u32 _meCoreHwMutexAtomicWrite(u32*, u32, u32)      // target, mask, value
+  {0x00021bd8, 0x0001324c}, // int _meCoreHwMutexTryLock(void)
+  {0x00021c04, 0x00013278}, // int _meCoreHwMutexUnlock(void)
+  {0x00021c20, 0x00013294}, // u32 _meCoreHwMutexAtomicRead(u32*)                 // target
+  {0x00021c6c, 0x000132e0}, // u32 _meCoreHwMutexAtomicWrite(u32*, u32, u32)      // target, mask, value
   
   // cache
   {0x0008bc10, 0x0007b3bc}, // int _meCoreDcacheWritebackInvalidateAll(void)
-  {0x0008bc38, 0x00000000}, // int _meCoreDcacheWritebackInvalidateRange(u32, u32)
-  {0x0008bd4c, 0x00000000}, // int _meCoreDcacheWritebackRange(u32, u32)
-  {0x0008bcbc, 0x00000000}, // int _meCoreDcacheInvalidateRange(u32, u32)
+  {0x0008bc38, 0x0007b3e8}, // int _meCoreDcacheWritebackInvalidateRange(u32, u32)
+  {0x0008bd4c, 0x0008bd4c}, // int _meCoreDcacheWritebackRange(u32, u32)
+  {0x0008bcbc, 0x0007b46c}, // int _meCoreDcacheInvalidateRange(u32, u32)
 }

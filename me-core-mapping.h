@@ -3,8 +3,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-//extern const unsigned int t2ImgTable[43];
-//extern const unsigned int ogImgTable[43];
 extern const unsigned int* const t2ImgTable __attribute__((aligned(64))) ;
 extern const unsigned int* const ogImgTable __attribute__((aligned(64))) ;
 #ifdef __cplusplus
