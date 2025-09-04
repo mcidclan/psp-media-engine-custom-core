@@ -15,15 +15,27 @@ Include the header in your build file as follows:
 
 **CMakeLists.txt:**
 ```cmake
+add_executable(project
+  ${CMAKE_SOURCE_DIR}/me-custom-core/me-core-mapping.c
+)
+```
+
+```cmake
 target_include_directories(project PRIVATE 
   kernel/src
   ${CMAKE_SOURCE_DIR}/me-custom-core
 )
 ```
 
-**Or using Makefile:**
+**Note:** Make sure your project declaration includes C language support:
+```cmake
+project(your-project-name C CXX ASM)
+```
+
+**Alternatively using Makefile:**
 ```makefile
--I kernel/src -I ./me-custom-core
+SOURCES += me-custom-core/me-core-mapping.c
+CFLAGS += -I kernel/src -I ./me-custom-core
 ```
 
 **Code example:**
@@ -53,7 +65,7 @@ See related samples available in the `samples` folder for more information.
 ### Generate me-core-mapping.h
 
 ```bash
-awk -f convert-mapping.awk me-core-mapping.def.h > me-core-mapping.h
+awk -f convert-mapping.awk me-core-mapping.def.h > me-core-mapping.c
 ```
 
 ## Disclamer

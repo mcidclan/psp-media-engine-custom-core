@@ -61,9 +61,9 @@
 #define meCoreDcacheInvalidateRange               ((void  (*)(u32, u32))sysCall(42))
 
 // t2img (slim+)
-const u32* const t2ImgTable __attribute__((aligned(64))) = meCoreMapping0;
-// img (fat), Todo:
-const u32* const meImgTable __attribute__((aligned(64))) = meCoreMapping1;
+// img (fat), Todo.
+// see me-core-mapping.def.h
+
 // bl (?)
 const u32 blImgTable[] __attribute__((aligned(64))) = {};
 // sd (?)
@@ -84,7 +84,7 @@ static inline void meCoreSelectSystemTable(const u32 id) {
       meCoreSystemTable = (u32*)t2ImgTable;
       break;
     default:
-      meCoreSystemTable = (u32*)meImgTable;
+      meCoreSystemTable = (u32*)ogImgTable;
   }
 }
 

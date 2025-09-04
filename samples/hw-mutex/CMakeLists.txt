@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_TOOLCHAIN_FILE "$ENV{PSPDEV}/psp/share/pspdev.cmake" CACHE PATH "toolchain file")
-project(me-core-demo CXX ASM)
+project(me-core-demo C CXX ASM)
 
 add_subdirectory(kernel)
 
@@ -11,15 +11,25 @@ add_custom_command(
   COMMENT "Generating imports"
 )
 
-add_executable(mehwmutex kcall.S main.cpp)
-target_compile_options(mehwmutex PRIVATE -Ofast -G0 -Wall -fno-pic -std=c++11 -fno-rtti -fno-exceptions)
+add_executable(mehwmutex
+  kcall.S
+  main.cpp
+  ${CMAKE_SOURCE_DIR}/../../me-core-mapping.c
+)
+  
+target_compile_options(mehwmutex PRIVATE -Ofast -G0 -Wall -fno-pic)
 
-target_include_directories(mehwmutex PRIVATE 
-    kernel/src
-    ${CMAKE_SOURCE_DIR}/../..
+target_compile_options(mehwmutex PRIVATE 
+  $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>
+  $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+  $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
 )
 
-target_include_directories(mehwmutex PRIVATE kernel/src)
+target_include_directories(mehwmutex PRIVATE 
+  kernel/src
+  ${CMAKE_SOURCE_DIR}/../..
+)
+
 target_link_libraries(mehwmutex psppower pspge pspdisplay pspctrl pspdebug)
 
 create_pbp_file(TARGET mehwmutex TITLE "Me Hw Mutex Demo")

@@ -23,6 +23,8 @@ BEGIN {
 }
 
 END {
- print "const u32 meCoreMapping0[" count "] __attribute__((aligned(64))) = {" t2Col "};"
- print "const u32 meCoreMapping1[" count "] __attribute__((aligned(64))) = {" ogCol "};"
+  print "const unsigned int _t2ImgTable[" count "] __attribute__((aligned(64))) = {" t2Col "};"
+  print "const unsigned int _ogImgTable[" count "] __attribute__((aligned(64))) = {" ogCol "};"
+  print "const unsigned int* const t2ImgTable __attribute__((aligned(64))) = _t2ImgTable;"
+  print "const unsigned int* const ogImgTable __attribute__((aligned(64))) = _ogImgTable;"
 }
