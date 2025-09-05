@@ -6,7 +6,7 @@
   {0x000018fc, 0x00000000}, // void _meCoreBusClockEnableDMACPrimMux()
   {0x00001918, 0x00000000}, // int  _meCoreBusClockPreserveDMACPrimMux()
   {0x0000196c, 0x00000000}, // void _meCoreBusClockEnableKirk(void)               // _meCoreBusClockEnableDSP(void) ?
-  {0x00001988, 0x00000000}, // void _meCoreBusClockPreserveKirk(void)             // _meCoreBusClockPreserveDSP(void) ?
+  {0x00001988, 0x00000000}, // void _meCoreBusClockDisableKirk(void)              // _meCoreBusClockPreserveDSP(void) ?
   {0x000019a4, 0x00001970}, // int  _meCoreBusClockEnable(u32)
   {0x000019f4, 0x000019c0}, // int  _meCoreBusClockPreserve(u32)                  // takes a mask which preserves the specified bits
   {0x00001a38, 0x00000000}, // int  _meCoreBusClockStorageEnableATAHDD()          // dsp related clock instead ?
@@ -26,8 +26,8 @@
   {0x00020cd8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start
   {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimarySetupBuffers(void)          // but why ?
   {0x00021168, 0x00000000}, // void _meCoreDMACPrimMuxWaitStatus(u32)
-  {0x000212cc, 0x00000000}, // u32* _meCoreMemcpy(u32*, u32*, u32)
-  {0x00021338, 0x00000000}, // u32* _meCoreMemset(u32*, u32, u32)
+  {0x000212cc, 0x00000000}, // u32* _meCoreMemcpy(u32*, u32*, u32)                // dst, src, size
+  {0x00021338, 0x00000000}, // u32* _meCoreMemset(u32*, u32, u32)                 // dst, value, size
   {0x00021884, 0x00000000}, // int  _meCore ?
   
   // thread related ?
@@ -53,4 +53,15 @@
   {0x0008bc38, 0x0007b3e8}, // int _meCoreDcacheWritebackInvalidateRange(u32, u32)
   {0x0008bd4c, 0x0008bd4c}, // int _meCoreDcacheWritebackRange(u32, u32)
   {0x0008bcbc, 0x0007b46c}, // int _meCoreDcacheInvalidateRange(u32, u32)
+  
+  // wip
+  {0x000002e4, 0x00000000}, // meCoreSystemImageCopyAndReset                      // ?? from what, to where ?
+  {0x00000374, 0x00000000}, // meCoreSetupScSyscallHandler                        // seems to handle syscall from sc
+  {0x00000570, 0x00000000}, // meCoreSetDSPFrequency                              // ??
+  {0x00000618, 0x00000000}, // ??
+  {0x00065a10, 0x00000000}, // meCoreCheck0xdec264                                // ?? what is the purpose ?
+  {0x00066804, 0x00000000}, // meCoreCopy164bytesFromOffset0x8308                 // ??
+  {0x00065908, 0x00000000}, // meCoreCheckAndCopy164bytesFromOffset0x8308         // ??
+  {0x00000708, 0x00000000}, // ??
+  {0x00021b34, 0x00000000}, // u64 _meCoreSetupHandlers(void)
 }
