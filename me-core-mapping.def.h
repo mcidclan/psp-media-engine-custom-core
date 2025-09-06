@@ -1,7 +1,7 @@
 // do not include this file - it serves as source data for the awk converter to ease function address mapping additions
 {
-  {0x00000570, 0x00000000}, // int  _meCoreConfigureTransferMode(int, int)        // ?
-  {0x00000948, 0x00000000}, // int  _meCoreDspActivateAndSync()                   // ?
+  {0x00000570, 0x00000000}, // int  _meCoreUnknown_00000570(int, int)             // _meCoreConfigureTransferMode(int, int) ?
+  {0x00000948, 0x00000000}, // int  _meCoreUnknown_00000948()                     // _meCoreDspActivateAndSync() ?
   
   {0x000018fc, 0x00000000}, // void _meCoreBusClockEnableDMACPrimMux()
   {0x00001918, 0x00000000}, // int  _meCoreBusClockPreserveDMACPrimMux()
@@ -24,11 +24,11 @@
   {0x00020cb8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x008(void)         // ?
   {0x00020cc8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x003(void)         // ?
   {0x00020cd8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start
-  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimarySetupBuffers(void)          // but why ?
+  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimarySetupBuffers(void)          // why ?
   {0x00021168, 0x00000000}, // void _meCoreDMACPrimMuxWaitStatus(u32)
   {0x000212cc, 0x00000000}, // u32* _meCoreMemcpy(u32*, u32*, u32)                // dst, src, size
   {0x00021338, 0x00000000}, // u32* _meCoreMemset(u32*, u32, u32)                 // dst, value, size
-  {0x00021884, 0x00000000}, // int  _meCore ?
+  {0x00021884, 0x00000000}, // int  _meCoreUnknown_00021884
   
   // thread related ?
   {0x00021910, 0x00000000}, // int  _meCorePriorityQueueInsert(u32,u32, int*)
@@ -37,7 +37,7 @@
   
   {0x00021ad8, 0x00000000}, // int  _meCoreInterruptSetMask(u32)
   {0x00021ae4, 0x00000000}, // int  _meCoreInterruptClearMask(void)
-  {0x00021af4, 0x00000000}, // int  _meCoreInterruptSetMask(u32)
+  {0x00021af4, 0x00000000}, // int  _meCoreInterruptSetMask_2(u32)
   {0x00021b34, 0x00000000}, // int  _meCoreExceptionInitHandlers(void)
   {0x00021b7c, 0x00000000}, // int  _meCorePriorityQueueDefaultInsert(void)
   {0x00021bbc, 0x00000000}, // int  _meCoreEmitSoftwareInterrupt(void)
@@ -55,13 +55,13 @@
   {0x0008bcbc, 0x0007b46c}, // int _meCoreDcacheInvalidateRange(u32, u32)
   
   // wip
-  {0x000002e4, 0x00000000}, // meCoreSystemImageCopyAndReset                      // ?? from what, to where ?
-  {0x00000374, 0x00000000}, // meCoreSetupScSyscallHandler                        // seems to handle syscall from sc
-  {0x00000570, 0x00000000}, // meCoreSetDSPFrequency                              // ??
-  {0x00000618, 0x00000000}, // ??
-  {0x00065a10, 0x00000000}, // meCoreCheck0xdec264                                // ?? what is the purpose ?
+  {0x000002e4, 0x00000000}, // meCoreUnknown_000002e4                             // meCoreSystemImageCopy AndReset ? // from what, to where ?
+  {0x00000374, 0x00000000}, // meCoreWaitForScSyscalls                            // seems to handle syscall from sc
+  {0x00000570, 0x00000000}, // meCoreUnknown_00000570                             // meCoreSetDSPFrequency ?
+  {0x00000618, 0x00000000}, // meCoreUnknown_00000618    
+  {0x00065a10, 0x00000000}, // meCoreCheck0xdec264                                // what is the purpose ?
   {0x00066804, 0x00000000}, // meCoreCopy164bytesFromOffset0x8308                 // ??
   {0x00065908, 0x00000000}, // meCoreCheckAndCopy164bytesFromOffset0x8308         // ??
-  {0x00000708, 0x00000000}, // ??
+  {0x00000708, 0x00000000}, // meCoreUnknown_00000708
   {0x00021b34, 0x00000000}, // u64 _meCoreSetupHandlers(void)
 }
