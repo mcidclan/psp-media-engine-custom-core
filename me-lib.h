@@ -19,6 +19,10 @@
 #define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexTryLock)))
 #define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexUnlock)))
 
+#define setSharedUncachedMem(name, size) \
+  static volatile u32 _##name[(size)] = {0}; \
+  static volatile u32* const name = (volatile u32*)(UNCACHED_USER_MASK | (u32)_##name)
+
 static inline void meLibHalt() {
   asm volatile(".word 0x70000000");
 }

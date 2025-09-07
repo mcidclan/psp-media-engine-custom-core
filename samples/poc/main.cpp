@@ -9,7 +9,8 @@ PSP_MODULE_INFO("me-core-demo", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
-static volatile u32* mem = nullptr;
+setSharedUncachedMem(mem, 3);
+
 #define meExit           (mem[0])
 #define clockBuses       (mem[1])
 #define sp               (mem[2])
@@ -20,11 +21,6 @@ void meLibExec(void) {
   HW_SYS_BUS_CLOCK_ENABLE = -1;
   meLibSync();
   meCoreBusClockPreserve(0x0f);
-  
-  // wait until mem is ready
-  do {
-    meCoreDcacheWritebackInvalidateAll();
-  } while(!mem);
   
   // retrieve sp register's value, set to 2MB (old gen) / 4MB (new gen)
   asm volatile(
@@ -42,11 +38,9 @@ void meLibExec(void) {
 int main() {
   pspDebugScreenInit();
   const int tableId = meLibDefaultInit();
-  
-  meLibGetUncached32(&mem, 3);
-  
+    
   pspDebugScreenSetXY(1, 1);
-  pspDebugScreenPrintf("Me Core Demo");
+  pspDebugScreenPrintf("Me Core Poc");
   
   SceCtrlData ctl;
   do {
