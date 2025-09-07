@@ -11,7 +11,7 @@
 
 #define ME_CORE_KERNEL_ADDR   0x88300000
 
-#define sysCall(index)        ((void*)(meCoreBaseAddr + meCoreSystemTable[(index)]))
+#define sysCall(index)        ((void*)(ME_CORE_KERNEL_ADDR + meCoreSystemTable[(index)]))
 
 // me core functions
 #define meCoreUnknown_00000570                    ((int   (*)(int, int))sysCall(0))
@@ -65,12 +65,11 @@
 // see me-core-mapping.def.h
 
 // bl (?)
-const u32 blImgTable[] __attribute__((aligned(64))) = {};
+static const u32 blImgTable[] __attribute__((aligned(64))) = {};
 // sd (?)
-const u32 sdImgTable[] __attribute__((aligned(64))) = {};
+static const u32 sdImgTable[] __attribute__((aligned(64))) = {};
 
-u32* meCoreSystemTable __attribute__((aligned(64))) = (u32*)t2ImgTable;
-u32 meCoreBaseAddr __attribute__((aligned(64))) = ME_CORE_KERNEL_ADDR;
+extern u32* meCoreSystemTable __attribute__((aligned(64)));
 
 static inline void meCoreSelectSystemTable(const u32 id) {
   switch(id) {

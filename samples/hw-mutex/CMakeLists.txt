@@ -14,6 +14,7 @@ add_custom_command(
 add_executable(mehwmutex
   kcall.S
   main.cpp
+  ${CMAKE_SOURCE_DIR}/../../me-lib.c
   ${CMAKE_SOURCE_DIR}/../../me-core-mapping.c
 )
   

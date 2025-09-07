@@ -27,4 +27,5 @@ END {
   print "const unsigned int _ogImgTable[" count "] __attribute__((aligned(64))) = {" ogCol "};"
   print "const unsigned int* const t2ImgTable __attribute__((aligned(64))) = _t2ImgTable;"
   print "const unsigned int* const ogImgTable __attribute__((aligned(64))) = _ogImgTable;"
+  print "unsigned int* meCoreSystemTable __attribute__((aligned(64))) = (unsigned int*)t2ImgTable;"
 }

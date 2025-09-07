@@ -16,6 +16,7 @@ Include the header in your build file as follows:
 **CMakeLists.txt:**
 ```cmake
 add_executable(project
+  ${CMAKE_SOURCE_DIR}/me-custom-core/me-lib.c
   ${CMAKE_SOURCE_DIR}/me-custom-core/me-core-mapping.c
 )
 ```
@@ -32,15 +33,16 @@ target_include_directories(project PRIVATE
 project(your-project-name C CXX ASM)
 ```
 
-**Alternatively using Makefile:**
+**Alternatively using a Makefile, example:**
 ```makefile
-SOURCES += me-custom-core/me-core-mapping.c
+CPP_SOURCES = your_existing_cpp_source_code
+C_SOURCES += me-custom-core/me-lib.c me-custom-core/me-core-mapping.c
 CFLAGS += -I kernel/src -I ./me-custom-core
 ```
 
 **Code example:**
 ```cpp
-#include "me-lib.h"
+#include "me-core.h"
 
 void meLibExec() {
   // ... your ME code
@@ -55,10 +57,11 @@ int main() {
 
 #### Steps:
 1. Configure your build system to include the required directories
-2. Include the `me-lib.h` library header in your code
-3. Implement `meLibExec()` with your Media Engine code
-4. Initialize the library in `main()` with `meLibDefaultInit()`
-5. Add hardware initialization if needed in `meLibExec()`
+2. Configure your build system by adding the required me-core executable C files
+3. Include the `me-core.h` library header in your code
+4. Implement `meLibExec()` with your Media Engine code
+5. Initialize the library in `main()` with `meLibDefaultInit()`
+6. Add hardware initialization if needed in `meLibExec()`
   
 See related samples available in the `samples` folder for more information.
 

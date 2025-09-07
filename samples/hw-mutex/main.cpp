@@ -1,11 +1,8 @@
-#include <pspsdk.h>
-#include <pspkernel.h>
 #include <pspdebug.h>
 #include <psppower.h>
 #include <pspctrl.h>
 #include <pspdisplay.h>
-#include "me-lib.h"
-#include "kcall.h"
+#include "me-core.h"
 
 PSP_MODULE_INFO("me-core-hw-mutex", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
