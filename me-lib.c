@@ -1,4 +1,4 @@
-#include "./me-lib.h"
+#include "me-lib.h"
 
 static inline int meLibInit() {
   const int tableId = meCoreGetTableIdFromWitnessWord();
@@ -15,11 +15,12 @@ static inline int meLibInit() {
   return tableId;
 }
 
+#define PRX_FILE "./kcall.prx"
 extern unsigned char kcall_module_start;
 extern unsigned int kcall_module_size;
 
 int writePrx(void* start, int size) {
-  SceUID fd = sceIoOpen("./kcall.prx", PSP_O_WRONLY | PSP_O_CREAT, 0777);
+  SceUID fd = sceIoOpen(PRX_FILE, PSP_O_WRONLY | PSP_O_CREAT, 0777);
   if (fd < 0) {
       return -1;
   }
@@ -35,7 +36,7 @@ int meLibDefaultInit() {
   if(writePrx(&kcall_module_start, (int)&kcall_module_size) < 0) {
     return -3;
   }
-  if (pspSdkLoadStartModule("./kcall.prx", PSP_MEMORY_PARTITION_KERNEL) < 0){
+  if (pspSdkLoadStartModule(PRX_FILE, PSP_MEMORY_PARTITION_KERNEL) < 0){
     sceKernelExitGame();
     return -3;
   }

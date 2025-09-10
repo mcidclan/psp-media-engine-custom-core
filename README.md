@@ -11,19 +11,17 @@ As a solution, we have several static correspondence tables and the code will se
 
 ### Basic Integration
 
-Include the header in your build file as follows:
+Include the me-custom-core in your build file as follows:
 
 **CMakeLists.txt:**
 ```cmake
-add_executable(project
-  ${CMAKE_SOURCE_DIR}/me-custom-core/me-lib.c
-  ${CMAKE_SOURCE_DIR}/me-custom-core/me-core-mapping.c
+target_link_libraries(project
+  ${CMAKE_SOURCE_DIR}/me-custom-core/libme-core.a
 )
 ```
 
 ```cmake
 target_include_directories(project PRIVATE 
-  kernel/src
   ${CMAKE_SOURCE_DIR}/me-custom-core
 )
 ```
@@ -33,11 +31,13 @@ target_include_directories(project PRIVATE
 project(your-project-name C CXX ASM)
 ```
 
-**Alternatively using a Makefile, example:**
+**Alternatively using a Makefile:**
 ```makefile
-CPP_SOURCES = your_existing_cpp_source_code
-C_SOURCES += me-custom-core/me-lib.c me-custom-core/me-core-mapping.c
-CFLAGS += -I kernel/src -I ./me-custom-core
+LIBS += ./me-custom-core/libme-core.a
+```
+
+```makefile
+CFLAGS += -I ./me-custom-core
 ```
 
 **Code example:**
@@ -57,11 +57,9 @@ int main() {
 
 #### Steps:
 1. Configure your build system to include the required directories
-2. Configure your build system by adding the required me-core executable C files
-3. Include the `me-core.h` library header in your code
-4. Implement `meLibExec()` with your Media Engine code
-5. Initialize the library in `main()` with `meLibDefaultInit()`
-6. Add hardware initialization if needed in `meLibExec()`
+2. Include the `me-core.h` library header in your code
+3. Implement `meLibExec()` with your Media Engine code
+4. Initialize the library in `main()` with `meLibDefaultInit()`
   
 See related samples available in the `samples` folder for more information.
 
@@ -70,6 +68,15 @@ See related samples available in the `samples` folder for more information.
 ```bash
 awk -f convert-mapping.awk me-core-mapping.def.h > me-core-mapping.c
 ```
+
+### Generated Library and Prx
+To build the current projet run:
+```bash
+make clean; make; make install;
+```
+
+This will copy the .a to the project root, which embeds the small PRX in a dedicated data section.  
+At runtime, the library will extract the PRX next to the EBOOT and then load it.
 
 ## Disclamer
 This project and code are provided as-is without warranty. Users assume full responsibility for any implementation or consequences. Use at your own discretion and risk

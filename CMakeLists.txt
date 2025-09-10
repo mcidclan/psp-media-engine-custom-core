@@ -6,7 +6,7 @@ add_subdirectory(kernel)
 
 add_custom_command(
   OUTPUT kcall.S
-  COMMAND psp-build-exports -s ${CMAKE_SOURCE_DIR}/kernel/src/exports.exp > kcall.S
+  COMMAND psp-build-exports -s ${CMAKE_SOURCE_DIR}/kernel/exports.exp > kcall.S
   DEPENDS kcall_prx
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Generating kcall imports"
@@ -51,7 +51,6 @@ target_compile_options(me-core PRIVATE
 
 target_include_directories(me-core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
-  kernel/src
 )
 
 install(TARGETS me-core

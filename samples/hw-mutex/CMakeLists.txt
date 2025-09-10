@@ -16,7 +16,6 @@ target_compile_options(mehwmutex PRIVATE
 
 target_include_directories(mehwmutex PRIVATE 
   ${CMAKE_SOURCE_DIR}/../..
-  ${CMAKE_SOURCE_DIR}/../../kernel/src
 )
 
 target_link_libraries(mehwmutex

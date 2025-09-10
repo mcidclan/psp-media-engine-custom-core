@@ -4,13 +4,13 @@ project(kcall C)
 
 add_custom_command(
   OUTPUT exports.c
-  COMMAND psp-build-exports -b ${CMAKE_CURRENT_SOURCE_DIR}/src/exports.exp > exports.c
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/exports.exp
+  COMMAND psp-build-exports -b ${CMAKE_CURRENT_SOURCE_DIR}/exports.exp > exports.c
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/exports.exp
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Generating exports"
 )
 
-add_executable(kcall src/main.c exports.c)
+add_executable(kcall main.c exports.c)
 
 target_compile_options(kcall PRIVATE
   -Wno-narrowing

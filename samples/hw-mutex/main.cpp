@@ -6,7 +6,7 @@
 
 PSP_MODULE_INFO("me-core-hw-mutex", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USBWLAN | PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER | 0x90000000);
+PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
 // align shared vars to 64 for cached/uncached access compatibility
 volatile u32* mem    __attribute__((aligned(64))) = nullptr;
@@ -142,7 +142,7 @@ int main() {
     sceDisplayWaitVblankStart();
   } while (!meExit && !(ctl.Buttons & PSP_CTRL_HOME));
   
-  // meWaitExit();
+  meWaitExit();
   
   free((void*)shared);
   meLibGetUncached32(&mem, 0);

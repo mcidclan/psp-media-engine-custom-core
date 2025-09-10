@@ -1,4 +1,4 @@
-#include "./me-lib.h"
+#include "me-lib.h"
 
 __attribute__((section("_me_section")))
 void meLibHandler() {

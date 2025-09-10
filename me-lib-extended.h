@@ -4,7 +4,7 @@
 // Use this file instead of 'me-lib.h' if you wish to use the custom extended
 // functions as an alternative to meCore. This is useful for debugging.
 
-#include "./me-lib.h"
+#include "me-lib.h"
 
 // define the non-cached kernel mutex
 #define mutex hw(0xbc100048)
