@@ -15,7 +15,26 @@ static inline int meLibInit() {
   return tableId;
 }
 
+extern unsigned char kcall_module_start;
+extern unsigned int kcall_module_size;
+
+int writePrx(void* start, int size) {
+  SceUID fd = sceIoOpen("./kcall.prx", PSP_O_WRONLY | PSP_O_CREAT, 0777);
+  if (fd < 0) {
+      return -1;
+  }
+  int _size = sceIoWrite(fd, start, size);
+  sceIoClose(fd);
+  if (_size != size) {
+      return -1;
+  }
+  return 0;
+}
+
 int meLibDefaultInit() {
+  if(writePrx(&kcall_module_start, (int)&kcall_module_size) < 0) {
+    return -3;
+  }
   if (pspSdkLoadStartModule("./kcall.prx", PSP_MEMORY_PARTITION_KERNEL) < 0){
     sceKernelExitGame();
     return -3;

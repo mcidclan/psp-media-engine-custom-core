@@ -12,10 +12,11 @@ add_custom_command(
 
 add_executable(kcall src/main.c exports.c)
 
-target_compile_options(kcall PRIVATE 
+target_compile_options(kcall PRIVATE
+  -Wno-narrowing
   -fsingle-precision-constant 
-  -Ofast 
-  -G0 
+  -Os 
+  -G0
   -Wall
 )
 
@@ -24,15 +25,15 @@ target_include_directories(kcall PRIVATE
 )
 
 target_link_options(kcall PRIVATE 
-  -Wl,-q,-T$ENV{PSPDEV}/psp/sdk/lib/linkfile.prx 
+  -Wl,-q,-T$ENV{PSPDEV}/psp/sdk/lib/linkfile.prx
   -nostartfiles 
   -Wl,-zmax-page-size=128
+  -Wl,--strip-all
 )
 
 add_custom_command(
   OUTPUT kcall.prx
   COMMAND psp-prxgen $<TARGET_FILE:kcall> kcall.prx
-  DEPENDS kcall
   COMMENT "Generating PRX"
 )
 
