@@ -1,4 +1,5 @@
-// do not include this file - it serves as source data for the awk converter to ease function address mapping additions
+// Do not include this file - it serves as source data for the awk converter to ease function address mapping additions
+// Note that the naming of the functions are not definitive
 {
   {0x00000570, 0x00000000}, // int  _meCoreUnknown_00000570(int, int)             // _meCoreConfigureTransferMode(int, int) ?
   {0x00000948, 0x00000000}, // int  _meCoreUnknown_00000948()                     // _meCoreDspActivateAndSync() ?
@@ -64,4 +65,9 @@
   {0x00065908, 0x00000000}, // meCoreCheckAndCopy164bytesFromOffset0x8308         // ??
   {0x00000708, 0x00000000}, // meCoreUnknown_00000708
   {0x00021b34, 0x00000000}, // u64 _meCoreSetupHandlers(void)
+  
+  {0x0008be64, 0x00000000}, // int meCoreDecompressKL4E(byte *out, int size, char *in, u32 *cursor)
+  {0x00021a30, 0x00000000}, // void meCoreUpdate32PoolsMemory(void);
+  {0x00021910, 0x00000000}, // u32 meCoreRequest32PoolsBlockAllocation(u32 index, u32 priority, int* status)
+  {0x000219b4, 0x00000000}, // void meCoreInit32PoolsMemory(void);
 }

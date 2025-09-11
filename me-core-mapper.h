@@ -10,8 +10,9 @@
 #define ME_CORE_IMG_TABLE     3
 
 #define ME_CORE_KERNEL_ADDR   0x88300000
+#define ME_CORE_BASE_ADDR     ME_CORE_KERNEL_ADDR
 
-#define sysCall(index)        ((void*)(ME_CORE_KERNEL_ADDR + meCoreSystemTable[(index)]))
+#define sysCall(index)        ((void*)(ME_CORE_BASE_ADDR + meCoreSystemTable[(index)]))
 
 // me core functions
 #define meCoreUnknown_00000570                    ((int   (*)(int, int))sysCall(0))
