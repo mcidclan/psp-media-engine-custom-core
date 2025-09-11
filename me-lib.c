@@ -1,5 +1,90 @@
 #include "me-lib.h"
 
+__attribute__((noinline, aligned(4)))
+static void meLibexceptionHandler(void) {
+meLibExceptionHandlerExternalInterrupt
+  // todo
+}
+
+__attribute__((noinline, aligned(4)))
+static void meLibexceptionHandler(void) {
+  asm volatile(
+      // clean status, disable interrupt
+      "mtc0     $0, $12\n"
+      "sync\n"
+
+      // save k0 context
+      "addi     $sp, $sp, -16\n"
+      "sw       $k0, 0($sp)\n"
+      "sw       $k1, 4($sp)\n"
+      
+      // check IP 2 on cause register and jump to the related handler if enabled 
+      "mfc0     $k0, $13            \n"
+      "andi     $k0, $k0, 0x400     \n"
+      "beq      $k0, $zero, 1f      \n"
+      "nop                          \n"
+      "la       $k0, %0             \n"
+      "li       $k1, 0x80000000     \n"
+      "or       $k0, $k0, $k1       \n"
+      "cache    0x8, 0($k0)         \n"
+      "sync                         \n"
+      "jr       $k0                 \n"
+      "nop                          \n"
+      "1:                           \n"
+
+      // restore k0 context
+      "lw       $k0, 0($sp)        \n"
+      "lw       $k1, 4($sp)        \n"
+      "addi     $sp, $sp, 16       \n"
+      
+      // exit
+      "eret                        \n"
+      
+      // avoid potential pipeline issues
+      "nop                         \n"
+      "nop                         \n"
+      "nop                         \n"
+      "nop                         \n"
+      "nop                         \n"
+      "nop                         \n"
+      "nop                         \n"
+      :
+      : "i" (meLibExceptionHandlerExternalInterrupt)
+      : "k0", "k1", "memory"
+  );
+}
+
+__attribute__((noinline, aligned(4)))
+void meLibInitExceptions() {
+  asm volatile(
+    // clear status
+    // "mtc0     $0, $12             \n"
+    // "sync                         \n"    
+    // setup exception handler
+    "la       $k0, %0             \n"
+    "li       $k1, 0x80000000     \n"
+    "or       $k0, $k0, $k1       \n"
+    "cache    0x8, 0($k0)         \n"
+    "sync                         \n"
+    // load exception handler
+    "mtc0     $k0, $25            \n"
+    "sync                         \n"
+    // enable ME interrupt on system level
+    "li       $k0, 0x80000000     \n"
+    "sw       $k0, 0xbc300008($0) \n"
+    "sync                         \n"
+    // setup external interrupt on cp0 level
+    "mfc0     $k0, $12            \n"
+    "li       $k1, 0x401          \n"
+    "or       $k0, $k0, $k1       \n"
+    "mtc0     $k0, $12            \n"
+    "sync\n"
+    :
+    : "i" (meLibexceptionHandler)
+    : "k0", "k1", "memory"
+  );
+}
+
 static inline int meLibInit() {
   const int tableId = meCoreGetTableIdFromWitnessWord();
   if (tableId < 2) {

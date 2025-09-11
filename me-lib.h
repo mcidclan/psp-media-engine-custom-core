@@ -63,6 +63,7 @@ extern char __stop__me_section;
 extern "C" {
 #endif
 int meLibDefaultInit();
+void meLibInitExceptions();
 void meLibGetUncached32(volatile u32** const mem, const u32 size);
 #ifdef __cplusplus
 }
