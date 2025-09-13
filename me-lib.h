@@ -21,9 +21,30 @@
 #define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexTryLock)))
 #define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexUnlock)))
 
-#define setSharedUncachedMem(name, size) \
-  static volatile u32 _##name[(size)] = {0}; \
-  static volatile u32* const name = (volatile u32*)(UNCACHED_USER_MASK | (u32)_##name)
+#define meLibSetSharedUncachedMem(size) \
+  static volatile u32 _meLibSharedMemory[(size)] __attribute__((aligned(64))) = {0}; \
+  volatile u32* const meLibSharedMemory = (volatile u32*)(UNCACHED_USER_MASK | (u32)_meLibSharedMemory)
+
+#define meLibMakeUncachedMem(name, size) \
+  volatile u32 name[(size)] __attribute__((aligned(64))) = {0};
+
+#define meLibMakeUncachedVar(name, mask) ((volatile u32* const)((mask) | (u32)name))
+
+#define meLibPushKernelRegs() \
+  asm volatile( \
+    "addi     $sp, $sp, -16\n" \
+    "sw       $k0, 0($sp)\n" \
+    "sw       $k1, 4($sp)\n" \
+    ::: "$k0", "$k1", "memory" \
+  )
+
+#define meLibPopKernelRegs() \
+  asm volatile( \
+    "lw       $k0, 0($sp)\n" \
+    "lw       $k1, 4($sp)\n" \
+    "addi     $sp, $sp, 16\n" \
+    ::: "$k0", "$k1", "memory" \
+  )
 
 inline void meLibHalt() {
   asm volatile(".word 0x70000000");

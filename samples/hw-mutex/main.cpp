@@ -140,7 +140,7 @@ int main() {
     }
     
     sceDisplayWaitVblankStart();
-  } while (!meExit && !(ctl.Buttons & PSP_CTRL_HOME));
+  } while (!(ctl.Buttons & PSP_CTRL_HOME));
   
   meWaitExit();
   

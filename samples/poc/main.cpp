@@ -7,11 +7,10 @@ PSP_MODULE_INFO("me-core-demo", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
-setSharedUncachedMem(mem, 3);
-
-#define meExit           (mem[0])
-#define clockBuses       (mem[1])
-#define sp               (mem[2])
+meLibSetSharedUncachedMem(3);
+#define meExit       (meLibSharedMemory[0])
+#define clockBuses   (meLibSharedMemory[1])
+#define sp           (meLibSharedMemory[2])
 
 __attribute__((noinline, aligned(4)))
 void meLibExec(void) {
@@ -42,11 +41,11 @@ int main() {
   
   SceCtrlData ctl;
   do {
-    pspDebugScreenSetXY(1, 1);
-    pspDebugScreenPrintf("clock buses enabled: 0x%08x", clockBuses);
     pspDebugScreenSetXY(1, 2);
-    pspDebugScreenPrintf("table Id: %i", tableId);
+    pspDebugScreenPrintf("clock buses enabled: 0x%08x", clockBuses);
     pspDebugScreenSetXY(1, 3);
+    pspDebugScreenPrintf("table Id: %i", tableId);
+    pspDebugScreenSetXY(1, 4);
     pspDebugScreenPrintf("sp register: 0x%08x", sp);
     sceCtrlPeekBufferPositive(&ctl, 1);
   } while(!meExit && !(ctl.Buttons & PSP_CTRL_HOME));

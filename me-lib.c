@@ -1,91 +1,138 @@
 #include "me-lib.h"
 
+meLibMakeUncachedMem(proof, 2);
+#define proof0 (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[0])
+#define proof1 (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[1])
+
 __attribute__((noinline, aligned(4)))
-static void meLibexceptionHandler(void) {
-meLibExceptionHandlerExternalInterrupt
+static void meLibExceptionHandlerExternalInterrupt(void) {
+  asm volatile(  
+    ".set noreorder                  \n"
+    // clear Me interrupt flag on system level
+    "li       $k0, 0x80000000        \n"
+    "sw       $k0, 0xbc300000($0)    \n"
+    "sync                            \n"
+    // restore status with external interrupt enabled
+    "mfc0     $k0, $12               \n"
+    "sync                            \n"
+    "li       $k1, 0x30000401        \n"
+    "or       $k0, $k0, $k1          \n"
+    "mtc0     $k0, $12               \n"
+    "sync                            \n"
+    ".set reorder                    \n"
+    :
+    :
+    : "k0", "k1", "memory"
+  );
   // todo
 }
-
+ 
 __attribute__((noinline, aligned(4)))
-static void meLibexceptionHandler(void) {
+static void meLibExceptionHandler(void) {
+
   asm volatile(
-      // clean status, disable interrupt
-      "mtc0     $0, $12\n"
-      "sync\n"
+    ".set noreorder                  \n"
+    
+    // disable interrupt
+    "mtc0     $0, $12                \n"
+    "sync                            \n"
+    
+    // save k0 context
+    "addi     $sp, $sp, -16          \n"
+    "sw       $k0, 0($sp)            \n"
+    "sw       $k1, 4($sp)            \n"
 
-      // save k0 context
-      "addi     $sp, $sp, -16\n"
-      "sw       $k0, 0($sp)\n"
-      "sw       $k1, 4($sp)\n"
-      
-      // check IP 2 on cause register and jump to the related handler if enabled 
-      "mfc0     $k0, $13            \n"
-      "andi     $k0, $k0, 0x400     \n"
-      "beq      $k0, $zero, 1f      \n"
-      "nop                          \n"
-      "la       $k0, %0             \n"
-      "li       $k1, 0x80000000     \n"
-      "or       $k0, $k0, $k1       \n"
-      "cache    0x8, 0($k0)         \n"
-      "sync                         \n"
-      "jr       $k0                 \n"
-      "nop                          \n"
-      "1:                           \n"
+    // temporay proof
+    "lw         $k0, 0(%1)           \n" 
+    "addiu      $k0, $k0, 1          \n"
+    "sw         $k0, 0(%1)           \n"
 
-      // restore k0 context
-      "lw       $k0, 0($sp)        \n"
-      "lw       $k1, 4($sp)        \n"
-      "addi     $sp, $sp, 16       \n"
-      
-      // exit
-      "eret                        \n"
-      
-      // avoid potential pipeline issues
-      "nop                         \n"
-      "nop                         \n"
-      "nop                         \n"
-      "nop                         \n"
-      "nop                         \n"
-      "nop                         \n"
-      "nop                         \n"
-      :
-      : "i" (meLibExceptionHandlerExternalInterrupt)
-      : "k0", "k1", "memory"
+    // check db
+    "mfc0     $k0, $13               \n"
+    "srl      $k1, $k0, 31           \n"
+    "beqz     $k0, 2f                \n"
+    "nop                             \n"
+    // readjust epc (if we are in a delay slot then we reevaluate the branching)
+    "mfc0     $k1, $14               \n"
+    "addiu    $k1, $k1, -8           \n"
+    "mtc0     $k1, $14               \n"
+    "sync                            \n"    
+    //
+    "2:                              \n"
+    
+    // check IP 2 on cause register and jump to the related handler if enabled 
+    "mfc0     $k0, $13               \n"
+    "andi     $k0, $k0, 0x400        \n"
+    "beq      $k0, $zero, 1f         \n"
+    "nop                             \n"
+    "la       $k0, %0                \n"
+    "li       $k1, 0x80000000        \n"
+    "or       $k0, $k0, $k1          \n"
+    "cache    0x8, 0($k0)            \n"
+    "sync                            \n"
+    "jal       $k0                   \n"
+    "nop                             \n"
+    "1:                              \n"
+    
+    // avoid pipeline hazards
+    "nop                             \n"
+    "nop                             \n"
+    // restore k0 context
+    "lw       $k0, 0($sp)            \n"
+    "lw       $k1, 4($sp)            \n"
+    "addi     $sp, $sp, 16           \n"
+    // exit
+    "eret                            \n"
+    // avoid potential pipeline timing / flush issues
+    "nop                             \n"
+    "nop                             \n"
+    "nop                             \n"
+    "nop                             \n"
+    "nop                             \n"
+    "nop                             \n"
+    "nop                             \n"
+    ".set reorder                    \n"
+    :
+    : "i" (meLibExceptionHandlerExternalInterrupt), "r" (&proof0)
+    : "k0", "k1", "memory"
   );
 }
 
 __attribute__((noinline, aligned(4)))
 void meLibInitExceptions() {
   asm volatile(
-    // clear status
-    // "mtc0     $0, $12             \n"
-    // "sync                         \n"    
+    ".set noreorder                  \n"
     // setup exception handler
-    "la       $k0, %0             \n"
-    "li       $k1, 0x80000000     \n"
-    "or       $k0, $k0, $k1       \n"
-    "cache    0x8, 0($k0)         \n"
-    "sync                         \n"
+    "la       $k0, %0                \n"
+    "li       $k1, 0x80000000        \n"
+    "or       $k0, $k0, $k1          \n"
+    "cache    0x8, 0($k0)            \n"
+    "sync                            \n"
     // load exception handler
-    "mtc0     $k0, $25            \n"
-    "sync                         \n"
+    "mtc0     $k0, $25               \n"
+    "sync                            \n"
     // enable ME interrupt on system level
-    "li       $k0, 0x80000000     \n"
-    "sw       $k0, 0xbc300008($0) \n"
-    "sync                         \n"
+    "li       $k0, 0x80000000        \n"
+    "sw       $k0, 0xbc300008($0)    \n"
+    "sync                            \n"
+    // clear Me interrupt flag on system level
+    "li       $k0, 0x80000000        \n"
+    "sw       $k0, 0xbc300000($0)    \n"
+    "sync                            \n"
     // setup external interrupt on cp0 level
-    "mfc0     $k0, $12            \n"
-    "li       $k1, 0x401          \n"
-    "or       $k0, $k0, $k1       \n"
-    "mtc0     $k0, $12            \n"
-    "sync\n"
+    "mfc0     $k0, $12               \n"
+    "li       $k1, 0x401             \n"
+    "or       $k0, $k0, $k1          \n"
+    "mtc0     $k0, $12               \n"
+    "sync                            \n"
+    ".set reorder                    \n"
     :
-    : "i" (meLibexceptionHandler)
+    : "i" (meLibExceptionHandler)
     : "k0", "k1", "memory"
   );
 }
 
-static inline int meLibInit() {
+static inline int meLibInit() {  
   const int tableId = meCoreGetTableIdFromWitnessWord();
   if (tableId < 2) {
     return -1;

@@ -72,7 +72,7 @@ awk -f convert-mapping.awk me-core-mapping.def.h > me-core-mapping.c
 ### Generated Library and Prx
 To build the current projet run:
 ```bash
-make clean; make; make install;
+make clean; make install;
 ```
 
 This will copy the .a to the project root, which embeds the small PRX in a dedicated data section.  
