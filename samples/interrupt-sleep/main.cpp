@@ -13,7 +13,7 @@ extern "C" {
 }
 #define proof0         (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[0])
 
-meLibSetSharedUncachedMem(1);
+meLibSetSharedUncachedMem(2);
 #define meExit       (meLibSharedMemory[0])
 #define meCounter    (meLibSharedMemory[1])
 

@@ -10,13 +10,12 @@ PSP_MODULE_INFO("me-dsp-exp", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
-meLibSetSharedUncachedMem(1);
+meLibSetSharedUncachedMem(2);
 #define meExit       (meLibSharedMemory[0])
 #define meCounter    (meLibSharedMemory[1])
 
 __attribute__((noinline, aligned(4)))
 void meLibExec(void) {
-  meLibInitExceptions();
   do {
     meCounter++;
   } while(meExit == 0);
