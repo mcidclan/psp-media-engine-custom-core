@@ -1,6 +1,9 @@
 ## PSP Media Engine Custom Core: Mapper Library.
-A project to map the PSP's Media Engine core functions with the purpose of using them in our code.  
-The idea is simply to make the native kernel/core functions of the media engine available to homebrew developers.  
+A library project to map the PSP's Media Engine core functions with the purpose of using them in our code.  
+The main idea is simply to make the native kernel/core functions of the media engine available to homebrew developers.  
+
+Additionally, the library comes with some custom functions and processes to ease the use and integration of the Media Engine into homebrew projects.
+It provides a Media Engine Core Mapper (meCoreMapper) and a Media Engine Custom Library (meLib).
 
 The media engine core is loaded at address 0x88300000, however depending on the device model, it is loaded from a different image which means that addresses are not the same for models prior to the slim.
 As a solution, we have several static correspondence tables and the code will select the table corresponding to our device before launching the Media Engine.
@@ -69,7 +72,7 @@ See related samples available in the `samples` folder for more information.
 awk -f convert-mapping.awk me-core-mapping.def.h > me-core-mapping.c
 ```
 
-### Generated Library and Prx
+### Generated Library with the embedded Prx
 To build the current projet run:
 ```bash
 make clean; make install;
