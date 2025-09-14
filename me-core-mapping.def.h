@@ -56,18 +56,19 @@
   {0x0008bcbc, 0x0007b46c}, // int _meCoreDcacheInvalidateRange(u32, u32)
   
   // wip
-  {0x000002e4, 0x00000000}, // meCoreUnknown_000002e4                             // meCoreSystemImageCopy AndReset ? // from what, to where ?
-  {0x00000374, 0x00000000}, // meCoreWaitForScSyscalls                            // seems to handle syscall from sc
-  {0x00000570, 0x00000000}, // meCoreUnknown_00000570                             // meCoreSetDSPFrequency ?
-  {0x00000618, 0x00000000}, // meCoreUnknown_00000618    
-  {0x00065a10, 0x00000000}, // meCoreCheck0xdec264                                // what is the purpose ?
-  {0x00066804, 0x00000000}, // meCoreCopy164bytesFromOffset0x8308                 // ??
-  {0x00065908, 0x00000000}, // meCoreCheckAndCopy164bytesFromOffset0x8308         // ??
-  {0x00000708, 0x00000000}, // meCoreUnknown_00000708
-  {0x00021b34, 0x00000000}, // u64 _meCoreSetupHandlers(void)
+  {0x000002e4, 0x00000000}, //      _meCoreUnknown_000002e4                       // meCoreSystemImageCopy AndReset ? // from what, to where ?
+  {0x00000374, 0x00000000}, //      _meCoreWaitForScSyscalls                      // seems to handle syscall from sc
+  {0x00000570, 0x00000000}, //      _meCoreUnknown_00000570                       // meCoreSetDSPFrequency ?
+  {0x00000618, 0x00000000}, //      _meCoreUnknown_00000618    
+  {0x00065a10, 0x00000000}, //      _meCoreCheck0xdec264                          // what is the purpose ?
+  {0x00066804, 0x00000000}, //      _meCoreCopy164bytesFromOffset0x8308           // ??
+  {0x00065908, 0x00000000}, //      _meCoreCheckAndCopy164bytesFromOffset0x8308   // ??
+  {0x00000708, 0x00000000}, //      _meCoreUnknown_00000708
+  {0x00021b34, 0x00000000}, // u64  _meCoreSetupHandlers(void)
   
-  {0x0008be64, 0x00000000}, // int meCoreDecompressKL4E(byte *out, int size, char *in, u32 *cursor)
-  {0x00021a30, 0x00000000}, // void meCoreUpdate32PoolsMemory(void);
-  {0x00021910, 0x00000000}, // u32 meCoreRequest32PoolsBlockAllocation(u32 index, u32 priority, int* status)
-  {0x000219b4, 0x00000000}, // void meCoreInit32PoolsMemory(void);
+  {0x0008be64, 0x00000000}, // int  _meCoreDecompressKL4E(byte *out, int size, char *in, u32 *cursor)
+  {0x00021a30, 0x00000000}, // void _meCoreUpdate32PoolsMemory(void);
+  {0x00021910, 0x00000000}, // u32  _meCoreRequest32PoolsBlockAllocation(u32 index, u32 priority, int* status)
+  {0x000219b4, 0x00000000}, // void _meCoreInit32PoolsMemory(void)
+  {0x000210b4, 0x00000000}, // void _meCoreDMACPrimaryProcessUnknown_000210b4(u32 memSrc, u32 bufSrc, u32 blockCount, u32 lastBlockIndex, u32 memDst, u32 bufDstLow, u32 bufDstHigh, u32 dstCount) // not sure
 }
