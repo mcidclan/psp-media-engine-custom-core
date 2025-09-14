@@ -1,5 +1,6 @@
 #include "me-lib.h"
 
+// temporary debug vars
 meLibMakeUncachedMem(proof, 2);
 #define proof0 (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[0])
 #define proof1 (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[1])

@@ -1,4 +1,4 @@
-## PSP Media Engine Custom Core: Interrupt Sleep
+## PSP Media Engine Custom Core: Exceptions
 
 ## Usage
 Build it with CMake, then copy the EBOOT.PBP into a folder within the GAME directory.  
