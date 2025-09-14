@@ -13,17 +13,11 @@ static void meLibExceptionHandlerExternalInterrupt(void) {
     "li       $k0, 0x80000000        \n"
     "sw       $k0, 0xbc300000($0)    \n"
     "sync                            \n"
-    // restore status with external interrupt enabled
-    "mfc0     $k0, $12               \n"
-    "sync                            \n"
-    "li       $k1, 0x30000401        \n"
-    "or       $k0, $k0, $k1          \n"
-    "mtc0     $k0, $12               \n"
-    "sync                            \n"
+    // todo
     ".set reorder                    \n"
     :
     :
-    : "k0", "k1", "memory"
+    : "k0", "memory"
   );
   // todo
 }
@@ -33,21 +27,21 @@ static void meLibExceptionHandler(void) {
 
   asm volatile(
     ".set noreorder                  \n"
-    
-    // disable interrupt
-    "mtc0     $0, $12                \n"
-    "sync                            \n"
-    
     // save k0 context
     "addi     $sp, $sp, -16          \n"
     "sw       $k0, 0($sp)            \n"
     "sw       $k1, 4($sp)            \n"
-
+    // clear EXL & ERL bits, save status and disable interrupt    
+    "mfc0     $k0, $12               \n"
+    "li       $k1, 0xfffffff9        \n"
+    "and      $k0, $k0, $k1          \n"
+    "sw       $k0, 8($sp)            \n"
+    "mtc0     $0, $12                \n"
+    "sync                            \n"
     // temporay proof
     "lw         $k0, 0(%1)           \n" 
     "addiu      $k0, $k0, 1          \n"
     "sw         $k0, 0(%1)           \n"
-
     // check db
     "mfc0     $k0, $13               \n"
     "srl      $k1, $k0, 31           \n"
@@ -57,10 +51,8 @@ static void meLibExceptionHandler(void) {
     "mfc0     $k1, $14               \n"
     "addiu    $k1, $k1, -8           \n"
     "mtc0     $k1, $14               \n"
-    "sync                            \n"    
-    //
+    "sync                            \n"
     "2:                              \n"
-    
     // check IP 2 on cause register and jump to the related handler if enabled 
     "mfc0     $k0, $13               \n"
     "andi     $k0, $k0, 0x400        \n"
@@ -74,14 +66,17 @@ static void meLibExceptionHandler(void) {
     "jal       $k0                   \n"
     "nop                             \n"
     "1:                              \n"
-    
-    // avoid pipeline hazards
-    "nop                             \n"
-    "nop                             \n"
+    // restore status with external interrupt enabled
+    "lw       $k0, 8($sp)            \n"
+    "mtc0     $k0, $12               \n"
+    "sync                            \n"
     // restore k0 context
     "lw       $k0, 0($sp)            \n"
     "lw       $k1, 4($sp)            \n"
     "addi     $sp, $sp, 16           \n"
+    // avoid pipeline hazards
+    "nop                             \n"
+    "nop                             \n"
     // exit
     "eret                            \n"
     // avoid potential pipeline timing / flush issues
