@@ -9,7 +9,14 @@
 // define the non-cached kernel mutex
 #define mutex hw(0xbc100048)
 
-static inline u32 meLibGetCpuId() {
+static inline int _meLibSendSoftInterrupt() {
+  asm("sync");
+  hw(0xBC100044) = 1;
+  asm("sync");
+  return 0;
+}
+
+static inline u32 _meLibGetCpuId() {
   u32 unique;
   asm volatile(
     "sync\n"

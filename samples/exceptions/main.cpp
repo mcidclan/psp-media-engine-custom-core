@@ -8,18 +8,42 @@ PSP_MODULE_INFO("me-exceptions", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
-extern "C" {
-  extern volatile u32 proof[1];
-}
-#define proof0         (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[0]) // debug from meLib
-
 meLibSetSharedUncachedMem(2);
-#define meExit       (meLibSharedMemory[0])
-#define meCounter    (meLibSharedMemory[1])
+#define meExit          (meLibSharedMemory[0])
+#define meCounter       (meLibSharedMemory[1])
+
+meLibMakeUncachedMem(proof, 1);
+#define _meExtIntrProof  (&(proof[0]))
+#define _meExpProof      (&(proof[1]))      
+
+#define meExtIntrProof  (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[0])
+#define meExpProof      (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[1])
+
+extern "C" __attribute__((noinline, aligned(4)))
+void meLibOnExternalInterrupt(void) {
+  asm volatile(
+    ".set noreorder                  \n"
+    // increment external interrupt proof
+    "la       $k0, %0                \n"
+    "li       $k1, 0xa0000000        \n"
+    "or       $k0, $k0, $k1          \n"
+    "cache    0x8, 0($k0)            \n"
+    "sync                            \n"
+    
+    "lw       $k1, 0($k0)            \n"
+    "addiu    $k1, $k1, 1            \n"
+    "sw       $k1, 0($k0)            \n"
+    "sync                            \n"
+    ".set reorder                    \n"
+    :
+    : "i" (_meExtIntrProof)
+    : "k0", "k1", "memory"
+  );
+}
 
 __attribute__((noinline, aligned(4)))
-void meLibExec(void) {
-  meLibInitExceptions();
+void meLibOnProcess(void) {  
+  meLibExceptionHandlerInit();
   do {
     meCounter++;
   } while(meExit == 0);
@@ -48,9 +72,11 @@ int main() {
   do {
     sceCtrlPeekBufferPositive(&ctl, 1);
     pspDebugScreenSetXY(1, 2);
-    pspDebugScreenPrintf("proof0: %x", proof0); // debug from meLib
+    pspDebugScreenPrintf("Me Counter: %x", meCounter);
     pspDebugScreenSetXY(1, 3);
-    pspDebugScreenPrintf("counter: %x", meCounter);
+    pspDebugScreenPrintf("Me Ext Intr Proof: %x", meExtIntrProof);
+    pspDebugScreenSetXY(1, 4);
+    pspDebugScreenPrintf("Me Exception Proof: %x", meExpProof);
     
     if (!triangle && (ctl.Buttons & PSP_CTRL_TRIANGLE)) {
       kcall(meCoreEmitSoftwareInterrupt);

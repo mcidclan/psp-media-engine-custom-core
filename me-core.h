@@ -1,12 +1,12 @@
 #include "me-lib.h"
 
 __attribute__((section("_me_section")))
-void meLibHandler() {
+void meLibHandler() {  
   HW_SYS_BUS_CLOCK_ENABLE      = 0x0f;
-  HW_SYS_TACHYON_CONFIG_STATUS = 0x02;
+  HW_SYS_TACHYON_CONFIG_STATUS |= 0x02;
   HW_SYS_NMI_FLAGS             = 0xffffffff;
   meLibSync();
-    
+  
   meLibUnlockHwUserRegisters();
   meLibUnlockMemory();
   meLibSetMinimalVmeConfig();
@@ -39,7 +39,7 @@ void meLibHandler() {
     "nop                             \n"
     ".set reorder                    \n"
     :
-    : "i" (meLibExec)
+    : "i" (meLibOnProcess)
     : "k0", "k1", "memory"
   );
 }
