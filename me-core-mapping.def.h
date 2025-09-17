@@ -4,7 +4,7 @@
   {0x000002e4, 0x00000000}, // void _meCoreUnknown_000002e4(u32, u32)             // meCoreSystemImageCopy AndReset ? // from what, to where ?
   {0x00000374, 0x00000000}, // void _meCoreWaitForScSyscalls(void)                // seems to handle syscall from sc
   {0x00000570, 0x00000000}, // int  _meCoreUnknown_00000570(u32, u32)             // meCoreSetDSPFrequency ? // meCoreConfigureTransferMode(int, int) ?
-  {0x00000618, 0x00000000}, // int  _meCoreUnknown_00000618(u32, u32, u32, u32)    
+  {0x00000618, 0x00000000}, // int  _meCoreUnknown_00000618(u32, u32, u32, u32)   // _meCoreDMACPrimMuxUnknown_00000618
   {0x00000708, 0x00000000}, // void _meCoreUnknown_00000708(u32, u32, u32, u32, u32, u32, u32, u32)
   {0x00000948, 0x00000000}, // int  _meCoreUnknown_00000948()                     // _meCoreDspActivateAndSync() ?
 
@@ -68,4 +68,20 @@
   {0x0008bcbc, 0x0007b46c}, // int  _meCoreDcacheInvalidateRange(u32, u32)
   {0x0008bd4c, 0x0007b4fc}, // int  _meCoreDcacheWritebackRange(u32, u32)
   {0x0008be64, 0x00000000}, // int  _meCoreDecompressKL4E(byte *out, int size, char *in, u32 *cursor)
+
+  // wip
+  {0x00020ce8, 0x00000000}, // void  _meCoreDMACPrimaryTransferUnknown_00020ce8(void)
+  {0x000018c4, 0x00000000}, // void  _meCoreBusClockAWEdramEnable(void)
+  {0x00021614, 0x00000000}, // void* _meCoreEDRAMAlloc(u32) // from 0x00180000 on slim
+  {0x000216f8, 0x00000000}, // u32   _meCoreEDRAMFree(void*)
+  {0x00000c08, 0x00000000}, // int   _meCoreGetDualBuffers(u32 width, u32 height, u32 *buff0, u32 *buff1) // width = width or width | mode (16 [0b10000])
+  {0x00000c64, 0x00000000}, // void  _meCoreCopy2DMemoryBlock(/*Quad*/u32 *buff, void *src, u32 height, u32 destX, u32 destY, u32 stride, u32 extra) // extra et to one adds a padding ? 
+  {0x00000dbc, 0x00000000}, // void  _meCoreInterleave2DBlockPixelData(/*Quad*/u32 *buff, void *src, u32 height, u32 destX, u32 destX, u32 stride, u32 extra)
+  {0x00001054, 0x00000000}, // u32   _meCoreCompose2DBlockFromQuad(/*Quad*/u32 *buff)
+  {0x00000af0, 0x00000000}, // u32   _meCoreGenerate2DBlockFromQuad(/*Quad*/u32 *buff)
+                            // typedef struct { u32 width; u32 height; u32 unk2; void* src0; void* src1; void* dst0; void* dst1; void* src2; void* src3; void* dst2; void* dst3; void* dst; void* inter0; void* inter1; } Quad;
+
+  {0x00038d6c, 0x00000000}, // u32 _meCoreIsIndexValidFor(u32 index, u32* in)
+  {0x00039d04, 0x00000000}, // u32 _meCoreGetIndexedValueFor(int index, u32 *out, void *in)
+
 }
