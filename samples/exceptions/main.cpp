@@ -12,12 +12,10 @@ meLibSetSharedUncachedMem(2);
 #define meExit          (meLibSharedMemory[0])
 #define meCounter       (meLibSharedMemory[1])
 
-meLibMakeUncachedMem(proof, 1);
-#define _meExtIntrProof  (&(proof[0]))
-#define _meExpProof      (&(proof[1]))      
-
-#define meExtIntrProof  (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[0])
-#define meExpProof      (meLibMakeUncachedVar(proof, UNCACHED_USER_MASK)[1])
+meLibMakeUncachedMem(_meExtIntrProof, 1);
+meLibMakeUncachedMem(_meExpProof, 1);
+#define meExtIntrProof  (meLibMakeUncachedVar(_meExtIntrProof, UNCACHED_USER_MASK)[0])
+#define meExpProof      (meLibMakeUncachedVar(_meExpProof, UNCACHED_USER_MASK)[0])
 
 extern "C" __attribute__((noinline, aligned(4)))
 void meLibOnExternalInterrupt(void) {

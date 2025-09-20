@@ -61,9 +61,9 @@ static void meLibExceptionHandler(void) {
     "srl      $k1, $k0, 31           \n"
     "beqz     $k1, 2f                \n"
     "nop                             \n"
-    // readjust epc (if it occured in a delay slot then we avoid the branching)
+    // readjust epc (if it occured in a delay slot then replay the branching)
     "mfc0     $k1, $14               \n"
-    "addiu    $k1, $k1, 4            \n"
+    "addiu    $k1, $k1, -4            \n"
     "mtc0     $k1, $14               \n"
     "sync                            \n"    
     "2:                              \n"
