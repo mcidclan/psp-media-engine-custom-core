@@ -11,6 +11,11 @@ static void meLibExceptionHandleExternalInterrupt(void) {
     "li       $k0, 0x80000000        \n"
     "sw       $k0, 0xbc300000($0)    \n"
     "sync                            \n"
+    // wait for 0xbc300000 to be cleared (become 0)
+    "1:\n"
+    "lw      $k1, 0xbc300000($0)\n"
+    "bne     $k1, $0, 1b\n"
+    "nop\n"
     // call meLibOnExternalInterrupt
     "la       $k0, %0                \n"
     "li       $k1, 0x80000000        \n"
@@ -108,7 +113,6 @@ static void meLibExceptionHandler(void) {
     "nop                             \n"
     "nop                             \n"
     "nop                             \n"
-//  ".set reorder                    \n"
     ".set pop                        \n"
     :
     : "i" (meLibExceptionHandleExternalInterrupt)
