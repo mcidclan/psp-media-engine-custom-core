@@ -16,7 +16,7 @@ volatile u32* shared __attribute__((aligned(64))) = nullptr;
 #define meCounter        (mem[1])
 #define meStart          (mem[2])
 
-void meLibExec() {
+void meLibOnProcess() {
   // wait until mem is ready
   do {
     meCoreDcacheWritebackInvalidateAll();

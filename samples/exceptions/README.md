@@ -1,4 +1,5 @@
 ## PSP Media Engine Custom Core: Exceptions
+Sample code demonstrating the use of an external software interrupt, triggered from main CPU and handled on the Media Engine via a custom callback.
 
 ## Usage
 Build it with CMake, then copy the EBOOT.PBP into a folder within the GAME directory.  

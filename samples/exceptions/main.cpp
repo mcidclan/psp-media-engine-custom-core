@@ -39,6 +39,28 @@ void meLibOnExternalInterrupt(void) {
   );
 }
 
+extern "C" __attribute__((noinline, aligned(4)))
+void meLibOnException(void) {
+  asm volatile(
+    ".set noreorder                  \n"
+    // increment exception proof
+    "la       $k0, %0                \n"
+    "li       $k1, 0xa0000000        \n"
+    "or       $k0, $k0, $k1          \n"
+    "cache    0x8, 0($k0)            \n"
+    "sync                            \n"
+    
+    "lw       $k1, 0($k0)            \n"
+    "addiu    $k1, $k1, 2            \n"
+    "sw       $k1, 0($k0)            \n"
+    "sync                            \n"
+    ".set reorder                    \n"
+    :
+    : "i" (_meExpProof)
+    : "k0", "k1", "memory"
+  );
+}
+
 __attribute__((noinline, aligned(4)))
 void meLibOnProcess(void) {  
   meLibExceptionHandlerInit();
@@ -86,7 +108,7 @@ int main() {
     sceDisplayWaitVblank();
   } while (!(ctl.Buttons & PSP_CTRL_HOME));
   
-  // meWaitExit();
+  meWaitExit();
   
   sceKernelDelayThread(1000000);
   sceKernelExitGame();

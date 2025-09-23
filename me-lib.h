@@ -68,7 +68,8 @@ extern void meLibOnProcess(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
-  extern void meLibOnExternalInterrupt(void); 
+  extern void meLibOnExternalInterrupt(void);
+  extern void meLibOnException(void);
   int  meLibDefaultInit();
   void meLibExceptionHandlerInit();
   void meLibGetUncached32(volatile u32** const mem, const u32 size);

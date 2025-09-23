@@ -13,7 +13,7 @@ meLibSetSharedUncachedMem(3);
 #define sp           (meLibSharedMemory[2])
 
 __attribute__((noinline, aligned(4)))
-void meLibExec(void) {
+void meLibOnProcess(void) {
   // meCoreBusClockPreserve poc
   HW_SYS_BUS_CLOCK_ENABLE = -1;
   meLibSync();

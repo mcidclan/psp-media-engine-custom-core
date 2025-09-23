@@ -1,5 +1,11 @@
 #include "me-lib.h"
   
+__attribute__((weak)) void meLibOnExternalInterrupt(void) {
+}
+
+__attribute__((weak)) void meLibOnException(void) {
+}
+
 __attribute__((noinline, aligned(4)))
 static void meLibExceptionHandleExternalInterrupt(void) {
   asm volatile(  
@@ -39,14 +45,14 @@ static void meLibExceptionHandler(void) {
   asm volatile(
     ".set push                       \n"
     ".set noreorder                  \n"
-    ".set noat                       \n"
+    ".set noat                       \n"
     // save regs context
     "addi     $sp, $sp, -24          \n"
     "sw       $k0, 0($sp)            \n"
     "sw       $k1, 4($sp)            \n"
     "sw       $ra, 8($sp)            \n"
     "sw       $at, 16($sp)           \n"
-    // clear EXL & ERL bits, save status and disable interrupt    
+    // clear EXL & ERL bits, save status and disable interrupt
     "mfc0     $k0, $12               \n"
     "li       $k1, 0xfffffff9        \n"
     "and      $k0, $k0, $k1          \n"
@@ -54,7 +60,14 @@ static void meLibExceptionHandler(void) {
     "mtc0     $0, $12                \n"
     "sync                            \n"
     
-    // todo: handle meLibOnException
+    // call meLibOnException
+    "la       $k0, %1                \n"
+    "li       $k1, 0x80000000        \n"
+    "or       $k0, $k0, $k1          \n"
+    "cache    0x8, 0($k0)            \n"
+    "sync                            \n"
+    "jal      $k0                    \n"
+    "nop                             \n"
     
     // check DB
     "mfc0     $k0, $13               \n"
@@ -115,7 +128,7 @@ static void meLibExceptionHandler(void) {
     "nop                             \n"
     ".set pop                        \n"
     :
-    : "i" (meLibExceptionHandleExternalInterrupt)
+    : "i" (meLibExceptionHandleExternalInterrupt), "i" (meLibOnException)
     : "k0", "k1", "memory"
   );
 }
@@ -154,7 +167,7 @@ void meLibExceptionHandlerInit() {
   );
 }
 
-static inline int meLibInit() {  
+static inline int meLibInit() {
   const int tableId = meCoreGetTableIdFromWitnessWord();
   if (tableId < 2) {
     return -1;
