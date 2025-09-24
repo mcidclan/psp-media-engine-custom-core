@@ -17,7 +17,7 @@
 
 // Lib
 #define meLibSync()                       asm volatile("sync")
-#define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop;")
+#define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop; sync;")
 #define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexTryLock)))
 #define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexUnlock)))
 

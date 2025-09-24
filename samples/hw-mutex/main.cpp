@@ -9,34 +9,26 @@ PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
 // align shared vars to 64 for cached/uncached access compatibility
-volatile u32* mem    __attribute__((aligned(64))) = nullptr;
 volatile u32* shared __attribute__((aligned(64))) = nullptr;
 
-#define meExit           (mem[0])
-#define meCounter        (mem[1])
-#define meStart          (mem[2])
+meLibSetSharedUncachedMem(3);
+#define meExit           (meLibSharedMemory[0])
+#define meCounter        (meLibSharedMemory[1])
+#define meStart          (meLibSharedMemory[2])
 
 void meLibOnProcess() {
-  // wait until mem is ready
-  do {
-    meCoreDcacheWritebackInvalidateAll();
-  } while (!mem || !shared);
-  
   do {
     meLibDelayPipeline();
-    meLibSync();
   } while (!meStart);
   
   const u32 sharedSize = (sizeof(u32) * 4 + 63) & ~63;
+    
   do {
     meCounter++;
     
-    int acquired = -1;
-    do {
-      acquired = meCoreHwMutexTryLock();
+    while (meCoreHwMutexTryLock() < 0) {
       meLibDelayPipeline();
-      meLibSync();
-    } while (acquired < 0);
+    }
     
     // invalidate cache, forcing next read to fetch from memory
     meCoreDcacheInvalidateRange((u32)shared, sharedSize);
@@ -45,7 +37,6 @@ void meLibOnProcess() {
     }
     
     meCoreHwMutexUnlock();
-    meLibSync();
     meLibDelayPipeline();
     
     // write modified cache data back to memory
@@ -81,8 +72,6 @@ int main() {
 
   pspDebugScreenInit();
   const int tableId = meLibDefaultInit();
-  
-  meLibGetUncached32(&mem, 3);
   
   // 64-byte alignment is required while using to use Dcache... Range
   shared = (u32*)memalign(64, (sizeof(u32) * 4 + 63) & ~63);
@@ -145,7 +134,6 @@ int main() {
   meWaitExit();
   
   free((void*)shared);
-  meLibGetUncached32(&mem, 0);
   sceKernelExitGame();
   
   return 0;
