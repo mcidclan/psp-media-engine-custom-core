@@ -47,7 +47,7 @@ CFLAGS += -I ./me-custom-core
 ```cpp
 #include "me-core.h"
 
-void meLibExec() {
+void meLibOnProcess() {
   // ... your ME code
 }
 
@@ -58,10 +58,34 @@ int main() {
 }
 ```
 
-#### Steps:
+**Using the optional Exception Handlers:**
+```cpp
+#include "me-core.h"
+
+extern "C" void meLibOnExternalInterrupt(void) {
+  // if using meCoreEmitSoftwareInterrupt from sc
+}
+
+extern "C" void meLibOnException(void) {
+  // optional, handle other custom exceptions here
+}
+
+void meLibOnProcess() {
+  meLibExceptionHandlerInit(); // init exception handlers
+  // ... your ME code
+}
+
+int main() {
+  const int tableId = meLibDefaultInit();
+  // ... main code
+  return 0;
+}
+```
+
+#### General Integration Steps:
 1. Configure your build system to include the required directories
 2. Include the `me-core.h` library header in your code
-3. Implement `meLibExec()` with your Media Engine code
+3. Implement `meLibOnProcess()` with your Media Engine code
 4. Initialize the library in `main()` with `meLibDefaultInit()`
   
 See related samples available in the `samples` folder for more information.
