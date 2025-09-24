@@ -35,7 +35,7 @@ LIBS += lme-core
 
 **Code example:**
 ```cpp
-#include <me-core-mapping/me-core.h>
+#include <me-core-mapper/me-core.h>
 
 void meLibOnProcess() {
   // ... your ME code
@@ -50,7 +50,7 @@ int main() {
 
 **Using the optional Exception Handlers:**
 ```cpp
-#include <me-core-mapping/me-core.h>
+#include <me-core-mapper/me-core.h>
 
 extern "C" void meLibOnExternalInterrupt(void) {
   // if using meCoreEmitSoftwareInterrupt from sc
@@ -74,7 +74,7 @@ int main() {
 
 #### General Integration Steps:
 1. Configure your build system to include the required directories
-2. Include the `me-core-mapping/me-core.h` library header in your code
+2. Include the `me-core-mapper/me-core.h` library header in your code
 3. Implement `meLibOnProcess()` with your Media Engine code
 4. Initialize the library in `main()` with `meLibDefaultInit()`
 
