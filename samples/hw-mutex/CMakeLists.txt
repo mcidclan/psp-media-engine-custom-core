@@ -5,7 +5,7 @@ project(me-core-demo C CXX ASM)
 add_executable(mehwmutex
   main.cpp
 )
-  
+
 target_compile_options(mehwmutex PRIVATE -Ofast -G0 -Wall -fno-pic)
 
 target_compile_options(mehwmutex PRIVATE 
@@ -14,13 +14,8 @@ target_compile_options(mehwmutex PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
 )
 
-target_include_directories(mehwmutex PRIVATE 
-  ${CMAKE_SOURCE_DIR}/../..
-)
-
 target_link_libraries(mehwmutex
-  ${CMAKE_SOURCE_DIR}/../../libme-core.a
-  psppower pspge pspdisplay pspctrl pspdebug
+  me-core psppower pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET mehwmutex TITLE "Me Hw Mutex Demo")

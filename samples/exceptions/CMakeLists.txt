@@ -14,13 +14,8 @@ target_compile_options(meexceptions PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
 )
 
-target_include_directories(meexceptions PRIVATE 
-  ${CMAKE_SOURCE_DIR}/../..
-)
-
 target_link_libraries(meexceptions
-  ${CMAKE_SOURCE_DIR}/../../libme-core.a
-  psppower pspge pspdisplay pspctrl pspdebug
+  me-core psppower pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET meexceptions TITLE "Me Exceptions")

@@ -54,5 +54,18 @@ target_include_directories(me-core PUBLIC
 )
 
 install(TARGETS me-core
-  ARCHIVE DESTINATION ${CMAKE_SOURCE_DIR}
+  ARCHIVE DESTINATION "$ENV{PSPDEV}/psp/lib"
+)
+
+file(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+list(FILTER HEADER_FILES EXCLUDE REGEX ".*me-core-mapping\\.def\\.h$")
+
+install(FILES ${HEADER_FILES}
+  DESTINATION "$ENV{PSPDEV}/psp/include/me-core-mapper"
+)
+
+file(GLOB KERNEL_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/kernel/*.h")
+
+install(FILES ${KERNEL_HEADER_FILES}
+  DESTINATION "$ENV{PSPDEV}/psp/include/me-core-mapper/kernel"
 )

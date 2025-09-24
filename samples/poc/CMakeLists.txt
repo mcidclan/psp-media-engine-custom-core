@@ -14,13 +14,8 @@ target_compile_options(mecore PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
 )
 
-target_include_directories(mecore PRIVATE 
-  ${CMAKE_SOURCE_DIR}/../..
-)
-
 target_link_libraries(mecore
-  ${CMAKE_SOURCE_DIR}/../../libme-core.a
-  psppower pspge pspdisplay pspctrl pspdebug
+  me-core psppower pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET mecore TITLE "Me Core Demo")

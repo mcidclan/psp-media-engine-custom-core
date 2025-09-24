@@ -1,7 +1,7 @@
 #include <pspdebug.h>
 #include <psppower.h>
 #include <pspctrl.h>
-#include "me-core.h"
+#include <me-core-mapper/me-core.h>
 
 PSP_MODULE_INFO("me-core-demo", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);

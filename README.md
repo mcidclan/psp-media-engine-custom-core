@@ -14,18 +14,12 @@ As a solution, we have several static correspondence tables and the code will se
 
 ### Basic Integration
 
-Include the me-custom-core in your build file as follows:
+Include the me-core-mapper in your project as follows:
 
 **CMakeLists.txt:**
 ```cmake
 target_link_libraries(project
-  ${CMAKE_SOURCE_DIR}/me-custom-core/libme-core.a
-)
-```
-
-```cmake
-target_include_directories(project PRIVATE 
-  ${CMAKE_SOURCE_DIR}/me-custom-core
+  me-core
 )
 ```
 
@@ -36,16 +30,12 @@ project(your-project-name C CXX ASM)
 
 **Alternatively using a Makefile:**
 ```makefile
-LIBS += ./me-custom-core/libme-core.a
-```
-
-```makefile
-CFLAGS += -I ./me-custom-core
+LIBS += lme-core
 ```
 
 **Code example:**
 ```cpp
-#include "me-core.h"
+#include <me-core-mapping/me-core.h>
 
 void meLibOnProcess() {
   // ... your ME code
@@ -60,7 +50,7 @@ int main() {
 
 **Using the optional Exception Handlers:**
 ```cpp
-#include "me-core.h"
+#include <me-core-mapping/me-core.h>
 
 extern "C" void meLibOnExternalInterrupt(void) {
   // if using meCoreEmitSoftwareInterrupt from sc
@@ -84,10 +74,10 @@ int main() {
 
 #### General Integration Steps:
 1. Configure your build system to include the required directories
-2. Include the `me-core.h` library header in your code
+2. Include the `me-core-mapping/me-core.h` library header in your code
 3. Implement `meLibOnProcess()` with your Media Engine code
 4. Initialize the library in `main()` with `meLibDefaultInit()`
-  
+
 See related samples available in the `samples` folder for more information.
 
 ### Generate me-core-mapping.h
@@ -97,13 +87,12 @@ awk -f convert-mapping.awk me-core-mapping.def.h > me-core-mapping.c
 ```
 
 ### Generated Library with the embedded Prx
-To build the current projet run:
+To build and install the current projet run:
 ```bash
 make clean; make install;
 ```
 
-This will copy the .a to the project root, which embeds the small PRX in a dedicated data section.  
-At runtime, the library will extract the PRX next to the EBOOT and then load it.
+This will copy the .a file to your pspdev/psp/lib folder and the related headers to the pspdev/psp/include folder. It embeds the small PRX used as a kernel bridge in a dedicated data section. At runtime, the library will extract the PRX next to the EBOOT and then load it.
 
 ## Disclamer
 This project and code are provided as-is without warranty. Users assume full responsibility for any implementation or consequences. Use at your own discretion and risk

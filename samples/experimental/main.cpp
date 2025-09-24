@@ -2,7 +2,7 @@
 #include <psppower.h>
 #include <pspctrl.h>
 #include <pspdisplay.h>
-#include "me-core.h"
+#include <me-core-mapper/me-core.h>
 
 // Experimental sample
 
@@ -15,7 +15,7 @@ meLibSetSharedUncachedMem(2);
 #define meCounter    (meLibSharedMemory[1])
 
 __attribute__((noinline, aligned(4)))
-void meLibExec(void) {
+void meLibOnProcess(void) {
   do {
     meCounter++;
   } while(meExit == 0);
