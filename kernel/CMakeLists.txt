@@ -34,6 +34,8 @@ target_link_options(kcall PRIVATE
 add_custom_command(
   OUTPUT kcall.prx
   COMMAND psp-prxgen $<TARGET_FILE:kcall> kcall.prx
+  COMMAND psp-fixup-imports kcall.prx
+  DEPENDS kcall
   COMMENT "Generating PRX"
 )
 

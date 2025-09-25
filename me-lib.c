@@ -207,6 +207,7 @@ int meLibDefaultInit() {
     sceKernelExitGame();
     return -3;
   }
+  kernelUnregisterMeRpc();
   return kcall(meLibInit);
 }
 

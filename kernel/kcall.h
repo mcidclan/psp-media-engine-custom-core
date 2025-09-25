@@ -5,6 +5,7 @@ extern "C" {
 #endif
   typedef int (*FCall)(void);
   int kcall(FCall const func);
+  void kernelUnregisterMeRpc();
 #ifdef __cplusplus
 }
 #endif
