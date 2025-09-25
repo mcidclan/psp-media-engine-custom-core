@@ -20,10 +20,6 @@ target_compile_options(kcall PRIVATE
   -Wall
 )
 
-target_include_directories(kcall PRIVATE 
-  $ENV{PSPDEV}/psp/sdk/include
-)
-
 target_link_options(kcall PRIVATE 
   -Wl,-q,-T$ENV{PSPDEV}/psp/sdk/lib/linkfile.prx
   -nostartfiles 

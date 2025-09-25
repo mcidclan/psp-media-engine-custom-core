@@ -9,18 +9,15 @@ int kcall(FCall const f) {
   return f();
 }
 
-void kernelUnregisterMeRpc() {
+int module_start(SceSize args, void *argp) {
   PspSysEventHandler* seh = sceKernelReferSysEventHandler();
   while (seh != NULL) {
     if (seh->name[3] == 'M' && seh->name[4] == 'e' && seh->name[5] == 'R') {
       sceKernelUnregisterSysEventHandler(seh);
-      return;
+      return 0;
     }
     seh = seh->next;
   }
-}
-
-int module_start(SceSize args, void *argp) {
   return 0;
 }
 
