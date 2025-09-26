@@ -64,8 +64,47 @@ int meLibSaveContext(void) {
     "mfhi   $k1                      \n"
     "sw     $k1, 120($k0)            \n"
     
-    // todo status
-
+    //todo:
+    // save cp1 registers if cp1 is enabled
+    "swc1     $f0, 132($k0)          \n"
+    "swc1     $f1, 136($k0)          \n"
+    "swc1     $f2, 140($k0)          \n"
+    "swc1     $f3, 144($k0)          \n"
+    "swc1     $f4, 148($k0)          \n"
+    "swc1     $f5, 152($k0)          \n"
+    "swc1     $f6, 156($k0)          \n"
+    "swc1     $f7, 160($k0)          \n"
+    "swc1     $f8, 164($k0)          \n"
+    "swc1     $f9, 168($k0)          \n"
+    "swc1     $f10, 172($k0)         \n"
+    "swc1     $f11, 176($k0)         \n"
+    "swc1     $f12, 180($k0)         \n"
+    "swc1     $f13, 184($k0)         \n"
+    "swc1     $f14, 188($k0)         \n"
+    "swc1     $f15, 192($k0)         \n"
+    "swc1     $f16, 196($k0)         \n"
+    "swc1     $f17, 200($k0)         \n"
+    "swc1     $f18, 204($k0)         \n"
+    "swc1     $f19, 208($k0)         \n"
+    "swc1     $f20, 212($k0)         \n"
+    "swc1     $f21, 216($k0)         \n"
+    "swc1     $f22, 220($k0)         \n"
+    "swc1     $f23, 224($k0)         \n"
+    "swc1     $f24, 228($k0)         \n"
+    "swc1     $f25, 232($k0)         \n"
+    "swc1     $f26, 236($k0)         \n"
+    "swc1     $f27, 240($k0)         \n"
+    "swc1     $f28, 244($k0)         \n"
+    "swc1     $f29, 248($k0)         \n"
+    "swc1     $f30, 252($k0)         \n"
+    "swc1     $f31, 256($k0)         \n"
+    "1:                              \n"
+    
+    // save status
+    "mfc0     $k1, $12               \n"
+    "sync                            \n"
+    "sw       $k1, 260($k0)          \n"
+    
     ".set pop                        \n"
     :
     : "i" (CTX_BASE)
@@ -126,7 +165,46 @@ int meLibRestoreContext(void) {
     "lw     $k1, 120($k0)            \n"
     "mthi   $k1                      \n"
     
-    // todo status
+    // restore status
+    "lw       $k1, 260($k0)          \n"
+    "mtc0     $k1, $12               \n"
+    "sync                            \n"
+    
+    //todo:
+    // restore cp1 registers if cp1 is enabled
+    "lwc1     $f0, 132($k0)          \n"
+    "lwc1     $f1, 136($k0)          \n"
+    "lwc1     $f2, 140($k0)          \n"
+    "lwc1     $f3, 144($k0)          \n"
+    "lwc1     $f4, 148($k0)          \n"
+    "lwc1     $f5, 152($k0)          \n"
+    "lwc1     $f6, 156($k0)          \n"
+    "lwc1     $f7, 160($k0)          \n"
+    "lwc1     $f8, 164($k0)          \n"
+    "lwc1     $f9, 168($k0)          \n"
+    "lwc1     $f10, 172($k0)         \n"
+    "lwc1     $f11, 176($k0)         \n"
+    "lwc1     $f12, 180($k0)         \n"
+    "lwc1     $f13, 184($k0)         \n"
+    "lwc1     $f14, 188($k0)         \n"
+    "lwc1     $f15, 192($k0)         \n"
+    "lwc1     $f16, 196($k0)         \n"
+    "lwc1     $f17, 200($k0)         \n"
+    "lwc1     $f18, 204($k0)         \n"
+    "lwc1     $f19, 208($k0)         \n"
+    "lwc1     $f20, 212($k0)         \n"
+    "lwc1     $f21, 216($k0)         \n"
+    "lwc1     $f22, 220($k0)         \n"
+    "lwc1     $f23, 224($k0)         \n"
+    "lwc1     $f24, 228($k0)         \n"
+    "lwc1     $f25, 232($k0)         \n"
+    "lwc1     $f26, 236($k0)         \n"
+    "lwc1     $f27, 240($k0)         \n"
+    "lwc1     $f28, 244($k0)         \n"
+    "lwc1     $f29, 248($k0)         \n"
+    "lwc1     $f30, 252($k0)         \n"
+    "lwc1     $f31, 256($k0)         \n"
+    "1:                              \n"
     
     // restore k0 and k1 (optional)
     "lw     $k1, 128($k0)            \n"
