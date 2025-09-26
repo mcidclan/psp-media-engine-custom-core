@@ -6,7 +6,7 @@
 
 // Experimental sample
 
-PSP_MODULE_INFO("me-dsp-exp", 0, 1, 1);
+PSP_MODULE_INFO("me-exp", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
@@ -26,10 +26,10 @@ void meLibOnProcess(void) {
 
 static void meWaitExit() {
   meExit = 1;
+  u8 retry = 0;
   do {
-    meLibDelayPipeline();
-    meLibSync();
-  } while (meExit < 2);
+    sceKernelDelayThread(100000);
+  } while (meExit < 2 && ++retry <= 5);
 }
 
 int main() {
@@ -37,7 +37,7 @@ int main() {
   meLibDefaultInit();
     
   pspDebugScreenSetXY(1, 1);
-  pspDebugScreenPrintf("Me DSP/VME Experimental");
+  pspDebugScreenPrintf("Me Experimental");
   
   SceCtrlData ctl;
   do {
@@ -48,8 +48,6 @@ int main() {
   } while (!(ctl.Buttons & PSP_CTRL_HOME));
   
   meWaitExit();
-  
-  sceKernelDelayThread(1000000);
   sceKernelExitGame();
   
   return 0;

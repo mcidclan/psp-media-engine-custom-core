@@ -189,12 +189,12 @@ extern unsigned int kcall_module_size;
 int writePrx(void* start, int size) {
   SceUID fd = sceIoOpen(PRX_FILE, PSP_O_WRONLY | PSP_O_CREAT, 0777);
   if (fd < 0) {
-      return -1;
+    return -1;
   }
   int _size = sceIoWrite(fd, start, size);
   sceIoClose(fd);
   if (_size != size) {
-      return -1;
+    return -1;
   }
   return 0;
 }

@@ -62,9 +62,10 @@ static void meWaitExit() {
   meLibCallHwMutexUnlock();
   // wait the me to exit
   meExit = 1;
+  u8 retry = 0;
   do {
-    asm volatile("sync");
-  } while (meExit < 2);
+    sceKernelDelayThread(100000);
+  } while (meExit < 2 && ++retry <= 5);
 }
 
 int main() {

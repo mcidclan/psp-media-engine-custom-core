@@ -74,10 +74,10 @@ void meLibOnProcess(void) {
 
 static void meWaitExit() {
   meExit = 1;
+  u8 retry = 0;
   do {
-    meLibDelayPipeline();
-    meLibSync();
-  } while (meExit < 2);
+    sceKernelDelayThread(100000);
+  } while (meExit < 2 && ++retry <= 5);
 }
 
 int main() {
@@ -109,8 +109,6 @@ int main() {
   } while (!(ctl.Buttons & PSP_CTRL_HOME));
   
   meWaitExit();
-  
-  sceKernelDelayThread(1000000);
   sceKernelExitGame();
   
   return 0;
