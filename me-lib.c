@@ -5,13 +5,14 @@ __attribute__((weak)) void meLibOnExternalInterrupt(void) {
 
 __attribute__((weak)) void meLibOnException(void) {
 }
-
+/*
 __attribute__((noinline, aligned(4)))
 int meLibSaveContext(void) {
   const u32 CTX_BASE = ME_HANDLER_BASE + 0xC00;
   asm volatile(
     ".set push                       \n"
     ".set noreorder                  \n"
+    ".set volatile                   \n"
     ".set noat                       \n"
     
     "sw     $k0, -4($sp)             \n"
@@ -64,8 +65,15 @@ int meLibSaveContext(void) {
     "mfhi   $k1                      \n"
     "sw     $k1, 120($k0)            \n"
     
-    //todo:
-    // save cp1 registers if cp1 is enabled
+    // get status and check if cp1 is enabled
+    "mfc0     $k1, $12               \n"
+    "sync                            \n"
+    "lui      $t0, 0x2000            \n"
+    "and      $t0, $k1, $t0          \n"
+    "beqz     $t0, 1f                \n"
+    "nop                             \n"
+
+    // save cp1 registers
     "swc1     $f0, 132($k0)          \n"
     "swc1     $f1, 136($k0)          \n"
     "swc1     $f2, 140($k0)          \n"
@@ -101,14 +109,12 @@ int meLibSaveContext(void) {
     "1:                              \n"
     
     // save status
-    "mfc0     $k1, $12               \n"
-    "sync                            \n"
     "sw       $k1, 260($k0)          \n"
     
     ".set pop                        \n"
     :
     : "i" (CTX_BASE)
-    : "$k0", "$k1", "memory"
+    : "$k0", "$k1", "$t0", "memory"
   );
   
   return 0;
@@ -120,6 +126,7 @@ int meLibRestoreContext(void) {
     asm volatile(
     ".set push                       \n"
     ".set noreorder                  \n"
+    ".set volatile                   \n"
     ".set noat                       \n"
     
     // load CTX_BASE into $k0
@@ -218,6 +225,7 @@ int meLibRestoreContext(void) {
   
   return 0;
 }
+*/
 
 __attribute__((noinline, aligned(4)))
 static void meLibExceptionHandleExternalInterrupt(void) {

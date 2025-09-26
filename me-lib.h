@@ -68,6 +68,8 @@ extern void meLibOnProcess(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
+  extern void meLiSaveContext(void);
+  extern void meLibRestoreContext(void);
   extern void meLibOnExternalInterrupt(void);
   extern void meLibOnException(void);
   int  meLibDefaultInit();

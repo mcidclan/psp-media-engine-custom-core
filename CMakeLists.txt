@@ -36,6 +36,7 @@ add_custom_target(kcall_files DEPENDS kcall.S kcall.module.o)
 add_library(me-core STATIC
   me-lib.c
   me-core-mapping.c
+  context.S
   ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
   ${CMAKE_CURRENT_BINARY_DIR}/kcall.module.o
 )
