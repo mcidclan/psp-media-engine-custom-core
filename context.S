@@ -13,7 +13,7 @@ meLibSaveContext:
   // load CTX_BASE into $k0
   lui    $k0, %hi(CTX_BASE)
   ori    $k0, $k0, %lo(CTX_BASE)
-      
+  
   // save k0 and k1 (optional)
   sw     $k1, 128($k0)
   lw     $k1, -4($sp)
@@ -108,8 +108,8 @@ meLibSaveContext:
   jr     $ra
   nop
   .end   meLibSaveContext
-
-
+  
+  
 .globl meLibRestoreContext
 .ent   meLibRestoreContext
 meLibRestoreContext:
@@ -121,7 +121,7 @@ meLibRestoreContext:
   // load CTX_BASE into $k0
   lui    $k0, %hi(CTX_BASE)
   ori    $k0, $k0, %lo(CTX_BASE)
-
+  
   // restore context
   lw     $at, 0($k0)              // $1
   lw     $v0, 4($k0)              // $2
@@ -154,20 +154,25 @@ meLibRestoreContext:
   lw     $sp, 104($k0)            // $29
   lw     $fp, 108($k0)            // $30
   lw     $ra, 112($k0)            // $31
-
+  
   // restore hi and lo
   lw     $k1, 116($k0)
   mtlo   $k1
   lw     $k1, 120($k0)
   mthi   $k1
-
+  
   // restore status
   lw       $k1, 260($k0)
   mtc0     $k1, $12
   sync
-
-  //todo:
-  // restore cp1 registers if cp1 is enabled
+  
+  // check if cp1 is enabled
+  lui      $t0, 0x2000
+  and      $t0, $k1, $t0
+  beqz     $t0, 1f
+  nop
+  
+  // restore cp1 registers
   lwc1     $f0, 132($k0)
   lwc1     $f1, 136($k0)
   lwc1     $f2, 140($k0)
@@ -201,15 +206,17 @@ meLibRestoreContext:
   lwc1     $f30, 252($k0)
   lwc1     $f31, 256($k0)
   1:
-
+  
   // restore k0 and k1 (optional)
   lw     $k1, 128($k0)
   lw     $k0, 124($k0)
-
+  
   .set pop
   jr     $ra
   nop
-
+  
 .end   meLibRestoreContext
 
 .equ CTX_BASE, 0xbfc00000 + 0xc00
+
+
