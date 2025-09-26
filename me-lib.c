@@ -7,6 +7,141 @@ __attribute__((weak)) void meLibOnException(void) {
 }
 
 __attribute__((noinline, aligned(4)))
+int meLibSaveContext(void) {
+  const u32 CTX_BASE = ME_HANDLER_BASE + 0xC00;
+  asm volatile(
+    ".set push                       \n"
+    ".set noreorder                  \n"
+    ".set noat                       \n"
+    
+    "sw     $k0, -4($sp)             \n"
+    
+    // load CTX_BASE into $k0
+    "lui    $k0, %%hi(%0)             \n"
+    "ori    $k0, $k0, %%lo(%0)        \n"
+        
+    // save k0 and k1 (optional)
+    "sw     $k1, 128($k0)            \n"
+    "lw     $k1, -4($sp)             \n"
+    "sw     $k1, 124($k0)            \n"
+    
+    // save context
+    "sw     $at, 0($k0)              \n"   // $1
+    "sw     $v0, 4($k0)              \n"   // $2
+    "sw     $v1, 8($k0)              \n"   // $3
+    "sw     $a0, 12($k0)             \n"   // $4
+    "sw     $a1, 16($k0)             \n"   // $5
+    "sw     $a2, 20($k0)             \n"   // $6
+    "sw     $a3, 24($k0)             \n"   // $7
+    "sw     $t0, 28($k0)             \n"   // $8
+    "sw     $t1, 32($k0)             \n"   // $9
+    "sw     $t2, 36($k0)             \n"   // $10
+    "sw     $t3, 40($k0)             \n"   // $11
+    "sw     $t4, 44($k0)             \n"   // $12
+    "sw     $t5, 48($k0)             \n"   // $13
+    "sw     $t6, 52($k0)             \n"   // $14
+    "sw     $t7, 56($k0)             \n"   // $15
+    "sw     $s0, 60($k0)             \n"   // $16
+    "sw     $s1, 64($k0)             \n"   // $17
+    "sw     $s2, 68($k0)             \n"   // $18
+    "sw     $s3, 72($k0)             \n"   // $19
+    "sw     $s4, 76($k0)             \n"   // $20
+    "sw     $s5, 80($k0)             \n"   // $21
+    "sw     $s6, 84($k0)             \n"   // $22
+    "sw     $s7, 88($k0)             \n"   // $23
+    "sw     $t8, 92($k0)             \n"   // $24
+    "sw     $t9, 96($k0)             \n"   // $25
+    // skip $k0                            // $26
+    // skip $k1                            // $27
+    "sw     $gp, 100($k0)            \n"   // $28
+    "sw     $sp, 104($k0)            \n"   // $29
+    "sw     $fp, 108($k0)            \n"   // $30
+    "sw     $ra, 112($k0)            \n"   // $31
+    
+    // save hi and lo
+    "mflo   $k1                      \n"
+    "sw     $k1, 116($k0)            \n"
+    "mfhi   $k1                      \n"
+    "sw     $k1, 120($k0)            \n"
+    
+    // todo status
+
+    ".set pop                        \n"
+    :
+    : "i" (CTX_BASE)
+    : "$k0", "$k1", "memory"
+  );
+  
+  return 0;
+}
+
+__attribute__((noinline, aligned(4)))
+int meLibRestoreContext(void) {
+  const u32 CTX_BASE = ME_HANDLER_BASE + 0xC00;
+    asm volatile(
+    ".set push                       \n"
+    ".set noreorder                  \n"
+    ".set noat                       \n"
+    
+    // load CTX_BASE into $k0
+    "lui    $k0, %%hi(%0)             \n"
+    "ori    $k0, $k0, %%lo(%0)        \n"
+    
+    // restore context
+    "lw     $at, 0($k0)              \n"   // $1
+    "lw     $v0, 4($k0)              \n"   // $2
+    "lw     $v1, 8($k0)              \n"   // $3
+    "lw     $a0, 12($k0)             \n"   // $4
+    "lw     $a1, 16($k0)             \n"   // $5
+    "lw     $a2, 20($k0)             \n"   // $6
+    "lw     $a3, 24($k0)             \n"   // $7
+    "lw     $t0, 28($k0)             \n"   // $8
+    "lw     $t1, 32($k0)             \n"   // $9
+    "lw     $t2, 36($k0)             \n"   // $10
+    "lw     $t3, 40($k0)             \n"   // $11
+    "lw     $t4, 44($k0)             \n"   // $12
+    "lw     $t5, 48($k0)             \n"   // $13
+    "lw     $t6, 52($k0)             \n"   // $14
+    "lw     $t7, 56($k0)             \n"   // $15
+    "lw     $s0, 60($k0)             \n"   // $16
+    "lw     $s1, 64($k0)             \n"   // $17
+    "lw     $s2, 68($k0)             \n"   // $18
+    "lw     $s3, 72($k0)             \n"   // $19
+    "lw     $s4, 76($k0)             \n"   // $20
+    "lw     $s5, 80($k0)             \n"   // $21
+    "lw     $s6, 84($k0)             \n"   // $22
+    "lw     $s7, 88($k0)             \n"   // $23
+    "lw     $t8, 92($k0)             \n"   // $24
+    "lw     $t9, 96($k0)             \n"   // $25
+    // skip $k0                            // $26
+    // skip $k1                            // $27
+    "lw     $gp, 100($k0)            \n"   // $28
+    "lw     $sp, 104($k0)            \n"   // $29
+    "lw     $fp, 108($k0)            \n"   // $30
+    "lw     $ra, 112($k0)            \n"   // $31
+    
+    // restore hi and lo
+    "lw     $k1, 116($k0)            \n"
+    "mtlo   $k1                      \n"
+    "lw     $k1, 120($k0)            \n"
+    "mthi   $k1                      \n"
+    
+    // todo status
+    
+    // restore k0 and k1 (optional)
+    "lw     $k1, 128($k0)            \n"
+    "lw     $k0, 124($k0)            \n"
+    
+    ".set pop                        \n"
+    :
+    : "i" (CTX_BASE)
+    : "memory"
+  );
+  
+  return 0;
+}
+
+__attribute__((noinline, aligned(4)))
 static void meLibExceptionHandleExternalInterrupt(void) {
   asm volatile(  
     ".set noreorder                  \n"
