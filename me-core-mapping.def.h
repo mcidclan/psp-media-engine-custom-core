@@ -81,7 +81,20 @@
   {0x00000af0, 0x00000000}, // u32   _meCoreGenerate2DBlockFromQuad(/*Quad*/u32 *buff)
                             // typedef struct { u32 width; u32 height; u32 unk2; void* src0; void* src1; void* dst0; void* dst1; void* src2; void* src3; void* dst2; void* dst3; void* dst; void* inter0; void* inter1; } Quad;
 
-  {0x00038d6c, 0x00000000}, // u32 _meCoreIsIndexValidFor(u32 index, u32* in)
-  {0x00039d04, 0x00000000}, // u32 _meCoreGetIndexedValueFor(int index, u32 *out, void *in)
+  {0x00038d6c, 0x00000000}, // u32   _meCoreIsIndexValidFor(u32 index, u32* in)
+  {0x00039d04, 0x00000000}, // u32   _meCoreGetIndexedValueFor(int index, u32 *out, void *in)
+  
+  {0x0006e854, 0x00000000}, // void  _meCoreAllocateSlotFrom(/*SlotPool*/u32 **slotPool, u32 index)
+  {0x0006f098, 0x00000000}, // u32*  _meCoreAllocateSlot(/*SlotPool*/u32 *slotPool)
+                            // typedef struct { u32 unk0; u32 unk1; u32 unk2; u32 count; /*0x0c*/ u32 unk4; u32 **slots; /*0x14*/ } SlotPool;
+
+  // todo: review
+  {0x000230f4, 0x00000000}, // void  _meCoreConfigureReverbEffect(u32* reverbState, u32 config);
+  {0x00023494, 0x00000000}, // u32*  _meCoreProcessReverbEffectSamples(u32** effectState, u2 *in, u32 *out)
+  {0x00021e3c, 0x00000000}, // u32*  _meCoreProcessMultiChannelAudio(u32 *output, /*AudioMixer*/u32 *mixer, int effect)
+  {0x00021cd4, 0x00000000}, // int   _meCoreProcessAudioMixer(/*AudioMixer*/u32 *mixer, u32 *output, u32 config)
+                          // typedef struct {u8  blockCount; /*0x8*/ u8  effectsEnabled; /*0x9*/ AudioChannel channels[32]; /*0x714*/ u32 channelMask; /*0xe14*/ u16  global1; /*0xe1a*/ u16  global2; /*0x387*4*/ u16  config; /*0x386*4*/ u32* reverbEffect; } AudioMixer;
+
+
 
 }
