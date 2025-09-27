@@ -45,12 +45,15 @@ meLibSaveContext:
   sw     $s7, 88($k0)             // $23
   sw     $t8, 92($k0)             // $24
   sw     $t9, 96($k0)             // $25
-  // skip $k0                            // $26
-  // skip $k1                            // $27
+  // skip $k0                     // $26
+  // skip $k1                     // $27
   sw     $gp, 100($k0)            // $28
   sw     $sp, 104($k0)            // $29
   sw     $fp, 108($k0)            // $30
-  sw     $ra, 112($k0)            // $31
+  
+  mfc0   $k1, $14
+  sw     $k1, 112($k0)            // $31
+//sw     $ra, 112($k0)            // $31
   
   // save hi and lo
   mflo   $k1
@@ -108,8 +111,9 @@ meLibSaveContext:
   jr     $ra
   nop
   .end   meLibSaveContext
-  
-  
+
+
+
 .globl meLibRestoreContext
 .ent   meLibRestoreContext
 meLibRestoreContext:
@@ -153,7 +157,11 @@ meLibRestoreContext:
   lw     $gp, 100($k0)            // $28
   lw     $sp, 104($k0)            // $29
   lw     $fp, 108($k0)            // $30
-  lw     $ra, 112($k0)            // $31
+  
+//lw     $ra, 112($k0)            // $31
+  lw     $k1, 112($k0)            // $31
+  mtc0   $k1, $14
+  sync
   
   // restore hi and lo
   lw     $k1, 116($k0)
@@ -161,7 +169,7 @@ meLibRestoreContext:
   lw     $k1, 120($k0)
   mthi   $k1
   
-  // restore status
+  // restore status (for the next check and cp1 restore process)
   lw       $k1, 260($k0)
   mtc0     $k1, $12
   sync
@@ -217,6 +225,6 @@ meLibRestoreContext:
   
 .end   meLibRestoreContext
 
-.equ CTX_BASE, 0xbfc00000 + 0xc00
+.equ CTX_BASE, (0xbfc00000 + 0x100)
 
 

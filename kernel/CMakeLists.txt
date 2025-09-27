@@ -21,8 +21,9 @@ target_compile_options(kcall PRIVATE
 )
 
 target_link_options(kcall PRIVATE 
-  -Wl,-q,-T$ENV{PSPDEV}/psp/sdk/lib/linkfile.prx
-  -nostartfiles 
+  -nostartfiles
+  -Wl,-q
+  -Wl,-T$ENV{PSPDEV}/psp/sdk/lib/linkfile.prx
   -Wl,-zmax-page-size=128
   -Wl,--strip-all
 )

@@ -6,6 +6,12 @@ __attribute__((weak)) void meLibOnExternalInterrupt(void) {
 __attribute__((weak)) void meLibOnException(void) {
 }
 
+__attribute__((weak)) void meLibOnSleep(void) {
+}
+
+__attribute__((weak)) void meLibOnWake(void) {
+}
+
 __attribute__((noinline, aligned(4)))
 static void meLibExceptionHandleExternalInterrupt(void) {
   asm volatile(  
@@ -174,8 +180,10 @@ static inline int meLibInit() {
   }
   meCoreSelectSystemTable(tableId);
   #define me_section_size (&__stop__me_section - &__start__me_section)
-  memcpy((void *)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
+  memcpy((void*)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
   sceKernelDcacheWritebackInvalidateAll();
+  // const u32 me_section_size_64 = (me_section_size + 63) & ~63;
+  // sceKernelDcacheWritebackRange((void*)ME_HANDLER_BASE, me_section_size_64);
   HW_SYS_RESET_ENABLE = 0x04;
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
@@ -199,10 +207,24 @@ int writePrx(void* start, int size) {
   return 0;
 }
 
+int eventHandler(int eventId) {
+  switch (eventId) {
+    case 0x00000210:
+      meLibOnSleep();
+    break;
+    case 0x00400000:
+      meLibOnWake();
+    break;
+  }
+  
+  return 0;
+}
+
 int meLibDefaultInit() {
   if(writePrx(&kcall_module_start, (int)&kcall_module_size) < 0) {
     return -3;
   }
+  hw(0x40010000) = (u32)eventHandler;
   if (pspSdkLoadStartModule(PRX_FILE, PSP_MEMORY_PARTITION_KERNEL) < 0){
     sceKernelExitGame();
     return -3;

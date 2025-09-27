@@ -20,6 +20,7 @@
 #define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop; sync;")
 #define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexTryLock)))
 #define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexUnlock)))
+#define meLibEmitSoftwareInterrupt()      (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreEmitSoftwareInterrupt)))
 
 #define meLibSetSharedUncachedMem(size) \
   static volatile u32 _meLibSharedMemory[(size)] __attribute__((aligned(64), section(".uncached"))) = {0}; \
@@ -68,10 +69,12 @@ extern void meLibOnProcess(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
-  extern void meLiSaveContext(void);
+  extern void meLibSaveContext(void);
   extern void meLibRestoreContext(void);
   extern void meLibOnExternalInterrupt(void);
   extern void meLibOnException(void);
+  extern void meLibOnSleep(void);
+  extern void meLibOnWake(void);
   int  meLibDefaultInit();
   void meLibExceptionHandlerInit();
   void meLibGetUncached32(volatile u32** const mem, const u32 size);
