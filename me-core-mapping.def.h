@@ -7,7 +7,13 @@
   {0x00000618, 0x00000000}, // int  _meCoreUnknown_00000618(u32, u32, u32, u32)   // _meCoreDMACPrimMuxUnknown_00000618
   {0x00000708, 0x00000000}, // void _meCoreUnknown_00000708(u32, u32, u32, u32, u32, u32, u32, u32)
   {0x00000948, 0x00000000}, // int  _meCoreUnknown_00000948()                     // _meCoreDspActivateAndSync() ?
+  {0x00000af0, 0x00000000}, // u32   _meCoreGenerate2DBlockFromQuad(/*Quad*/u32 *buff)
+  {0x00000c08, 0x00000000}, // int   _meCoreGetDualBuffers(u32 width, u32 height, u32 *buff0, u32 *buff1) // width = width or width | mode (16 [0b10000])
+  {0x00000c64, 0x00000000}, // void  _meCoreCopy2DMemoryBlock(/*Quad*/u32 *buff, void *src, u32 height, u32 destX, u32 destY, u32 stride, u32 extra) // extra et to one adds a padding ? 
+  {0x00000dbc, 0x00000000}, // void  _meCoreInterleave2DBlockPixelData(/*Quad*/u32 *buff, void *src, u32 height, u32 destX, u32 destX, u32 stride, u32 extra)
+  {0x00001054, 0x00000000}, // u32   _meCoreCompose2DBlockFromQuad(/*Quad*/u32 *buff)
 
+  {0x000018c4, 0x00000000}, // void  _meCoreBusClockAWEdramEnable(void)
   {0x000018fc, 0x00000000}, // void _meCoreBusClockEnableDMACPrimMux()
   {0x00001918, 0x00000000}, // int  _meCoreBusClockPreserveDMACPrimMux()
   {0x0000196c, 0x00000000}, // void _meCoreBusClockEnableKirk(void)               // _meCoreBusClockEnableDSP(void) ?
@@ -28,27 +34,28 @@
   {0x00020ca8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x002(void)         // init
   {0x00020cb8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x008(void)         // ?
   {0x00020cc8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x003(void)         // ?
-  {0x00020cd8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start
-  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimarySetupBuffers(void)          // why ?
+  {0x00020cd8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start  
+  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimaryTransferUnknown_00020ce8(void)          // why ? // void  _meCoreDMACPrimarySetupBuffers(void)
+  
   {0x000210b4, 0x00000000}, // void _meCoreDMACPrimaryProcessUnknown_000210b4(u32 memSrc, u32 bufSrc, u32 blockCount, u32 lastBlockIndex, u32 memDst, u32 bufDstLow, u32 bufDstHigh, u32 dstCount) // not sure
   {0x00021168, 0x00000000}, // void _meCoreDMACPrimMuxWaitStatus(u32)
   {0x000212cc, 0x00000000}, // u32* _meCoreMemcpy(u32*, u32*, u32)                // dst, src, size
   {0x00021338, 0x00000000}, // u32* _meCoreMemset(u32*, u32, u32)                 // dst, value, size
+
+  {0x00021614, 0x00000000}, // void* _meCoreEDRAMAlloc(u32) // from 0x00180000 on slim
+  {0x000216f8, 0x00000000}, // u32   _meCoreEDRAMFree(void*)
+
   {0x00021884, 0x00000000}, // int  _meCoreUnknown_00021884
 
-  // thread related ?
-  {0x00021910, 0x00000000}, // int  _meCorePriorityQueueInsert(u32,u32, int*)
-  {0x00021910, 0x00000000}, // u32  _meCoreRequest32PoolsBlockAllocation(u32 index, u32 priority, int* status)
-  {0x000219b4, 0x00000000}, // u32  _meCorePriorityQueueDefaultInit(void)
-  {0x000219b4, 0x00000000}, // void _meCoreInit32PoolsMemory(void)
-  {0x00021a30, 0x00000000}, // int  _meCorePriorityQueueDispatch(void)
-  {0x00021a30, 0x00000000}, // void _meCoreUpdate32PoolsMemory(void)
+  // task related ?
+  {0x00021910, 0x00000000}, // u32  _meCore32PoolsEnqueueEntry(u32 index, u32 priority, int* status)  
+  {0x000219b4, 0x00000000}, // void _meCore32PoolsInitMemory(void)
+  {0x00021a30, 0x00000000}, // int  _meCore32PoolsUpdateDispatchQueues(void)
 
   {0x00021ad8, 0x00000000}, // int  _meCoreInterruptSetMask(u32)
   {0x00021ae4, 0x00000000}, // int  _meCoreInterruptClearMask(void)
   {0x00021af4, 0x00000000}, // int  _meCoreInterruptSetMask_2(u32)
-  {0x00021b34, 0x00000000}, // int  _meCoreExceptionInitHandlers(void)
-  {0x00021b34, 0x00000000}, // u64  _meCoreSetupHandlers(void)
+  {0x00021b34, 0x00000000}, // u64  _meCoreExceptionInitHandlers(void)
   {0x00021b7c, 0x00000000}, // int  _meCorePriorityQueueDefaultInsert(void)
   {0x00021bbc, 0x00000000}, // int  _meCoreEmitSoftwareInterrupt(void)
 
@@ -58,9 +65,24 @@
   {0x00021c20, 0x00013294}, // u32  _meCoreHwMutexAtomicRead(u32*)                          // target
   {0x00021c6c, 0x000132e0}, // u32  _meCoreHwMutexAtomicWrite(u32*, u32, u32)               // target, mask, value
 
+  {0x00021cd4, 0x00000000}, // int   _meCoreProcessAudioMixer(/*AudioMixer*/u32 *mixer, u32 *output, u32 config)
+  {0x00021e3c, 0x00000000}, // u32*  _meCoreProcessMultiChannelAudio(u32 *output, /*AudioMixer*/u32 *mixer, int effect)
+
+  // todo: review
+  {0x000230f4, 0x00000000}, // void  _meCoreConfigureReverbEffect(u32* reverbState, u32 config);
+  {0x00023494, 0x00000000}, // u32*  _meCoreProcessReverbEffectSamples(u32** effectState, u2 *in, u32 *out)
+
+  {0x00038d6c, 0x00000000}, // u32   _meCoreIsIndexValidFor(u32 index, u32* in)
+  {0x00039d04, 0x00000000}, // u32   _meCoreGetIndexedValueFor(int index, u32 *out, void *in)
+
   {0x00065908, 0x00000000}, // u32  _meCoreCheckAndCopy164bytesFromOffset0x8308(u32, u32)   // ??
   {0x00065a10, 0x00000000}, // bool _meCoreCheck0xdec264(u32*)                              // what is the purpose ?
   {0x00066804, 0x00000000}, // u32  _meCoreCopy164bytesFromOffset0x8308(u32, u32*)          // ??
+
+  {0x0006e854, 0x00000000}, // void  _meCoreAllocateSlotFrom(/*SlotPool*/u32 **slotPool, u32 index)
+  {0x0006f098, 0x00000000}, // u32*  _meCoreAllocateSlot(/*SlotPool*/u32 *slotPool)
+  
+  // typedef struct { u32 unk0; u32 unk1; u32 unk2; u32 count; /*0x0c*/ u32 unk4; u32 **slots; /*0x14*/ } SlotPool;
 
   // cache
   {0x0008bc10, 0x0007b3bc}, // int  _meCoreDcacheWritebackInvalidateAll(void)
@@ -70,31 +92,9 @@
   {0x0008be64, 0x00000000}, // int  _meCoreDecompressKL4E(byte *out, int size, char *in, u32 *cursor)
 
   // wip
-  {0x00020ce8, 0x00000000}, // void  _meCoreDMACPrimaryTransferUnknown_00020ce8(void)
-  {0x000018c4, 0x00000000}, // void  _meCoreBusClockAWEdramEnable(void)
-  {0x00021614, 0x00000000}, // void* _meCoreEDRAMAlloc(u32) // from 0x00180000 on slim
-  {0x000216f8, 0x00000000}, // u32   _meCoreEDRAMFree(void*)
-  {0x00000c08, 0x00000000}, // int   _meCoreGetDualBuffers(u32 width, u32 height, u32 *buff0, u32 *buff1) // width = width or width | mode (16 [0b10000])
-  {0x00000c64, 0x00000000}, // void  _meCoreCopy2DMemoryBlock(/*Quad*/u32 *buff, void *src, u32 height, u32 destX, u32 destY, u32 stride, u32 extra) // extra et to one adds a padding ? 
-  {0x00000dbc, 0x00000000}, // void  _meCoreInterleave2DBlockPixelData(/*Quad*/u32 *buff, void *src, u32 height, u32 destX, u32 destX, u32 stride, u32 extra)
-  {0x00001054, 0x00000000}, // u32   _meCoreCompose2DBlockFromQuad(/*Quad*/u32 *buff)
-  {0x00000af0, 0x00000000}, // u32   _meCoreGenerate2DBlockFromQuad(/*Quad*/u32 *buff)
-                            // typedef struct { u32 width; u32 height; u32 unk2; void* src0; void* src1; void* dst0; void* dst1; void* src2; void* src3; void* dst2; void* dst3; void* dst; void* inter0; void* inter1; } Quad;
-
-  {0x00038d6c, 0x00000000}, // u32   _meCoreIsIndexValidFor(u32 index, u32* in)
-  {0x00039d04, 0x00000000}, // u32   _meCoreGetIndexedValueFor(int index, u32 *out, void *in)
+  {0x000218a8, 0x00000000}, // int  _meCoreEDRAMAllocWords(uint count, uint size)
   
-  {0x0006e854, 0x00000000}, // void  _meCoreAllocateSlotFrom(/*SlotPool*/u32 **slotPool, u32 index)
-  {0x0006f098, 0x00000000}, // u32*  _meCoreAllocateSlot(/*SlotPool*/u32 *slotPool)
-                            // typedef struct { u32 unk0; u32 unk1; u32 unk2; u32 count; /*0x0c*/ u32 unk4; u32 **slots; /*0x14*/ } SlotPool;
-
-  // todo: review
-  {0x000230f4, 0x00000000}, // void  _meCoreConfigureReverbEffect(u32* reverbState, u32 config);
-  {0x00023494, 0x00000000}, // u32*  _meCoreProcessReverbEffectSamples(u32** effectState, u2 *in, u32 *out)
-  {0x00021e3c, 0x00000000}, // u32*  _meCoreProcessMultiChannelAudio(u32 *output, /*AudioMixer*/u32 *mixer, int effect)
-  {0x00021cd4, 0x00000000}, // int   _meCoreProcessAudioMixer(/*AudioMixer*/u32 *mixer, u32 *output, u32 config)
-                          // typedef struct {u8  blockCount; /*0x8*/ u8  effectsEnabled; /*0x9*/ AudioChannel channels[32]; /*0x714*/ u32 channelMask; /*0xe14*/ u16  global1; /*0xe1a*/ u16  global2; /*0x387*4*/ u16  config; /*0x386*4*/ u32* reverbEffect; } AudioMixer;
-
-
+  // typedef struct { u32 width; u32 height; u32 unk2; void* src0; void* src1; void* dst0; void* dst1; void* src2; void* src3; void* dst2; void* dst3; void* dst; void* inter0; void* inter1; } Quad;
+  // typedef struct {u8  blockCount; /*0x8*/ u8  effectsEnabled; /*0x9*/ AudioChannel channels[32]; /*0x714*/ u32 channelMask; /*0xe14*/ u16  global1; /*0xe1a*/ u16  global2; /*0x387*4*/ u16  config; /*0x386*4*/ u32* reverbEffect; } AudioMixer;
 
 }
