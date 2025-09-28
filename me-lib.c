@@ -182,7 +182,7 @@ static inline int meLibInit() {
   #define me_section_size (&__stop__me_section - &__start__me_section)
   memcpy((void*)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
   sceKernelDcacheWritebackInvalidateAll();
-  // const u32 me_section_size_64 = (me_section_size + 63) & ~63;
+  // const u32Me me_section_size_64 = (me_section_size + 63) & ~63;
   // sceKernelDcacheWritebackRange((void*)ME_HANDLER_BASE, me_section_size_64);
   HW_SYS_RESET_ENABLE = 0x04;
   HW_SYS_RESET_ENABLE = 0x00;
@@ -224,7 +224,7 @@ int meLibDefaultInit() {
   if(writePrx(&kcall_module_start, (int)&kcall_module_size) < 0) {
     return -3;
   }
-  hw(0x40010000) = (u32)eventHandler;
+  hw(0x40010000) = (u32Me)eventHandler;
   if (pspSdkLoadStartModule(PRX_FILE, PSP_MEMORY_PARTITION_KERNEL) < 0){
     sceKernelExitGame();
     return -3;
@@ -232,14 +232,14 @@ int meLibDefaultInit() {
   return kcall(meLibInit);
 }
 
-void meLibGetUncached32(volatile u32** const mem, const u32 size) {
+void meLibGetUncached32(volatile u32Me** const mem, const u32Me size) {
   static void* _base = NULL;
   if (!_base) {
-    const u32 byteCount = size * 4;
+    const u32Me byteCount = size * 4;
     _base = memalign(16, byteCount);
     memset(_base, 0, byteCount);
     sceKernelDcacheWritebackInvalidateAll();
-    *mem = (u32*)(UNCACHED_USER_MASK | (u32)_base);
+    *mem = (u32Me*)(UNCACHED_USER_MASK | (u32Me)_base);
     __asm__ volatile (
       "cache 0x1b, 0(%0)  \n"
       "sync               \n"

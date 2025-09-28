@@ -18,37 +18,37 @@
 // Lib
 #define meLibSync()                       asm volatile("sync")
 #define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop; sync;")
-#define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexTryLock)))
-#define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreHwMutexUnlock)))
-#define meLibEmitSoftwareInterrupt()      (kcall((FCall)(CACHED_KERNEL_MASK | (u32)meCoreEmitSoftwareInterrupt)))
+#define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreHwMutexTryLock)))
+#define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreHwMutexUnlock)))
+#define meLibEmitSoftwareInterrupt()      (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreEmitSoftwareInterrupt)))
 
 #define meLibSetSharedUncachedMem(size) \
-  static volatile u32 _meLibSharedMemory[(size)] __attribute__((aligned(64), section(".uncached"))) = {0}; \
-  volatile u32* const meLibSharedMemory __attribute__((aligned(64), section(".uncached"))) = \
-    (volatile u32*)(UNCACHED_USER_MASK | (u32)_meLibSharedMemory)
+  static volatile u32Me _meLibSharedMemory[(size)] __attribute__((aligned(64), section(".uncached"))) = {0}; \
+  volatile u32Me* const meLibSharedMemory __attribute__((aligned(64), section(".uncached"))) = \
+    (volatile u32Me*)(UNCACHED_USER_MASK | (u32Me)_meLibSharedMemory)
 
 #define meLibMakeUncachedMem(name, size) \
-  volatile u32 name[(size)] __attribute__((aligned(64), section(".uncached"))) = {0};
+  volatile u32Me name[(size)] __attribute__((aligned(64), section(".uncached"))) = {0};
 
-#define meLibMakeUncachedVar(name, mask) ((volatile u32* const)((mask) | (u32)name))
+#define meLibMakeUncachedVar(name, mask) ((volatile u32Me* const)((mask) | (u32Me)name))
 
 inline void meLibHalt() {
   asm volatile(".word 0x70000000");
 }
 
 static inline void meLibUnlockHwUserRegisters() {
-  const u32 START = 0xbc000030;
-  const u32 END   = 0xbc000044;
-  for(u32 reg = START; reg <= END; reg+=4) {
+  const u32Me START = 0xbc000030;
+  const u32Me END   = 0xbc000044;
+  for(u32Me reg = START; reg <= END; reg+=4) {
     hw(reg) = -1;
   }
   meLibSync();
 }
 
 static inline void meLibUnlockMemory() {
-  const u32 START = 0xbc000000;
-  const u32 END   = 0xbc00002c;
-  for(u32 reg = START; reg <= END; reg+=4) {
+  const u32Me START = 0xbc000000;
+  const u32Me END   = 0xbc00002c;
+  for(u32Me reg = START; reg <= END; reg+=4) {
     hw(reg) = -1;
   }
   meLibSync();
@@ -77,7 +77,7 @@ extern "C" {
   extern void meLibOnWake(void);
   int  meLibDefaultInit();
   void meLibExceptionHandlerInit();
-  void meLibGetUncached32(volatile u32** const mem, const u32 size);
+  void meLibGetUncached32(volatile u32Me** const mem, const u32Me size);
 #ifdef __cplusplus
 }
 #endif

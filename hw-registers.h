@@ -1,11 +1,11 @@
 #ifndef HW_REGISTERS_H
 #define HW_REGISTERS_H
 
-#define u32                               unsigned int
+#define u32Me                             unsigned int
 
-#define hwp                               volatile u32*
+#define hwp                               volatile u32Me*
 #define hw(addr)                          (*((hwp)(addr)))
-#define uhw(addr)                         ((u32*)(0x40000000 | ((u32)addr)))
+#define uhw(addr)                         ((u32Me*)(0x40000000 | ((u32Me)addr)))
 
 #define HW_MEM_PROTECT_KERNEL_LOW_0       hw(0xbc000000)
 #define HW_MEM_PROTECT_KERNEL_LOW_1       hw(0xbc000004)

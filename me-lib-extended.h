@@ -16,8 +16,8 @@ static inline int _meLibSendSoftInterrupt() {
   return 0;
 }
 
-static inline u32 _meLibGetCpuId() {
-  u32 unique;
+static inline u32Me _meLibGetCpuId() {
+  u32Me unique;
   asm volatile(
     "sync\n"
     "mfc0 %0, $22\n"
@@ -44,7 +44,7 @@ static inline int _meLibHwMutexUnlock() {
 
 // kernel function that waits and attempts to lock and acquire the mutex
 static inline int _meLibHwMutexLock() {
-  const u32 unique = meLibGetCpuId();
+  const u32Me unique = meLibGetCpuId();
   do {
     mutex = unique; // the main CPU can affect only bit[0] (0b01), while the Me can only affect bit[1] (0b10)
     asm volatile("sync");
@@ -59,7 +59,7 @@ static inline int _meLibHwMutexLock() {
 
 // kernel function to attempt locking and acquiring the mutex
 static inline int _meLibHwMutexTryLock() {
-  const u32 unique = meLibGetCpuId();
+  const u32Me unique = meLibGetCpuId();
   mutex = unique;
   asm volatile("sync");
   if (!(((mutex & 3) ^ unique))) { // see note
@@ -90,9 +90,9 @@ static inline void meLibDcacheWritebackInvalidateAll() {
   asm volatile ("sync");
 }
 
-static inline void meLibDcacheWritebackInvalidateRange(const u32 addr, const u32 size) {
+static inline void meLibDcacheWritebackInvalidateRange(const u32Me addr, const u32Me size) {
   asm volatile("sync");
-  for (volatile u32 i = addr; i < addr + size; i += 64) {
+  for (volatile u32Me i = addr; i < addr + size; i += 64) {
     asm volatile(
       "cache 0x1b, 0(%0)\n"
       "cache 0x1b, 0(%0)\n"
@@ -102,9 +102,9 @@ static inline void meLibDcacheWritebackInvalidateRange(const u32 addr, const u32
   asm volatile("sync");
 }
 
-static inline void meLibDcacheInvalidateRange(const u32 addr, const u32 size) {
+static inline void meLibDcacheInvalidateRange(const u32Me addr, const u32Me size) {
   asm volatile("sync");
-  for (volatile u32 i = addr; i < addr + size; i += 64) {
+  for (volatile u32Me i = addr; i < addr + size; i += 64) {
     asm volatile(
       "cache 0x19, 0(%0)\n"
       "cache 0x19, 0(%0)\n"
@@ -114,9 +114,9 @@ static inline void meLibDcacheInvalidateRange(const u32 addr, const u32 size) {
   asm volatile("sync");
 }
 
-static inline void meLibDcacheWritebackRange(const u32 addr, const u32 size) {
+static inline void meLibDcacheWritebackRange(const u32Me addr, const u32Me size) {
   asm volatile("sync");
-  for (volatile u32 i = addr; i < addr + size; i += 64) {
+  for (volatile u32Me i = addr; i < addr + size; i += 64) {
     asm volatile(
       "cache 0x1a, 0(%0)\n"
       "cache 0x1a, 0(%0)\n"

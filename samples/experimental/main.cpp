@@ -121,7 +121,7 @@ int main() {
   pspDebugScreenPrintf("Me Sleep");
   
   SceCtrlData ctl;
-  u32 scCounter = 0;
+  u32Me scCounter = 0;
   do {
     sceCtrlPeekBufferPositive(&ctl, 1);
     pspDebugScreenSetXY(1, 2);

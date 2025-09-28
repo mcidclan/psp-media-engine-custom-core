@@ -1,6 +1,6 @@
 #include "me-lib.h"
 
-__attribute__((section("_me_section")))
+__attribute__((section("_me_section"), used))
 void meLibHandler() { // size 0xec (236)
   HW_SYS_BUS_CLOCK_ENABLE      = 0x0f;
   HW_SYS_TACHYON_CONFIG_STATUS |= 0x02;
