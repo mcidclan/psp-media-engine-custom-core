@@ -63,7 +63,7 @@ void meLibOnException(void) {
 
 __attribute__((noinline, aligned(4)))
 void meLibOnProcess(void) {  
-  meLibExceptionHandlerInit();
+  meLibExceptionHandlerInit(0);
   do {
     meCounter++;
   } while(meExit == 0);

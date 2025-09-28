@@ -76,7 +76,7 @@ extern "C" {
   extern void meLibOnSleep(void);
   extern void meLibOnWake(void);
   int  meLibDefaultInit();
-  void meLibExceptionHandlerInit();
+  void meLibExceptionHandlerInit(const u8 ip7);
   void meLibGetUncached32(volatile u32Me** const mem, const u32Me size);
 #ifdef __cplusplus
 }

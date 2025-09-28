@@ -15,5 +15,6 @@
 #define HW_SYS_BUS_CLOCK_ENABLE           hw(0xbc100050)
 #define HW_SYS_NMI_FLAGS                  hw(0xbc100004)
 #define HW_SYS_TACHYON_CONFIG_STATUS      hw(0xbc100040)
+#define HW_SRAM_SHARED_VAR0               hw(0xbfc00300)
 
 #endif

@@ -43,7 +43,7 @@ void meLibOnExternalInterrupt(void) {
     "nop                             \n"
     "1:                              \n"
     
-    // check if 0xbfc00300 equal 2
+    // check if HW_SRAM_SHARED_VAR0 equal 2
     "li       $k0, 0xbfc00300        \n"
     "lw       $k1, 0($k0)            \n"
     "li       $k0, 2                 \n"
@@ -60,6 +60,7 @@ void meLibOnExternalInterrupt(void) {
     "nop                             \n"
     "2:                              \n"
 
+    // reset HW_SRAM_SHARED_VAR0
     "li       $k0, 0xbfc00300        \n"
     "sw       $zero, 0($k0)          \n"
     
@@ -78,26 +79,26 @@ void meLibOnExternalInterrupt(void) {
 }
 
 extern "C" void meLibOnSleep() {
-  hw(0xbfc00300) = 1;
+  HW_SRAM_SHARED_VAR0 = 1;
   meCoreEmitSoftwareInterrupt();
 }
 
 extern "C" void meLibOnWake() {
-  hw(0xbfc00300) = 3;
+  HW_SRAM_SHARED_VAR0 = 3;
   HW_SYS_RESET_ENABLE = 0x04;
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
-  while (hw(0xbfc00300)) {
+  while (HW_SRAM_SHARED_VAR0) {
     meLibSync();
   }
-  hw(0xbfc00300) = 2;
+  HW_SRAM_SHARED_VAR0 = 2;
   meCoreEmitSoftwareInterrupt();
 }
 
 __attribute__((noinline, aligned(4)))
 void meLibOnProcess(void) {
-  meLibExceptionHandlerInit();
-  hw(0xbfc00300) = 0;
+  meLibExceptionHandlerInit(0);
+  HW_SRAM_SHARED_VAR0 = 0;
   do {
     meCounter++;
   } while(meExit == 0);

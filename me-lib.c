@@ -1,15 +1,24 @@
 #include "me-lib.h"
   
-__attribute__((weak)) void meLibOnExternalInterrupt(void) {
+__attribute__((weak, noinline, aligned(4)))
+void meLibOnExternalInterrupt(void) {
 }
 
-__attribute__((weak)) void meLibOnException(void) {
+__attribute__((weak, noinline, aligned(4)))
+void meLibOnInternalTimerInterrupt(void) {
+  // todo: default implementation
 }
 
-__attribute__((weak)) void meLibOnSleep(void) {
+__attribute__((weak, noinline, aligned(4)))
+void meLibOnException(void) {
 }
 
-__attribute__((weak)) void meLibOnWake(void) {
+__attribute__((weak, noinline, aligned(4)))
+void meLibOnSleep(void) {
+}
+
+__attribute__((weak, noinline, aligned(4)))
+void meLibOnWake(void) {
 }
 
 __attribute__((noinline, aligned(4)))
@@ -45,19 +54,21 @@ static void meLibExceptionHandleExternalInterrupt(void) {
     : "k0", "k1", "memory"
   );
 }
- 
+
 __attribute__((noinline, aligned(4)))
 static void meLibExceptionHandler(void) {
   asm volatile(
     ".set push                       \n"
     ".set noreorder                  \n"
     ".set noat                       \n"
+    
     // save regs context
     "addi     $sp, $sp, -24          \n"
     "sw       $k0, 0($sp)            \n"
     "sw       $k1, 4($sp)            \n"
     "sw       $ra, 8($sp)            \n"
     "sw       $at, 16($sp)           \n"
+    
     // clear EXL & ERL bits, save status and disable interrupt
     "mfc0     $k0, $12               \n"
     "li       $k1, 0xfffffff9        \n"
@@ -66,7 +77,7 @@ static void meLibExceptionHandler(void) {
     "mtc0     $0, $12                \n"
     "sync                            \n"
     
-    // call meLibOnException
+    // call meLibOnException (optional callback)
     "la       $k0, %1                \n"
     "li       $k1, 0x80000000        \n"
     "or       $k0, $k0, $k1          \n"
@@ -75,7 +86,29 @@ static void meLibExceptionHandler(void) {
     "jal      $k0                    \n"
     "nop                             \n"
     
-    // check DB
+    // check IP 7 on cause register, jump to related handler then update compare if enabled
+    "mfc0    $k0, $13                \n"
+    "andi    $k0, $k0, 0x8000        \n"
+    "beqz    $k0, 3f                 \n"
+    "nop                             \n"
+    // jump to Internal Timer interrupt (IP 7)
+    "la       $k0, %2                \n"
+    "li       $k1, 0x80000000        \n"
+    "or       $k0, $k0, $k1          \n"
+    "cache    0x8, 0($k0)            \n"
+    "sync                            \n"
+    "jal      $k0                    \n"
+    "nop                             \n"
+    // update compare register
+    "mfc0    $k1, $9                 \n"
+    "li      $k0, 166500             \n"
+    "addu    $k1, $k1, $k0           \n"
+    "mtc0    $k1, $11                \n"
+    "sync                            \n"
+    
+    "3:                              \n"
+    
+    // check DB on cause register, readjust epc if necessary
     "mfc0     $k0, $13               \n"
     "srl      $k1, $k0, 31           \n"
     "beqz     $k1, 2f                \n"
@@ -84,12 +117,14 @@ static void meLibExceptionHandler(void) {
     "mfc0     $k1, $14               \n"
     "addiu    $k1, $k1, -4            \n"
     "mtc0     $k1, $14               \n"
-    "sync                            \n"    
+    "sync                            \n"
+    
     "2:                              \n"
-    // check IP 2 on cause register
+    
+    // check IP 2 on cause register, jump to related handler if enabled
     "mfc0     $k0, $13               \n"
     "andi     $k0, $k0, 0x400        \n"
-    "beq      $k0, $zero, 1f         \n"
+    "beqz     $k0, 1f                \n"
     "nop                             \n"
     // check ME interrupt flag - unecessary
     /*
@@ -108,7 +143,9 @@ static void meLibExceptionHandler(void) {
     "sync                            \n"
     "jal      $k0                    \n"
     "nop                             \n"
+    
     "1:                              \n"
+    
     // restore status with external interrupt enabled
     "lw       $k0, 12($sp)            \n"
     "mtc0     $k0, $12               \n"
@@ -134,17 +171,21 @@ static void meLibExceptionHandler(void) {
     "nop                             \n"
     ".set pop                        \n"
     :
-    : "i" (meLibExceptionHandleExternalInterrupt), "i" (meLibOnException)
+    : "i" (meLibExceptionHandleExternalInterrupt), "i" (meLibOnException), "i" (meLibOnInternalTimerInterrupt)
     : "k0", "k1", "memory"
   );
 }
 
 __attribute__((noinline, aligned(4)))
-void meLibExceptionHandlerInit() {
+void meLibExceptionHandlerInit(const u8 ip7) {
+  u32 interrupts = 0x401;
+  if (ip7) {
+    interrupts = 0x8401;
+  }
   asm volatile(
     ".set noreorder                  \n"
     // setup exception handler
-    "la       $k0, %0                \n"
+    "la       $k0, %1                \n"
     "li       $k1, 0x80000000        \n"
     "or       $k0, $k0, $k1          \n"
     "cache    0x8, 0($k0)            \n"
@@ -160,15 +201,31 @@ void meLibExceptionHandlerInit() {
     "li       $k0, 0xffffffff        \n"
     "sw       $k0, 0xbc300000($0)    \n"
     "sync                            \n"
+
+    "move     $k1, %0                \n"
+    
+    // check timer interrupt (IP 7) on status, init compare and count if enabled
+    "andi     $k0, $k1, 0x8000       \n"
+    "beqz     $k0, 1f                \n"
+    "nop                             \n"
+    // init compare and count registers
+    "mtc0    $0, $9                  \n"
+    "sync                            \n"
+    "li      $k0, 166500              \n"
+    "mtc0    $k0, $11                 \n"
+    "sync                            \n"
+    
+    "1:                              \n"
+
     // setup external interrupt on cp0 level
     "mfc0     $k0, $12               \n"
-    "li       $k1, 0x401             \n"
+//  "li       $k1, 0x401             \n"
     "or       $k0, $k0, $k1          \n"
     "mtc0     $k0, $12               \n"
     "sync                            \n"
     ".set reorder                    \n"
     :
-    : "i" (meLibExceptionHandler)
+    : "r"(interrupts), "i" (meLibExceptionHandler)
     : "k0", "k1", "memory"
   );
 }
