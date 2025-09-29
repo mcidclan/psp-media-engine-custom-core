@@ -15,6 +15,42 @@
 #define HW_SYS_BUS_CLOCK_ENABLE           hw(0xbc100050)
 #define HW_SYS_NMI_FLAGS                  hw(0xbc100004)
 #define HW_SYS_TACHYON_CONFIG_STATUS      hw(0xbc100040)
-#define HW_SRAM_SHARED_VAR0               hw(0xbfc00300)
+
+#define hwCacheHitWriteback(addr) \
+  asm volatile( \
+    ".set push                       \n" \
+    ".set noreorder                  \n" \
+    "la       $k0, %0                \n" \
+    "cache    0x1a, 0($k0)           \n" \
+    "sync                            \n" \
+    ".set pop                        \n" \
+    : \
+    : "i" (addr) \
+    : "k0", "memory" \
+  );
+
+#define hwCacheHitInvalidate(addr) \
+  asm volatile( \
+    ".set push                       \n" \
+    ".set noreorder                  \n" \
+    "la       $k0, %0                \n" \
+    "cache    0x19, 0($k0)           \n" \
+    "sync                            \n" \
+    ".set pop                        \n" \
+    : \
+    : "i" (addr) \
+    : "k0", "memory" \
+  );
+  
+#define SRAM_SHARED_VARS_BASE             0xbfc00700/*0xbfc00300*/
+#define SRAM_SHARED_VAR_0                 (SRAM_SHARED_VARS_BASE + 0)
+#define SRAM_SHARED_VAR_1                 (SRAM_SHARED_VARS_BASE + 4)
+
+#define GET_SRAM_SHARED_VAR(index)        hw(SRAM_SHARED_VARS_BASE + (index * 4))
+
+#define SET_SRAM_SHARED_VAR(index, value) meLibSync(); \
+                                          hw(SRAM_SHARED_VARS_BASE + (index * 4)) = (value); \
+                                          /*hwCacheHitWriteback(value);*/ \
+                                          meLibSync();
 
 #endif

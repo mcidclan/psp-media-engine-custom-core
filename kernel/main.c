@@ -9,16 +9,21 @@ int kcall(FCall const f) {
   return f();
 }
 
-int module_start(SceSize args, void *argp) {
+int kinit(const void* const handler) {
   PspSysEventHandler* seh = sceKernelReferSysEventHandler();
   while (seh != NULL) {
     if (seh->name[3] == 'M' && seh->name[4] == 'e' && seh->name[5] == 'R') {
-      seh->handler = (PspSysEventHandlerFunc)*((u32*)0x40010000);
-      //sceKernelUnregisterSysEventHandler(seh);
+      seh->handler = (PspSysEventHandlerFunc)handler;
+      // (PspSysEventHandlerFunc)*((u32*)0x40010000);
+      // sceKernelUnregisterSysEventHandler(seh);
       return 0;
     }
     seh = seh->next;
   }
+  return -1;
+}
+
+int module_start(SceSize args, void *argp) {
   return 0;
 }
 

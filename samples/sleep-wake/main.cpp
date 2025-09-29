@@ -12,93 +12,11 @@ meLibSetSharedUncachedMem(2);
 #define meExit       (meLibSharedMemory[0])
 #define meCounter    (meLibSharedMemory[1])
 
-extern "C" __attribute__((noinline, aligned(4)))
-void meLibOnExternalInterrupt(void) {
-  asm volatile(
-    ".set push                       \n"
-    ".set noreorder                  \n"
-    ".set noat                       \n"
-    
-    // save regs context
-    "addi     $sp, $sp, -16          \n"
-    "sw       $k0, 0($sp)            \n"
-    "sw       $k1, 4($sp)            \n"
-    "sw       $ra, 8($sp)            \n"
-    "sw       $at, 12($sp)           \n"
-    
-    // check if 0xbfc00300 equal 1
-    "li       $k0, 0xbfc00300        \n"
-    "lw       $k1, 0($k0)            \n"
-    "li       $k0, 1                 \n"
-    "bne      $k1, $k0, 1f           \n"
-    "nop                             \n"
-
-    // call meLibSaveContext
-    "la       $k0, %0                \n"
-    "li       $k1, 0x80000000        \n"
-    "or       $k0, $k0, $k1          \n"
-    "cache    0x8, 0($k0)            \n"
-    "sync                            \n"
-    "jal      $k0                    \n"
-    "nop                             \n"
-    "1:                              \n"
-    
-    // check if HW_SRAM_SHARED_VAR0 equal 2
-    "li       $k0, 0xbfc00300        \n"
-    "lw       $k1, 0($k0)            \n"
-    "li       $k0, 2                 \n"
-    "bne      $k1, $k0, 2f           \n"
-    "nop                             \n"
-
-    // call meLibRestoreContext
-    "la       $k0, %1                \n"
-    "li       $k1, 0x80000000        \n"
-    "or       $k0, $k0, $k1          \n"
-    "cache    0x8, 0($k0)            \n"
-    "sync                            \n"
-    "jal      $k0                    \n"
-    "nop                             \n"
-    "2:                              \n"
-
-    // reset HW_SRAM_SHARED_VAR0
-    "li       $k0, 0xbfc00300        \n"
-    "sw       $zero, 0($k0)          \n"
-    
-    // restore regs context
-    "lw       $k0, 0($sp)           \n"
-    "lw       $k1, 4($sp)           \n"
-    "lw       $ra, 8($sp)           \n"
-    "lw       $at, 12($sp)           \n"
-    "addi     $sp, $sp, 16          \n"
-
-    ".set pop                        \n"
-    :
-    :  "i" (meLibSaveContext), "i" (meLibRestoreContext)
-    : "k0", "k1", "memory"
-  );
-}
-
-extern "C" void meLibOnSleep() {
-  HW_SRAM_SHARED_VAR0 = 1;
-  meCoreEmitSoftwareInterrupt();
-}
-
-extern "C" void meLibOnWake() {
-  HW_SRAM_SHARED_VAR0 = 3;
-  HW_SYS_RESET_ENABLE = 0x04;
-  HW_SYS_RESET_ENABLE = 0x00;
-  meLibSync();
-  while (HW_SRAM_SHARED_VAR0) {
-    meLibSync();
-  }
-  HW_SRAM_SHARED_VAR0 = 2;
-  meCoreEmitSoftwareInterrupt();
-}
+ME_LIB_SETUP_DEFAULT_SUSPEND_HANDLER();
 
 __attribute__((noinline, aligned(4)))
 void meLibOnProcess(void) {
   meLibExceptionHandlerInit(0);
-  HW_SRAM_SHARED_VAR0 = 0;
   do {
     meCounter++;
   } while(meExit == 0);
@@ -129,6 +47,8 @@ int main() {
     pspDebugScreenPrintf("Me counter: %x", meCounter);
     pspDebugScreenSetXY(1, 3);
     pspDebugScreenPrintf("Sc counter: %x", scCounter++);
+    pspDebugScreenSetXY(1, 4);
+    pspDebugScreenPrintf("Sc counter: %x", hw(0x40010000));
     sceDisplayWaitVblank();
   } while (!(ctl.Buttons & PSP_CTRL_HOME));
   

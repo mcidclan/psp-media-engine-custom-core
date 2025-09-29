@@ -5,6 +5,7 @@ extern "C" {
 #endif
   typedef int (*FCall)(void);
   int kcall(FCall const func);
+  int kinit(const void* const handler);
 #ifdef __cplusplus
 }
 #endif

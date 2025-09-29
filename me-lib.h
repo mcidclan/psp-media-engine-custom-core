@@ -82,4 +82,102 @@ extern "C" {
 }
 #endif
 
+
+#define ME_LIB_SETUP_DEFAULT_SUSPEND_HANDLER() \
+extern "C" __attribute__((noinline, aligned(4))) \
+void meLibOnExternalInterrupt(void) { \
+  asm volatile( \
+    ".set push                       \n" \
+    ".set noreorder                  \n" \
+    ".set noat                       \n" \
+    \
+    /* save regs context */ \
+    "addi     $sp, $sp, -16          \n" \
+    "sw       $k0, 0($sp)            \n" \
+    "sw       $k1, 4($sp)            \n" \
+    "sw       $ra, 8($sp)            \n" \
+    "sw       $at, 12($sp)           \n" \
+    \
+    \
+    /*"li       $k0, %2                \n"*/ \
+    /*"cache    0x19, 0($k0)           \n"*/ \
+    /*"sync                            \n"*/ \
+    \
+    /* if SRAM_SHARED_VAR_0 equal 1 */   \
+    "li       $k0, %2                \n" \
+    "lw       $k1, 0($k0)            \n" \
+    "li       $k0, 1                 \n" \
+    "bne      $k1, $k0, 1f           \n" \
+    "nop                             \n" \
+    \
+    /* call meLibSaveContext */ \
+    "la       $k0, %0                \n" \
+    "li       $k1, 0x80000000        \n" \
+    "or       $k0, $k0, $k1          \n" \
+    "cache    0x8, 0($k0)            \n" \
+    "sync                            \n" \
+    "jal      $k0                    \n" \
+    "nop                             \n" \
+    "1:                              \n" \
+    \
+    /* if SRAM_SHARED_VAR_0 equal 2 */ \
+    "li       $k0, %2                \n" \
+    "lw       $k1, 0($k0)            \n" \
+    "li       $k0, 2                 \n" \
+    "bne      $k1, $k0, 2f           \n" \
+    "nop                             \n" \
+    \
+    /* call meLibRestoreContext */ \
+    "la       $k0, %1                \n" \
+    "li       $k1, 0x80000000        \n" \
+    "or       $k0, $k0, $k1          \n" \
+    "cache    0x8, 0($k0)            \n" \
+    "sync                            \n" \
+    "jal      $k0                    \n" \
+    "nop                             \n" \
+    "2:                              \n" \
+    \
+    /* reset SRAM_SHARED_VAR_0 */ \
+    "li       $k0, %2                \n" \
+    "sw       $zero, 0($k0)          \n" \
+    "sync                            \n" \
+    \
+    \
+    /*"li       $k0, %2                \n"*/ \
+    /*"cache    0x1a, 0($k0)           \n"*/ \
+    /*"sync                            \n"*/ \
+    \
+    /* restore regs context */ \
+    "lw       $k0, 0($sp)            \n" \
+    "lw       $k1, 4($sp)            \n" \
+    "lw       $ra, 8($sp)            \n" \
+    "lw       $at, 12($sp)           \n" \
+    "addi     $sp, $sp, 16           \n" \
+    \
+    ".set pop                        \n" \
+    : \
+    :  "i" (meLibSaveContext), "i" (meLibRestoreContext), "i" (SRAM_SHARED_VAR_0) \
+    : "k0", "k1", "memory" \
+  ); \
+} \
+\
+extern "C" void meLibOnSleep() { \
+  SET_SRAM_SHARED_VAR(0, 1); \
+  meCoreEmitSoftwareInterrupt(); \
+} \
+\
+extern "C" void meLibOnWake() { \
+  SET_SRAM_SHARED_VAR(0, 3); \
+  HW_SYS_RESET_ENABLE = 0x04; \
+  HW_SYS_RESET_ENABLE = 0x00; \
+  meLibSync(); \
+  while (GET_SRAM_SHARED_VAR(0)) { \
+    /*hwCacheHitInvalidate(SRAM_SHARED_VAR_0);*/ \
+    meLibSync(); \
+  } \
+  SET_SRAM_SHARED_VAR(0, 2); \
+  /*meLibSync();*/ \
+  meCoreEmitSoftwareInterrupt(); \
+}
+
 #endif
