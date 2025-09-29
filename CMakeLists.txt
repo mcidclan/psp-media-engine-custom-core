@@ -12,33 +12,50 @@ add_custom_command(
   COMMENT "Generating kcall imports"
 )
 
+#add_custom_command(
+#  OUTPUT kcall.module.o
+#  COMMAND ${CMAKE_COMMAND} -E copy
+#          ${CMAKE_CURRENT_BINARY_DIR}/kernel/kcall.prx
+#          kcall.prx
+  
+#  COMMAND psp-objcopy -I binary -O elf32-littlemips -B mips
+#            --rename-section .data=.rodata,alloc,load,readonly,data,contents
+#            --set-section-alignment .rodata=64
+#            --redefine-sym _binary_kcall_prx_start=kcall_module_start
+#            --redefine-sym _binary_kcall_prx_end=kcall_module_end
+#            --redefine-sym _binary_kcall_prx_size=kcall_module_size
+#            kcall.prx kcall.module.o
+
+#  DEPENDS kcall_prx
+#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#  COMMENT "Converting PRX to object file"
+#)
+
+#add_custom_command(
+#  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
+#  COMMAND xxd -i -n embedded_kcall ${CMAKE_CURRENT_BINARY_DIR}/kernel/kcall.prx ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
+#  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/kernel/kcall.prx
+#  COMMENT "Embedding kcall.prx into C file"
+#)
+
 add_custom_command(
-  OUTPUT kcall.module.o
-  COMMAND ${CMAKE_COMMAND} -E copy
-          ${CMAKE_CURRENT_BINARY_DIR}/kernel/kcall.prx
-          kcall.prx
-
-  COMMAND psp-objcopy -I binary -O elf32-littlemips -B mips
-            --rename-section .data=.data,alloc,load,data,contents
-            --set-section-alignment .data=64
-            --redefine-sym _binary_kcall_prx_start=kcall_module_start
-            --redefine-sym _binary_kcall_prx_end=kcall_module_end
-            --redefine-sym _binary_kcall_prx_size=kcall_module_size
-            kcall.prx kcall.module.o
-
-  DEPENDS kcall_prx
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  COMMENT "Converting PRX to object file"
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
+  COMMAND xxd -i ${CMAKE_CURRENT_BINARY_DIR}/kernel/kcall.prx > ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
+  COMMAND sed -i 's/unsigned char [^[]*/unsigned char embedded_kcall/' ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
+  COMMAND sed -i 's/unsigned int [^ ]*_len/unsigned int embedded_kcall_len/' ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
+  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/kernel/kcall.prx
+  COMMENT "Embedding kcall.prx into C file"
 )
 
-add_custom_target(kcall_files DEPENDS kcall.S kcall.module.o)
+add_custom_target(kcall_files DEPENDS kcall.S)
 
 add_library(me-core STATIC
   me-lib.c
   me-core-mapping.c
   context.S
+  embedded.c
   ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
-  ${CMAKE_CURRENT_BINARY_DIR}/kcall.module.o
+#  ${CMAKE_CURRENT_BINARY_DIR}/kcall.module.o
 )
 
 add_dependencies(me-core kcall_files)

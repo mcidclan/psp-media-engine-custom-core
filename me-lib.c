@@ -248,8 +248,8 @@ static inline int meLibInit() {
 }
 
 #define PRX_FILE "./kcall.prx"
-extern unsigned char kcall_module_start;
-extern unsigned int kcall_module_size;
+extern unsigned char embedded_kcall[];
+extern unsigned int embedded_kcall_len;
 
 int writePrx(void* start, int size) {
   SceUID fd = sceIoOpen(PRX_FILE, PSP_O_WRONLY | PSP_O_CREAT, 0777);
@@ -278,7 +278,7 @@ int eventHandler(int eventId) {
 }
 
 int meLibDefaultInit() {
-  if(writePrx(&kcall_module_start, (int)&kcall_module_size) < 0) {
+  if(writePrx(embedded_kcall, (int)embedded_kcall_len) < 0) {
     return -3;
   }
   hw(0x40010000) = (u32Me)eventHandler;
