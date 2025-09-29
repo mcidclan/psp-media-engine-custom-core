@@ -242,8 +242,9 @@ static inline int meLibInit() {
   
   #define me_section_size (&__stop__me_section - &__start__me_section)
   memcpy((void*)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
-  // sceKernelDcacheWritebackInvalidateAll();
-  HW_SYS_RESET_ENABLE = 0x04;
+  HW_SYS_AVC_POWER = 1;
+  meLibSync();
+  HW_SYS_RESET_ENABLE = 0x34;
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
   return tableId;
@@ -267,7 +268,7 @@ int writePrx(void* start, int size) {
 }
 
 int eventHandler(int eventId) {
-  // hwCacheHitInvalidate(SRAM_SHARED_VAR_1);
+  // todo: review, manage avc
   if (eventId <= 0x00000400 && GET_SRAM_SHARED_VAR(1) != 1) {
     meLibOnSleep();
     SET_SRAM_SHARED_VAR(1, 1);
@@ -275,15 +276,6 @@ int eventHandler(int eventId) {
     meLibOnWake();
     SET_SRAM_SHARED_VAR(1, 0);
   }
-  /*
-  switch (eventId) {
-    case 0x00000210:
-      meLibOnSleep();
-    break;
-    case 0x00010000:
-      meLibOnWake();
-    break;
-  }*/
   return 0;
 }
 

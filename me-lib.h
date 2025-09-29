@@ -98,11 +98,6 @@ void meLibOnExternalInterrupt(void) { \
     "sw       $ra, 8($sp)            \n" \
     "sw       $at, 12($sp)           \n" \
     \
-    \
-    /*"li       $k0, %2                \n"*/ \
-    /*"cache    0x19, 0($k0)           \n"*/ \
-    /*"sync                            \n"*/ \
-    \
     /* if SRAM_SHARED_VAR_0 equal 1 */   \
     "li       $k0, %2                \n" \
     "lw       $k1, 0($k0)            \n" \
@@ -142,11 +137,6 @@ void meLibOnExternalInterrupt(void) { \
     "sw       $zero, 0($k0)          \n" \
     "sync                            \n" \
     \
-    \
-    /*"li       $k0, %2                \n"*/ \
-    /*"cache    0x1a, 0($k0)           \n"*/ \
-    /*"sync                            \n"*/ \
-    \
     /* restore regs context */ \
     "lw       $k0, 0($sp)            \n" \
     "lw       $k1, 4($sp)            \n" \
@@ -168,16 +158,17 @@ extern "C" void meLibOnSleep() { \
 \
 extern "C" void meLibOnWake() { \
   SET_SRAM_SHARED_VAR(0, 3); \
-  HW_SYS_RESET_ENABLE = 0x04; \
+  /*HW_SYS_AVC_POWER = 1;*/  /* to be set before waking up*/ \
+  /*meLibSync();*/ \
+  HW_SYS_RESET_ENABLE = 0x14; /*0x34*/ \ 
   HW_SYS_RESET_ENABLE = 0x00; \
   meLibSync(); \
   while (GET_SRAM_SHARED_VAR(0)) { \
-    /*hwCacheHitInvalidate(SRAM_SHARED_VAR_0);*/ \
     meLibSync(); \
   } \
   SET_SRAM_SHARED_VAR(0, 2); \
-  /*meLibSync();*/ \
   meCoreEmitSoftwareInterrupt(); \
 }
 
 #endif
+

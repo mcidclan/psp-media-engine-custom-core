@@ -106,14 +106,6 @@ meLibSaveContext:
   
   // save status
   sw       $k1, 260($k0)
-  
-  //sync
-  //cache   0x1a,   0($k0)
-  //cache   0x1a,  64($k0)
-  //cache   0x1a, 128($k0)
-  //cache   0x1a, 192($k0)
-  //cache   0x1a, 256($k0)
-  //sync
 
   .set pop
   jr     $ra
@@ -134,14 +126,6 @@ meLibRestoreContext:
   lui    $k0, %hi(CTX_BASE)
   ori    $k0, $k0, %lo(CTX_BASE)
 
-  //sync
-  //cache   0x19,   0($k0)
-  //cache   0x19,  64($k0)
-  //cache   0x19, 128($k0)
-  //cache   0x19, 192($k0)
-  //cache   0x19, 256($k0)
-  //sync
-    
   // restore context
   lw     $at, 0($k0)              // $1
   lw     $v0, 4($k0)              // $2

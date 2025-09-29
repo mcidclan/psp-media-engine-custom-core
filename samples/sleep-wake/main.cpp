@@ -14,6 +14,20 @@ meLibSetSharedUncachedMem(2);
 
 ME_LIB_SETUP_DEFAULT_SUSPEND_HANDLER();
 
+/*
+// temporary for debug
+extern "C" void meLibOnSleep() { \
+}
+
+extern "C" void meLibOnWake() { \
+  HW_SYS_AVC_POWER = 1;
+  meLibSync();
+  HW_SYS_RESET_ENABLE = 0x34;
+  HW_SYS_RESET_ENABLE = 0x00;
+  meLibSync();
+}
+*/
+
 __attribute__((noinline, aligned(4)))
 void meLibOnProcess(void) {
   meLibExceptionHandlerInit(0);
@@ -47,8 +61,6 @@ int main() {
     pspDebugScreenPrintf("Me counter: %x", meCounter);
     pspDebugScreenSetXY(1, 3);
     pspDebugScreenPrintf("Sc counter: %x", scCounter++);
-    pspDebugScreenSetXY(1, 4);
-    pspDebugScreenPrintf("Sc counter: %x", hw(0x40010000));
     sceDisplayWaitVblank();
   } while (!(ctl.Buttons & PSP_CTRL_HOME));
   
