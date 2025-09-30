@@ -242,9 +242,11 @@ static inline int meLibInit() {
   
   #define me_section_size (&__stop__me_section - &__start__me_section)
   memcpy((void*)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
+  /*
   HW_SYS_AVC_POWER = 1;
   meLibSync();
-  HW_SYS_RESET_ENABLE = 0x34;
+  */
+  HW_SYS_RESET_ENABLE = 0x14; // 0x14
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
   return tableId;

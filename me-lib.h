@@ -158,9 +158,9 @@ extern "C" void meLibOnSleep() { \
 \
 extern "C" void meLibOnWake() { \
   SET_SRAM_SHARED_VAR(0, 3); \
-  /*HW_SYS_AVC_POWER = 1;*/  /* to be set before waking up*/ \
+  /*HW_SYS_AVC_POWER = 1;*/ /* to be set before waking up*/ \
   /*meLibSync();*/ \
-  HW_SYS_RESET_ENABLE = 0x14; /*0x34*/ \ 
+  HW_SYS_RESET_ENABLE = 0x14; /*0x34*/ \
   HW_SYS_RESET_ENABLE = 0x00; \
   meLibSync(); \
   while (GET_SRAM_SHARED_VAR(0)) { \
