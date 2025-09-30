@@ -14,15 +14,15 @@ meLibSetSharedUncachedMem(2);
 
 ME_LIB_SETUP_DEFAULT_SUSPEND_HANDLER();
 
+// simple reset
 /*
-// temporary for debug
-extern "C" void meLibOnSleep() { \
+extern "C" void meLibOnSleep() {
+  HW_SYS_RESET_ENABLE = 0x14;
+  meLibSync();
 }
 
-extern "C" void meLibOnWake() { \
-  HW_SYS_AVC_POWER = 1;
-  meLibSync();
-  HW_SYS_RESET_ENABLE = 0x34;
+extern "C" void meLibOnWake() {
+  HW_SYS_RESET_ENABLE = 0x14;
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
 }

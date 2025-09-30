@@ -16,7 +16,7 @@
 #define HW_SYS_NMI_FLAGS                  hw(0xbc100004)
 #define HW_SYS_TACHYON_CONFIG_STATUS      hw(0xbc100040)
 #define HW_SYS_AVC_POWER                  hw(0xBC100070)
-
+#define HW_DDR_FLUSH                      hw(0xBD000004)
 
 #define hwCacheHitWriteback(addr) \
   asm volatile( \
