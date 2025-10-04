@@ -26,7 +26,9 @@
   {0x00001a98, 0x00000000}, // void _meCoreBusClockStorageDisableATA()            // dsp related clock instead ?
   {0x00001ab8, 0x00000000}, // int  _meCoreBusClockStorageEnableDisable(u32, u32) // mask, value
   {0x00001b14, 0x00000000}, // int  _meCoreBusClockMemoryStickSelect(u32)
-  {0x00001bc4, 0x00000000}, // int  _meCoreSetBusFrequency(u32, u32);
+  
+  {0x00001b7c, 0x00001b48}, // int  _meCoreSetCpuFrequency(u32 num, u32 den);
+  {0x00001bc4, 0x00001b90}, // int  _meCoreSetBusFrequency(u32 num, u32 den);
 
   // dmac
   {0x000209d0, 0x00000000}, // void _meCoreDMACPrimMuxWaitStatus_0x800(void)

@@ -8,14 +8,14 @@ PSP_MODULE_INFO("me-exceptions", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
-meLibSetSharedUncachedMem(2);
+meLibSetSharedUncached32(2);
 #define meExit          (meLibSharedMemory[0])
 #define meCounter       (meLibSharedMemory[1])
 
-meLibMakeUncachedMem(_meExtIntrProof, 1);
-meLibMakeUncachedMem(_meExpProof, 1);
-#define meExtIntrProof  (meLibMakeUncachedVar(_meExtIntrProof, UNCACHED_USER_MASK)[0])
-#define meExpProof      (meLibMakeUncachedVar(_meExpProof, UNCACHED_USER_MASK)[0])
+meLibMakeUncachedMem(_meExtIntrProof, 1, u32Me);
+meLibMakeUncachedMem(_meExpProof, 1, u32Me);
+#define meExtIntrProof  (meLibMakeMemSegVar(_meExtIntrProof, UNCACHED_USER_MASK, u32Me)[0])
+#define meExpProof      (meLibMakeMemSegVar(_meExpProof, UNCACHED_USER_MASK, u32Me)[0])
 
 extern "C" __attribute__((noinline, aligned(4)))
 void meLibOnExternalInterrupt(void) {

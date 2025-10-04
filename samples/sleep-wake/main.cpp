@@ -8,7 +8,7 @@ PSP_MODULE_INFO("me-sleep", 0, 1, 1);
 PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
-meLibSetSharedUncachedMem(2);
+meLibSetSharedUncached32(2);
 #define meExit       (meLibSharedMemory[0])
 #define meCounter    (meLibSharedMemory[1])
 

@@ -11,7 +11,7 @@ PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 // align shared vars to 64 for cached/uncached access compatibility
 volatile u32Me* shared __attribute__((aligned(64))) = nullptr;
 
-meLibSetSharedUncachedMem(3);
+meLibSetSharedUncached32(3);
 #define meExit           (meLibSharedMemory[0])
 #define meCounter        (meLibSharedMemory[1])
 #define meStart          (meLibSharedMemory[2])

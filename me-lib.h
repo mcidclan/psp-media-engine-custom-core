@@ -22,15 +22,17 @@
 #define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreHwMutexUnlock)))
 #define meLibEmitSoftwareInterrupt()      (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreEmitSoftwareInterrupt)))
 
-#define meLibSetSharedUncachedMem(size) \
-  static volatile u32Me _meLibSharedMemory[(size)] __attribute__((aligned(64), section(".uncached"))) = {0}; \
-  volatile u32Me* const meLibSharedMemory __attribute__((aligned(64), section(".uncached"))) = \
-    (volatile u32Me*)(UNCACHED_USER_MASK | (u32Me)_meLibSharedMemory)
+#define meLibSetSharedUncached32(size)    meLibSetSharedUncachedMem(size, u32Me)
 
-#define meLibMakeUncachedMem(name, size) \
-  volatile u32Me name[(size)] __attribute__((aligned(64), section(".uncached"))) = {0};
+#define meLibSetSharedUncachedMem(size, type) \
+  static volatile type _meLibSharedMemory[(size)] __attribute__((aligned(64), section(".uncached"))) = {0}; \
+  volatile type* const meLibSharedMemory __attribute__((aligned(64), section(".uncached"))) = \
+    (volatile type*)(UNCACHED_USER_MASK | (type)_meLibSharedMemory)
 
-#define meLibMakeUncachedVar(name, mask) ((volatile u32Me* const)((mask) | (u32Me)name))
+#define meLibMakeUncachedMem(name, size, type) \
+  volatile type name[(size)] __attribute__((aligned(64), section(".uncached"))) = {0};
+
+#define meLibMakeMemSegVar(name, mask, type) ((volatile type* const)((mask) | (type)name))
 
 inline void meLibHalt() {
   asm volatile(".word 0x70000000");
