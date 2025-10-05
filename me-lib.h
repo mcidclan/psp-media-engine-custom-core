@@ -25,12 +25,12 @@
 #define meLibSetSharedUncached32(size)    meLibSetSharedUncachedMem(size, u32Me)
 
 #define meLibSetSharedUncachedMem(size, type) \
-  static volatile type _meLibSharedMemory[(size)] __attribute__((aligned(64), section(".uncached"))) = {0}; \
+  static volatile type _meLibSharedMemory[(size)] __attribute__((aligned(64), section(".uncached"))) = {(type)0}; \
   volatile type* const meLibSharedMemory __attribute__((aligned(64), section(".uncached"))) = \
     (volatile type*)(UNCACHED_USER_MASK | (type)_meLibSharedMemory)
 
 #define meLibMakeUncachedMem(name, size, type) \
-  volatile type name[(size)] __attribute__((aligned(64), section(".uncached"))) = {0};
+  volatile type name[(size)] __attribute__((aligned(64), section(".uncached"))) = {(type)0};
 
 #define meLibMakeMemSegVar(name, mask, type) ((volatile type* const)((mask) | (type)name))
 
