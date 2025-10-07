@@ -1,4 +1,11 @@
-#include "me-lib.h"
+#include "me-lib-extended.h"
+
+__attribute__((noinline, aligned(4)))
+void meLibOnPreProcess() {
+  meLibDcacheInvalidateRange(ME_CORE_BASE_ADDR, (0x90000 + 63) & ~63);
+  meLibIcacheInvalidateRange(ME_CORE_BASE_ADDR, (0x90000 + 63) & ~63);
+  meLibOnProcess();
+}
 
 __attribute__((section("_me_section"), used))
 void meLibHandler() { // size 0xec (236)
@@ -39,7 +46,7 @@ void meLibHandler() { // size 0xec (236)
     "nop                             \n"
     ".set reorder                    \n"
     :
-    : "i" (meLibOnProcess)
+    : "i" (meLibOnPreProcess)
     : "k0", "k1", "memory"
   );
 }

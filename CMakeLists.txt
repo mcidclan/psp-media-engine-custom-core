@@ -25,6 +25,7 @@ add_custom_target(kcall_files DEPENDS kcall.S)
 
 add_library(me-core STATIC
   me-lib.c
+  me-lib-extended.c
   me-core-mapping.c
   context.S
   embedded.c

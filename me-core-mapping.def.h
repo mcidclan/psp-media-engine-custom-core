@@ -59,7 +59,7 @@
   {0x00021af4, 0x00000000}, // int  _meCoreInterruptSetMask_2(u32)
   {0x00021b34, 0x00000000}, // u64  _meCoreExceptionInitHandlers(void)
   {0x00021b7c, 0x00000000}, // int  _meCorePriorityQueueDefaultInsert(void)
-  {0x00021bbc, 0x00000000}, // int  _meCoreEmitSoftwareInterrupt(void)
+  {0x00021bbc, 0x00013230}, // int  _meCoreEmitSoftwareInterrupt(void)
 
   // mutex
   {0x00021bd8, 0x0001324c}, // int  _meCoreHwMutexTryLock(void)
