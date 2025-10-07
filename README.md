@@ -10,6 +10,23 @@ As a solution, we have several static correspondence tables and the code will se
 
 **Note:** This is a work in progress, and the mapping table for newer device generations is evolving faster than for older ones.
 
+### More precisely, what does this provide?
++ Its primary goal is to provide access to some of the 'native' ME core functions by dynamically switching to the right table mapping according to the device model
++ It is provided as a static library: the core header (me-core.h) must be included once for initialization, while the me-lib headers can be included anywhere to access core and utility functions
++ It does not depend on the ME wrapper
++ It embeds a minimalistic PRX providing kernel callbacks and patching sceMeRpc on the main CPU side
++ It puts the VME in an optimized state, giving the ME CPU core additional resources
++ It redefines the top of the local stack according to the device model, which provides larger local available eDRAM to work with
++ It removes main RAM and hardware register access restrictions
++ It manages suspend events (sleep/wake) callback handlers
++ It provides exception callbacks such as for general exceptions or external soft interrupts
++ It has timer interrupt callback handling
+
+### What's coming next
+* Core mapping functions are continuously being identified and added
+* Addition of some of the previously useful functions written during the Media Engine Reload project in 2024-25, like DMAC related functions for example
+* Thread management is a work in progress, based on timer interrupt
+
 ## Usage
 
 ### Basic Integration
