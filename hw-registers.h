@@ -44,7 +44,7 @@
     : "k0", "memory" \
   );
   
-#define SRAM_SHARED_VARS_BASE             0xbfc00300/*0xbfc00700*/
+#define SRAM_SHARED_VARS_BASE             0xbfc00600
 #define SRAM_SHARED_VAR_0                 (SRAM_SHARED_VARS_BASE + 0)
 #define SRAM_SHARED_VAR_1                 (SRAM_SHARED_VARS_BASE + 4)
 

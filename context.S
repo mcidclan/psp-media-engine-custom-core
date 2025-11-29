@@ -225,6 +225,6 @@ meLibRestoreContext:
   
 .end   meLibRestoreContext
 
-.equ CTX_BASE, (0xbfc00000 + 0x100)
+.equ CTX_BASE, (0xbfc00000 + 0xF0)
 
 
