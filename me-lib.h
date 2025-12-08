@@ -58,8 +58,14 @@ static inline void meLibUnlockMemory() {
 
 static inline void meLibSetMinimalVmeConfig() {
   hw(0xBCC00000) = -1;
+  hw(0xBCC00010) = 1;
+  while (hw(0xBCC00010)) {
+    meLibSync();
+  };
+  hw(0xBCC00070) = 0;
+  hw(0xBCC00020) = -1;
   hw(0xBCC00030) = 1;
-  hw(0xBCC00040) = 1;
+  hw(0xBCC00040) = 2; // 1
   meLibSync();
 }
 

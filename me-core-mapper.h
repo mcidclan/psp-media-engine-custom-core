@@ -84,7 +84,10 @@
 #define meCoreDcacheInvalidateRange               ((int   (*)(u32Me, u32Me))sysCall(66))
 #define meCoreDcacheWritebackRange                ((int   (*)(u32Me, u32Me))sysCall(67))
 #define meCoreDecompressKL4E                      ((int   (*)(byte*, int, char*, u32Me*))sysCall(68))
+
+//
 #define meCoreEDRAMAllocWords                     ((int   (*)(uint, uint))sysCall(69))
+#define meCoreEDRAMHeapInit                       ((u32Me* (*)(void))sysCall(70))
 
 // t2img (slim+)
 // img (fat), Todo.

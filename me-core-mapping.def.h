@@ -95,6 +95,7 @@
 
   // wip
   {0x000218a8, 0x00000000}, // int  _meCoreEDRAMAllocWords(uint count, uint size)
+  {0x00021884, 0x00000000}, // u32* _meCoreEDRAMHeapInit(void)
   
   // typedef struct { u32 width; u32 height; u32 unk2; void* src0; void* src1; void* dst0; void* dst1; void* src2; void* src3; void* dst2; void* dst3; void* dst; void* inter0; void* inter1; } Quad;
   // typedef struct {u8  blockCount; /*0x8*/ u8  effectsEnabled; /*0x9*/ AudioChannel channels[32]; /*0x714*/ u32 channelMask; /*0xe14*/ u16  global1; /*0xe1a*/ u16  global2; /*0x387*4*/ u16  config; /*0x386*4*/ u32* reverbEffect; } AudioMixer;

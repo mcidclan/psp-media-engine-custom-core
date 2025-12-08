@@ -4,6 +4,9 @@ __attribute__((noinline, aligned(4)))
 void meLibOnPreProcess() {
   meLibDcacheInvalidateRange(ME_CORE_BASE_ADDR, (0x90000 + 63) & ~63);
   meLibIcacheInvalidateRange(ME_CORE_BASE_ADDR, (0x90000 + 63) & ~63);
+  
+  hw(0xbc200000) = 511 << 16 | 511;
+  hw(0xBC200004) = 511 << 16 | 511;
   meLibOnProcess();
 }
 

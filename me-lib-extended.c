@@ -1,6 +1,6 @@
 #include "me-lib-extended.h"
 
-int meLibSendExternelSoftInterrupt() {
+int meLibSendExternalSoftInterrupt() {
   asm volatile("sync");
   hw(0xBC100044) = 1;
   asm volatile("sync");
