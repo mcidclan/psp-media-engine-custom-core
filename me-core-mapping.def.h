@@ -15,7 +15,7 @@
 
   {0x000018c4, 0x00000000}, // void  _meCoreBusClockAWEdramEnable(void)
   {0x000018fc, 0x00000000}, // void _meCoreBusClockEnableDMACPrimMux()
-  {0x00001918, 0x00000000}, // int  _meCoreBusClockPreserveDMACPrimMux()
+  {0x00001918, 0x00000000}, // int  _meCoreBusClockDisableDMACPrimMux()
   {0x0000196c, 0x00000000}, // void _meCoreBusClockEnableKirk(void)               // _meCoreBusClockEnableDSP(void) ?
   {0x00001988, 0x00000000}, // void _meCoreBusClockDisableKirk(void)              // _meCoreBusClockPreserveDSP(void) ?
   {0x000019a4, 0x00001970}, // int  _meCoreBusClockEnable(u32)
