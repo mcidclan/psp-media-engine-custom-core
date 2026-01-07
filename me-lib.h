@@ -71,6 +71,7 @@ static inline void meLibSetMinimalVmeConfig() {
 
 extern char __start__me_section;
 extern char __stop__me_section;
+extern u32Me SC_HW_RESET;
 
 extern void meLibOnProcess(void);
 

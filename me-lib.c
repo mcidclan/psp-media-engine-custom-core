@@ -1,5 +1,5 @@
 #include "me-lib.h"
-  
+
 __attribute__((weak, noinline, aligned(4)))
 void meLibOnExternalInterrupt(void) {
 }
@@ -231,6 +231,8 @@ void meLibExceptionHandlerInit(const u8 ip7) {
   );
 }
 
+u32Me SC_HW_RESET = 0x14;
+
 static inline int meLibInit() {
   const int tableId = meCoreGetTableIdFromWitnessWord();
   if (tableId < 2) {
@@ -244,7 +246,7 @@ static inline int meLibInit() {
   sceKernelDcacheWritebackInvalidateAll();
   sceKernelIcacheInvalidateAll();
   
-  HW_SYS_RESET_ENABLE = 0x14;
+  HW_SYS_RESET_ENABLE = SC_HW_RESET; // 0x14;
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
   return tableId;

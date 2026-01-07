@@ -19,7 +19,10 @@ void meLibHandler() { // size 0xec (236)
   
   meLibUnlockHwUserRegisters();
   meLibUnlockMemory();
+  
+  #ifndef DISABLE_VME_MINIMAL_CONFIG
   meLibSetMinimalVmeConfig();
+  #endif
   
   asm volatile(
     ".set noreorder                  \n"
