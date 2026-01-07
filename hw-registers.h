@@ -2,6 +2,7 @@
 #define HW_REGISTERS_H
 
 #define u32Me                             unsigned int
+#define u32_me                            u32Me
 
 #define hwp                               volatile u32Me*
 #define hw(addr)                          (*((hwp)(addr)))

@@ -31,7 +31,7 @@ void meLibOnProcess() {
     }
     
     // invalidate cache, forcing next read to fetch from memory
-    meCoreDcacheInvalidateRange((u32Me)shared, sharedSize);
+    meCoreDcacheInvalidateRange((void*)shared, sharedSize);
     if (shared[1] > 100) {
       shared[1] = 0;
     }
@@ -40,7 +40,7 @@ void meLibOnProcess() {
     meLibDelayPipeline();
     
     // write modified cache data back to memory
-    meCoreDcacheWritebackRange((u32Me)shared, sharedSize);
+    meCoreDcacheWritebackRange((void*)shared, sharedSize);
   } while (meExit == 0);
   
   meExit = 2;

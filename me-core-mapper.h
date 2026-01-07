@@ -50,8 +50,8 @@
 #define meCoreDMACPrimaryTransferUnknown_00020ce8 ((void  (*)(void))sysCall(32))
 #define meCoreDMACPrimaryProcessUnknown_000210b4  ((void  (*)(u32Me, u32Me, u32Me, u32Me, u32Me, u32Me, u32Me, u32Me))sysCall(33))
 #define meCoreDMACPrimMuxWaitStatus               ((void  (*)(u32Me))sysCall(34))
-#define meCoreMemcpy                              ((u32Me* (*)(u32Me*, u32Me*, u32Me))sysCall(35))
-#define meCoreMemset                              ((u32Me* (*)(u32Me*, u32Me, u32Me))sysCall(36))
+#define meCoreMemcpy                              ((void* (*)(void*, void*, u32Me))sysCall(35))
+#define meCoreMemset                              ((void* (*)(void*, u32Me, u32Me))sysCall(36))
 #define meCoreEDRAMAlloc                          ((void* (*)(u32Me))sysCall(37))
 #define meCoreEDRAMFree                           ((u32Me (*)(void*))sysCall(38))
 #define meCoreUnknown_00021884                    ((int   (*)(void))sysCall(39))
@@ -80,9 +80,9 @@
 #define meCoreAllocateSlotFrom                    ((void  (*)(u32Me**, u32Me))sysCall(62))
 #define meCoreAllocateSlot                        ((u32Me* (*)(u32Me*))sysCall(63))
 #define meCoreDcacheWritebackInvalidateAll        ((int   (*)(void))sysCall(64))
-#define meCoreDcacheWritebackInvalidateRange      ((int   (*)(u32Me, u32Me))sysCall(65))
-#define meCoreDcacheInvalidateRange               ((int   (*)(u32Me, u32Me))sysCall(66))
-#define meCoreDcacheWritebackRange                ((int   (*)(u32Me, u32Me))sysCall(67))
+#define meCoreDcacheWritebackInvalidateRange      ((int   (*)(void*, u32Me))sysCall(65))
+#define meCoreDcacheInvalidateRange               ((int   (*)(void*, u32Me))sysCall(66))
+#define meCoreDcacheWritebackRange                ((int   (*)(void*, u32Me))sysCall(67))
 #define meCoreDecompressKL4E                      ((int   (*)(byte*, int, char*, u32Me*))sysCall(68))
 
 //
