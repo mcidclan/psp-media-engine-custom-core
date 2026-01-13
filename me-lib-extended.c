@@ -149,6 +149,7 @@ int meLibExtendedOverclock() {
   
   scePowerSetClockFrequency(333, 333, 166);
 
+  // set all clock ratios to 1:1
   hw(0xbc200000) = 511 << 16 | 511;
   hw(0xBC200004) = 511 << 16 | 511;
   hw(0xBC200008) = 511 << 16 | 511;
@@ -157,26 +158,24 @@ int meLibExtendedOverclock() {
   //
   int intr = sceKernelCpuSuspendIntr();
 
-  const u32 index = 0x5; // ratio 1
+  const u32 index = 0x5; // set index, to pll ratio 1
+  
+  // set bit bit 7 to apply index, wait until hardware clears it
   hw(0xbc100068) = 0x80 | index;
   do {
     meLibDelayPipeline();
   } while (hw(0xbc100068) != index);
 
+  // 0x4e - 222mhz
+  // 0x75 - 333mhz
+  
   u32 _num = 0x75;
   const u32 num = 0x9c; // 0xa0;
   const u32 den = 0x0d;
   const u32 msb = 0x0124;
   
-  // 0x4e - 222mhz
-  // 0x75 - 333mhz
-  // 0x93 - 333mhz to ~418mhz
-  // 0x9c - 333mhz to ~444mhz
-  // 0xa0 - 333mhz to ~455mhz
-  
-  // base * (num / den) * ratio
-  // base = 37, num = ?, den = 13
-  
+  // loop until the numerator reaches the target value,
+  // and so, progressively increasing clock frequencies
   while (_num <= num) {
     const u32 lsb = _num << 8 | den;
     const u32 multiplier = (msb << 16) | lsb;
@@ -184,10 +183,17 @@ int meLibExtendedOverclock() {
     meLibDelayPipeline();
     _num++;
   }
+  // 0x93 - 333mhz to ~418mhz
+  // 0x9c - 333mhz to ~444mhz
+  // 0xa0 - 333mhz to ~455mhz
+
+  // base * (num / den) * ratio
+  // with base = 37; num = 0x93, 0x9c, 0xa0; den = 13
   
   sceKernelCpuResumeIntrWithSync(intr);
   
   {
+    // wait for clock stability, signal propagation and pipeline drain
     u32 i = 0xffff;
     while (--i) {
       meLibDelayPipeline();
