@@ -4,7 +4,7 @@
 extern "C" {
 #endif
   typedef int (*FCall)(void);
-  int kcall(FCall const func);
+  int kcall(FCall const func, const int seg);
   int kinit(const void* const handler);
 #ifdef __cplusplus
 }

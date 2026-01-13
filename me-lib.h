@@ -18,9 +18,10 @@
 // Lib
 #define meLibSync()                       asm volatile("sync")
 #define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop; sync;")
-#define meLibCallHwMutexTryLock()         (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreHwMutexTryLock)))
-#define meLibCallHwMutexUnlock()          (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreHwMutexUnlock)))
-#define meLibEmitSoftwareInterrupt()      (kcall((FCall)(CACHED_KERNEL_MASK | (u32Me)meCoreEmitSoftwareInterrupt)))
+#define meLibCallHwMutexTryLock()         (kcall(meCoreHwMutexTryLock, 1))
+#define meLibCallHwMutexUnlock()          (kcall(meCoreHwMutexUnlock, 1))
+#define meLibEmitSoftwareInterrupt()      (kcall(meCoreEmitSoftwareInterrupt, 1))
+#define meLibOverclock()                  (kcall(meLibExtendedOverclock, 1))
 
 #define meLibSetSharedUncached32(size)    meLibSetSharedUncachedMem(size, u32Me)
 

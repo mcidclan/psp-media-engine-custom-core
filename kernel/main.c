@@ -1,14 +1,21 @@
 #include "kcall.h"
 #include <pspsdk.h>
 #include <pspsysevent.h>
+#include <psputilsforkernel.h>
+
 
 PSP_MODULE_INFO("kcall", 0x1006, 1, 1);
 PSP_NO_CREATE_MAIN_THREAD();
 
-int kcall(FCall const f) {
+int kcall(FCall const f, const int seg) {
+  sceKernelIcacheInvalidateAll();
+  switch (seg) {
+    case 1: return ((FCall)(0x80000000 | (unsigned int)f))();
+    case 2: return ((FCall)(0x40000000 | (unsigned int)f))();
+    case 3: return ((FCall)(0xa0000000 | (unsigned int)f))();
+  }
   return f();
 }
-
 
 int kinit(const void* const handler) {
   PspSysEventHandler* seh = sceKernelReferSysEventHandler();

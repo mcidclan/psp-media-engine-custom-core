@@ -137,3 +137,41 @@ void meLibIcacheInvalidateRange(const u32Me addr, const u32Me size) {
   }
   asm volatile("sync");
 }
+
+// Tested on slim only
+int meLibExtendedOverclock() {
+  hw(0xbc200000) = 511 << 16 | 511;
+  hw(0xBC200004) = 511 << 16 | 511;
+  hw(0xBC200008) = 511 << 16 | 511;
+  meLibSync();
+
+  int intr = sceKernelCpuSuspendIntr();
+  
+  hw(0xBC100068) = 0x10;
+  do {
+    meLibDelayPipeline();
+  } while (hw(0xBC100068) != 0);
+  
+  hw(0xBC1000FC) = 0x0924 << 16 | 0x960d;
+  meLibDelayPipeline();
+  
+  const u32 index = 0x5;
+  hw(0xBC100068) = 0x10 | index;
+
+  do {
+    meLibDelayPipeline();
+  } while (hw(0xBC100068) != index);
+
+  u32 i = 0xfffff;
+  while (--i) {
+    meLibDelayPipeline();
+  }
+  
+  hw(0xBC100068) |= 0x80;
+  do {
+    meLibDelayPipeline();
+  } while (hw(0xBC100068) != index);
+
+  sceKernelCpuResumeIntrWithSync(intr);
+  return 0;
+}

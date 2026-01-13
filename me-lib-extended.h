@@ -42,6 +42,8 @@ extern "C" {
   void meLibIcacheInvalidateAll();
   void meLibIcacheInvalidateRange(const u32Me addr, const u32Me size);
 
+  int meLibExtendedOverclock();
+
 #ifdef __cplusplus
 }
 #endif

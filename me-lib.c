@@ -292,7 +292,7 @@ int meLibDefaultInit() {
   if(kinit((void*)eventHandler) < 0) {
     return -3;
   };
-  return kcall(meLibInit);
+  return kcall(meLibInit, 0);
 }
 
 void meLibGetUncached32(volatile u32Me** const mem, const u32Me size) {
