@@ -1,4 +1,5 @@
 #include "me-lib-extended.h"
+#include "psppower.h"
 
 int meLibSendExternalSoftInterrupt() {
   asm volatile("sync");
@@ -138,40 +139,60 @@ void meLibIcacheInvalidateRange(const u32Me addr, const u32Me size) {
   asm volatile("sync");
 }
 
-// Tested on slim only
+int meLibExtendedCancelOverclock() {
+  scePowerSetClockFrequency(333, 333, 166);
+  return 0;
+}
+
+// Only tested on Slim
 int meLibExtendedOverclock() {
+  
+  scePowerSetClockFrequency(333, 333, 166);
+
   hw(0xbc200000) = 511 << 16 | 511;
   hw(0xBC200004) = 511 << 16 | 511;
   hw(0xBC200008) = 511 << 16 | 511;
   meLibSync();
-
+  
+  //
   int intr = sceKernelCpuSuspendIntr();
-  
-  hw(0xBC100068) = 0x10;
+
+  const u32 index = 0x5; // ratio 1
+  hw(0xbc100068) = 0x80 | index;
   do {
     meLibDelayPipeline();
-  } while (hw(0xBC100068) != 0);
-  
-  hw(0xBC1000FC) = 0x0924 << 16 | 0x960d;
-  meLibDelayPipeline();
-  
-  const u32 index = 0x5;
-  hw(0xBC100068) = 0x10 | index;
+  } while (hw(0xbc100068) != index);
 
-  do {
+  u32 _num = 0x75;
+  const u32 num = 0x9c; // 0xa0;
+  const u32 den = 0x0d;
+  const u32 msb = 0x0124;
+  
+  // 0x4e - 222mhz
+  // 0x75 - 333mhz
+  // 0x93 - 333mhz to ~418mhz
+  // 0x9c - 333mhz to ~444mhz
+  // 0xa0 - 333mhz to ~455mhz
+  
+  // base * (num / den) * ratio
+  // base = 37, num = ?, den = 13
+  
+  while (_num <= num) {
+    const u32 lsb = _num << 8 | den;
+    const u32 multiplier = (msb << 16) | lsb;
+    hw(0xbc1000fc) = multiplier;
     meLibDelayPipeline();
-  } while (hw(0xBC100068) != index);
-
-  u32 i = 0xfffff;
-  while (--i) {
-    meLibDelayPipeline();
+    _num++;
   }
   
-  hw(0xBC100068) |= 0x80;
-  do {
-    meLibDelayPipeline();
-  } while (hw(0xBC100068) != index);
-
   sceKernelCpuResumeIntrWithSync(intr);
+  
+  {
+    u32 i = 0xffff;
+    while (--i) {
+      meLibDelayPipeline();
+    }
+  }
+  
   return 0;
 }

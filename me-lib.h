@@ -22,6 +22,7 @@
 #define meLibCallHwMutexUnlock()          (kcall(meCoreHwMutexUnlock, 1))
 #define meLibEmitSoftwareInterrupt()      (kcall(meCoreEmitSoftwareInterrupt, 1))
 #define meLibOverclock()                  (kcall(meLibExtendedOverclock, 1))
+#define meLibCancelOverclock()            (kcall(meLibExtendedCancelOverclock, 1))
 
 #define meLibSetSharedUncached32(size)    meLibSetSharedUncachedMem(size, u32Me)
 
