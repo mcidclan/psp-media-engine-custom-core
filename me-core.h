@@ -7,6 +7,9 @@ void meLibOnPreProcess() {
   
   hw(0xbc200000) = 511 << 16 | 511;
   hw(0xBC200004) = 511 << 16 | 511;
+  hw(0xBC200008) = 511 << 16 | 511;
+  meLibSync();
+  
   meLibOnProcess();
 }
 

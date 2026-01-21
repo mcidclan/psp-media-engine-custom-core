@@ -144,7 +144,7 @@ int meLibExtendedCancelOverclock() {
   return 0;
 }
 
-// Only tested on Slim
+// Only tested on Slim, should be called from SC side
 int meLibExtendedOverclock() {
   
   scePowerSetClockFrequency(333, 333, 166);
