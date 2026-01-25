@@ -93,13 +93,16 @@ int main() {
     sceCtrlPeekBufferPositive(&ctl, 1);
     pspDebugScreenSetXY(1, 2);
     pspDebugScreenPrintf("Me Counter: %x", meCounter);
-    pspDebugScreenSetXY(1, 3);
-    pspDebugScreenPrintf("Me Ext Intr Proof: %x", meExtIntrProof);
+
     pspDebugScreenSetXY(1, 4);
+    pspDebugScreenPrintf("Press Triangle");
+    pspDebugScreenSetXY(1, 5);
+    pspDebugScreenPrintf("Me Ext Intr Proof: %x", meExtIntrProof);
+    pspDebugScreenSetXY(1, 6);
     pspDebugScreenPrintf("Me Exception Proof: %x", meExpProof);
     
     if (!triangle && (ctl.Buttons & PSP_CTRL_TRIANGLE)) {
-      kcall(meCoreEmitSoftwareInterrupt);
+      meLibEmitSoftwareInterrupt();
       triangle = true;
     } else if(!(ctl.Buttons & PSP_CTRL_TRIANGLE)) {
       triangle = false;
