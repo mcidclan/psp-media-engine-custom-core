@@ -9,6 +9,24 @@
 // define the non-cached kernel mutex
 #define mutex hw(0xbc100048)
 
+#define meLibSuspendCpuIntr(var) \
+  asm volatile(                  \
+    "mfic  %0, $0 \n"            \
+    "mtic  $0, $0 \n"            \
+    "sync         \n"            \
+    : "=r"(var)                  \
+    :                            \
+    : "$8"                       \
+  )
+
+#define meLibResumeCpuIntr(var)  \
+  asm volatile(                  \
+    "mtic  %0, $0 \n"            \
+    "sync         \n"            \
+    :                            \
+    : "r"(var)                   \
+  )
+
 #ifdef __cplusplus
 extern "C" {
 #endif

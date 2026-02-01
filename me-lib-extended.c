@@ -139,41 +139,68 @@ void meLibIcacheInvalidateRange(const u32Me addr, const u32Me size) {
   asm volatile("sync");
 }
 
+// note: needs to be 333 to be able to reach 444mhz
+#define INITIAL_FREQUENCY 333
+// modify this value to compare results
+#define THEORETICAL_FREQUENCY (444 /*+ 37/4*/)
+
 int meLibExtendedCancelOverclock() {
+  
+  const u32 index = 2;
+  hw(0xbc100068) = 0x80 | index;
+  do {
+    meLibDelayPipeline();
+  } while (hw(0xbc100068) != index);
+  
+  hw(0xbc200000) = 32 << 16 | 511;
+  hw(0xBC200004) = 32 << 16 | 511;
+  hw(0xBC200008) = 32 << 16 | 511;
+  meLibSync();
+  
+  hw(0xbc1000fc) = 0x01240901;
+  meLibDelayPipeline();
+  
   scePowerSetClockFrequency(333, 333, 166);
   return 0;
 }
 
-// Only tested on Slim, should be called from SC side
-// note: to be called via meLibOverclock() 
+// Note: Only tested on Slim, should be called from SC side
+// 444 ok (approaching the stability limit)
+// base * (num / den) * ratio, with base = 37 and ratio = 1
 int meLibExtendedOverclock() {
   
-  scePowerSetClockFrequency(333, 333, 166);
+  scePowerSetClockFrequency(INITIAL_FREQUENCY, INITIAL_FREQUENCY, INITIAL_FREQUENCY/2);
 
-  // set all clock ratios to 1:1
-  hw(0xbc200000) = 511 << 16 | 511;
-  hw(0xBC200004) = 511 << 16 | 511;
-  hw(0xBC200008) = 511 << 16 | 511;
+  // set index, to pll ratio 1
+  const u32 index = 5; // hw(0xbc100068) & 0xf;
+  
+  float ratio = 1.0f;
+  switch (index) {
+    // incomplete
+    case 5: ratio = 1.0f; break;
+  }
+  
+  const u32 den = 19;
+  const float base = 37;
+  const u32 num = (u32)(((float)(THEORETICAL_FREQUENCY * den)) / (base * ratio));
+  
+  int intr;
+  meLibSuspendCpuIntr(intr);
+  
+  u32 _num = (u32)(((float)(INITIAL_FREQUENCY * den)) / (base * ratio));
+  const u32 msb = 0x0124; // unknown
+
+  // throttle all clock domains before overclocking PLL
+  hw(0xbc200000) = 32 << 16 | 511;
+  hw(0xBC200004) = 32 << 16 | 511;
+  hw(0xBC200008) = 32 << 16 | 511;
   meLibSync();
-  
-  //
-  int intr = sceKernelCpuSuspendIntr();
-
-  const u32 index = 0x5; // set index, to pll ratio 1
-  
+    
   // set bit bit 7 to apply index, wait until hardware clears it
   hw(0xbc100068) = 0x80 | index;
   do {
     meLibDelayPipeline();
   } while (hw(0xbc100068) != index);
-
-  // 0x4e - 222mhz
-  // 0x75 - 333mhz
-  
-  u32 _num = 0x75;
-  const u32 num = 0x9c; // 0xa0;
-  const u32 den = 0x0d;
-  const u32 msb = 0x0124;
   
   // loop until the numerator reaches the target value,
   // and so, progressively increasing clock frequencies
@@ -184,22 +211,21 @@ int meLibExtendedOverclock() {
     meLibDelayPipeline();
     _num++;
   }
-  // 0x93 - 333mhz to ~418mhz
-  // 0x9c - 333mhz to ~444mhz
-  // 0xa0 - 333mhz to ~455mhz
 
-  // base * (num / den) * ratio
-  // with base = 37; num = 0x93, 0x9c, 0xa0; den = 13
-  
-  sceKernelCpuResumeIntrWithSync(intr);
-  
+  // unthrottle all clock domains after overclocking PLL
+  hw(0xbc200000) = 511 << 16 | 511;
+  hw(0xBC200004) = 511 << 16 | 511;
+  hw(0xBC200008) = 511 << 16 | 511;
+  meLibSync();
+
+  // wait for clock stability, signal propagation and pipeline drain
   {
-    // wait for clock stability, signal propagation and pipeline drain
-    u32 i = 0xffff;
+    u32 i = 0xfffff;
     while (--i) {
       meLibDelayPipeline();
     }
   }
   
+  meLibResumeCpuIntr(intr);
   return 0;
 }
