@@ -139,28 +139,62 @@ void meLibIcacheInvalidateRange(const u32Me addr, const u32Me size) {
   asm volatile("sync");
 }
 
-// note: needs to be 333 to be able to reach 444mhz
-#define INITIAL_FREQUENCY 333
 // modify this value to compare results
 #define THEORETICAL_FREQUENCY (444 /*+ 37/4*/)
+#define PLL_MUL_MSB           0x0124 // unknown
 
 int meLibExtendedCancelOverclock() {
+
+  const int TARGET_FREQUENCY = 333;
+    
+  float ratio = 1.0f;
+  const u32 den = 19;
+  const float base = 37;
+
+  const u32 num = (u32)(((float)(TARGET_FREQUENCY * den)) / (base * ratio));
+  u32 _num = (u32)(((float)(THEORETICAL_FREQUENCY * den)) / (base * ratio));
   
-  const u32 index = 2;
-  hw(0xbc100068) = 0x80 | index;
-  do {
-    meLibDelayPipeline();
-  } while (hw(0xbc100068) != index);
+  int intr;
+  meLibSuspendCpuIntr(intr);
   
+  u32 index = 2;
   hw(0xbc200000) = 32 << 16 | 511;
   hw(0xBC200004) = 32 << 16 | 511;
   hw(0xBC200008) = 32 << 16 | 511;
   meLibSync();
   
-  hw(0xbc1000fc) = 0x01240901;
-  meLibDelayPipeline();
+  hw(0xbc100068) = 0x80 | index;
+  do {
+    meLibDelayPipeline();
+  } while (hw(0xbc100068) != index);
   
-  scePowerSetClockFrequency(333, 333, 166);
+  while (_num > num) {
+    const u32 lsb = _num << 8 | den;
+    const u32 multiplier = (PLL_MUL_MSB << 16) | lsb;
+    hw(0xbc1000fc) = multiplier;
+    meLibDelayPipeline();
+    _num--;
+  }
+
+  index = 5;
+  hw(0xbc100068) = 0x80 | index;
+  do {
+    meLibDelayPipeline();
+  } while (hw(0xbc100068) != index);
+
+  hw(0xbc200000) = 511 << 16 | 511;
+  hw(0xBC200004) = 511 << 16 | 511;
+  hw(0xBC200008) = 511 << 16 | 511;
+  meLibSync();
+
+  u32 i = 0xfffff;
+  while (--i) {
+    meLibDelayPipeline();
+  }
+  
+  meLibResumeCpuIntr(intr);
+  
+  scePowerSetClockFrequency(TARGET_FREQUENCY, TARGET_FREQUENCY, TARGET_FREQUENCY/2);
   return 0;
 }
 
@@ -169,6 +203,9 @@ int meLibExtendedCancelOverclock() {
 // base * (num / den) * ratio, with base = 37 and ratio = 1
 int meLibExtendedOverclock() {
   
+  // note: needs to be 333 to be able to reach 444mhz
+  const int INITIAL_FREQUENCY = 333;
+
   scePowerSetClockFrequency(INITIAL_FREQUENCY, INITIAL_FREQUENCY, INITIAL_FREQUENCY/2);
 
   // set index, to pll ratio 1
@@ -182,14 +219,13 @@ int meLibExtendedOverclock() {
   
   const u32 den = 19;
   const float base = 37;
-  const u32 num = (u32)(((float)(THEORETICAL_FREQUENCY * den)) / (base * ratio));
   
+  const u32 num = (u32)(((float)(THEORETICAL_FREQUENCY * den)) / (base * ratio));
+  u32 _num = (u32)(((float)(INITIAL_FREQUENCY * den)) / (base * ratio));
+
   int intr;
   meLibSuspendCpuIntr(intr);
   
-  u32 _num = (u32)(((float)(INITIAL_FREQUENCY * den)) / (base * ratio));
-  const u32 msb = 0x0124; // unknown
-
   // throttle all clock domains before overclocking PLL
   hw(0xbc200000) = 32 << 16 | 511;
   hw(0xBC200004) = 32 << 16 | 511;
@@ -206,7 +242,7 @@ int meLibExtendedOverclock() {
   // and so, progressively increasing clock frequencies
   while (_num <= num) {
     const u32 lsb = _num << 8 | den;
-    const u32 multiplier = (msb << 16) | lsb;
+    const u32 multiplier = (PLL_MUL_MSB << 16) | lsb;
     hw(0xbc1000fc) = multiplier;
     meLibDelayPipeline();
     _num++;
@@ -219,11 +255,9 @@ int meLibExtendedOverclock() {
   meLibSync();
 
   // wait for clock stability, signal propagation and pipeline drain
-  {
-    u32 i = 0xfffff;
-    while (--i) {
-      meLibDelayPipeline();
-    }
+  u32 i = 0xfffff;
+  while (--i) {
+    meLibDelayPipeline();
   }
   
   meLibResumeCpuIntr(intr);
