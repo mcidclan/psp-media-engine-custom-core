@@ -35,7 +35,7 @@ add_library(me-core STATIC
 add_dependencies(me-core kcall_files)
 
 target_compile_options(me-core PRIVATE 
-  -Ofast
+  -Os
   -G0
   -Wall 
   -fno-pic

@@ -40,12 +40,12 @@
   {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimaryTransferUnknown_00020ce8(void)          // why ? // void  _meCoreDMACPrimarySetupBuffers(void)
   
   {0x000210b4, 0x00000000}, // void _meCoreDMACPrimaryProcessUnknown_000210b4(u32 memSrc, u32 bufSrc, u32 blockCount, u32 lastBlockIndex, u32 memDst, u32 bufDstLow, u32 bufDstHigh, u32 dstCount) // not sure
-  {0x00021168, 0x00000000}, // void _meCoreDMACPrimMuxWaitStatus(u32)
-  {0x000212cc, 0x00000000}, // u32* _meCoreMemcpy(u32*, u32*, u32)                // dst, src, size
-  {0x00021338, 0x00000000}, // u32* _meCoreMemset(u32*, u32, u32)                 // dst, value, size
+  {0x00021168, 0x00012a88}, // void _meCoreDMACPrimMuxWaitStatus(u32)
+  {0x000212cc, 0x00012bec}, // u32* _meCoreMemcpy(u32*, u32*, u32)                // dst, src, size
+  {0x00021338, 0x00012c58}, // u32* _meCoreMemset(u32*, u32, u32)                 // dst, value, size
 
-  {0x00021614, 0x00000000}, // void* _meCoreEDRAMAlloc(u32) // from 0x00180000 on slim
-  {0x000216f8, 0x00000000}, // u32   _meCoreEDRAMFree(void*)
+  {0x00021614, 0x00012f34}, // void* _meCoreEDRAMAlloc(u32) // from 0x00180000 on slim
+  {0x000216f8, 0x00013018}, // u32   _meCoreEDRAMFree(void*)
 
   {0x00021884, 0x00000000}, // int  _meCoreUnknown_00021884
 
@@ -54,10 +54,10 @@
   {0x000219b4, 0x00000000}, // void _meCore32PoolsInitMemory(void)
   {0x00021a30, 0x00000000}, // int  _meCore32PoolsUpdateDispatchQueues(void)
 
-  {0x00021ad8, 0x00000000}, // int  _meCoreInterruptSetMask(u32)
-  {0x00021ae4, 0x00000000}, // int  _meCoreInterruptClearMask(void)
-  {0x00021af4, 0x00000000}, // int  _meCoreInterruptSetMask_2(u32)
-  {0x00021b34, 0x00000000}, // u64  _meCoreExceptionInitHandlers(void)
+  {0x00021ad8, 0x000121f0}, // int  _meCoreInterruptSetMask(u32)
+  {0x00021ae4, 0x000121fc}, // int  _meCoreInterruptClearMask(void)
+  {0x00021af4, 0x00000000}, // int  _meCoreInterruptSetMask_2(u32) // ?
+  {0x00021b34, 0x00012288}, // u64  _meCoreExceptionInitHandlers(void)
   {0x00021b7c, 0x00000000}, // int  _meCorePriorityQueueDefaultInsert(void)
   {0x00021bbc, 0x00013230}, // int  _meCoreEmitSoftwareInterrupt(void)
 

@@ -256,7 +256,7 @@ static inline int meLibInit() {
 extern unsigned char embedded_kcall[];
 extern unsigned int embedded_kcall_len;
 
-int writePrx(void* start, int size) {
+static int writePrx(void* start, int size) {
   SceUID fd = sceIoOpen(PRX_FILE, PSP_O_WRONLY | PSP_O_CREAT, 0777);
   if (fd < 0) {
     return -1;
@@ -269,7 +269,7 @@ int writePrx(void* start, int size) {
   return 0;
 }
 
-int eventHandler(int eventId) {
+static int eventHandler(int eventId) {
   switch(eventId) {
     case 0x00004005:
       meLibOnSleep();
@@ -281,7 +281,22 @@ int eventHandler(int eventId) {
   return 0;
 }
 
+int meLibLoadPrx() {
+  if(writePrx(embedded_kcall, (int)embedded_kcall_len) < 0) {
+    return -1;
+  }
+  if (pspSdkLoadStartModule(PRX_FILE, PSP_MEMORY_PARTITION_KERNEL) < 0){
+    sceKernelExitGame();
+    return -1;
+  }
+  return 0;
+}
+
 int meLibDefaultInit() {
+  if (meLibLoadPrx() < 0) {
+    return -3;
+  }
+  /*
   if(writePrx(embedded_kcall, (int)embedded_kcall_len) < 0) {
     return -3;
   }
@@ -289,6 +304,7 @@ int meLibDefaultInit() {
     sceKernelExitGame();
     return -3;
   }
+  */
   if(kinit((void*)eventHandler) < 0) {
     return -3;
   };

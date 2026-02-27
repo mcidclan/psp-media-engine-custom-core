@@ -21,11 +21,6 @@
 #define meLibCallHwMutexTryLock()         (kcall(meCoreHwMutexTryLock, 1))
 #define meLibCallHwMutexUnlock()          (kcall(meCoreHwMutexUnlock, 1))
 #define meLibEmitSoftwareInterrupt()      (kcall(meCoreEmitSoftwareInterrupt, 1))
-#define meLibCancelOverclock()            (kcall(meLibExtendedCancelOverclock, 1))
-
-#define meLibOverclock()                                                       \
-  sceKernelIcacheInvalidateAll();                                              \
-  kcall((int (*)(void))(CACHED_KERNEL_MASK | (u32Me)meLibExtendedOverclock, 1));
 
 #define meLibSetSharedUncached32(size)    meLibSetSharedUncachedMem(size, u32Me)
 
@@ -89,6 +84,7 @@ extern "C" {
   extern void meLibOnException(void);
   extern void meLibOnSleep(void);
   extern void meLibOnWake(void);
+  int  meLibLoadPrx();
   int  meLibDefaultInit();
   void meLibExceptionHandlerInit(const u8 ip7);
   void meLibGetUncached32(volatile u32Me** const mem, const u32Me size);
