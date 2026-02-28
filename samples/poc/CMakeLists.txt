@@ -18,4 +18,4 @@ target_link_libraries(mecore
   me-core psppower pspge pspdisplay pspctrl pspdebug
 )
 
-create_pbp_file(TARGET mecore TITLE "Me Core Demo")
+create_pbp_file(TARGET mecore TITLE "Me Core Demo" BUILD_PRX)

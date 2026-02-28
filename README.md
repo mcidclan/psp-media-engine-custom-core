@@ -29,6 +29,11 @@ As a solution, we have several static correspondence tables and the code will se
 
 ## Usage
 
+### modules
+- me-core, me-core-custom
+- me-core-mapper
+- me-lib
+
 ### Basic Integration
 
 Include the me-core-mapper in your project as follows:

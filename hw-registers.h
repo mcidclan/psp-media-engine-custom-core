@@ -4,6 +4,12 @@
 #define u32Me                             unsigned int
 #define u32_me                            u32Me
 
+#define ME_HANDLER_BASE                   0xbfc00000
+#define ME_EDRAM_BASE                     0x00000000
+#define UNCACHED_USER_MASK                0x40000000
+#define CACHED_KERNEL_MASK                0x80000000
+#define UNCACHED_KERNEL_MASK              0xA0000000
+
 #define hwp                               volatile u32Me*
 #define hw(addr)                          (*((hwp)(addr)))
 #define uhw(addr)                         ((u32Me*)(0x40000000 | ((u32Me)addr)))
@@ -44,7 +50,8 @@
     : "i" (addr) \
     : "k0", "memory" \
   );
-  
+
+// tmp
 #define SRAM_SHARED_VARS_BASE             0xbfc00600
 #define SRAM_SHARED_VAR_0                 (SRAM_SHARED_VARS_BASE + 0)
 #define SRAM_SHARED_VAR_1                 (SRAM_SHARED_VARS_BASE + 4)

@@ -1,21 +1,17 @@
-#ifndef ME_LIB_H
-#define ME_LIB_H
+#ifndef ME_LIB_EXTENDED_H
+#define ME_LIB_EXTENDED_H
+
+// Use this file instead of 'me-lib.h' if you wish to use the custom extended
+// functions as an alternative to meCore. This is useful for debugging.
 
 #include <pspsdk.h>
 #include <pspkernel.h>
+#include <psppower.h>
 #include <malloc.h>
 #include <string.h>
-
-#include "me-core-mapper.h"
+#include "hw-registers.h"
 #include "kernel/kcall.h"
 
-#define ME_HANDLER_BASE                   0xbfc00000
-#define ME_EDRAM_BASE                     0x00000000
-#define UNCACHED_USER_MASK                0x40000000
-#define CACHED_KERNEL_MASK                0x80000000
-#define UNCACHED_KERNEL_MASK              0xA0000000
-
-// Lib
 #define meLibSync()                       asm volatile("sync")
 #define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop; sync;")
 #define meLibCallHwMutexTryLock()         (kcall(meCoreHwMutexTryLock, 1))
@@ -34,154 +30,73 @@
 
 #define meLibMakeMemSegVar(name, mask, type) ((volatile type* const)((mask) | (type)name))
 
-inline void meLibHalt() {
-  asm volatile(".word 0x70000000");
-}
+#define defineVar(name) \
+  volatile u32 _##name[1] __attribute__((aligned(64), section(".uncached"))) = {0}; \
+  volatile u32* name __attribute__((aligned(64), section(".uncached"))) = NULL;
 
-static inline void meLibUnlockHwUserRegisters() {
-  const u32Me START = 0xbc000030;
-  const u32Me END   = 0xbc000044;
-  for(u32Me reg = START; reg <= END; reg+=4) {
-    hw(reg) = -1;
-  }
-  meLibSync();
-}
+#define buildUncachedVar(name) \
+  name = ((volatile u32* const)((UNCACHED_USER_MASK) | (u32)_##name)); \
+  name[0] = 0;
 
-static inline void meLibUnlockMemory() {
-  const u32Me START = 0xbc000000;
-  const u32Me END   = 0xbc00002c;
-  for(u32Me reg = START; reg <= END; reg+=4) {
-    hw(reg) = -1;
-  }
-  meLibSync();
-}
+// define the non-cached kernel mutex
+#define mutex hw(0xbc100048)
 
-static inline void meLibSetMinimalVmeConfig() {
-  hw(0xBCC00000) = -1;
-  hw(0xBCC00010) = 1;
-  while (hw(0xBCC00010)) {
-    meLibSync();
-  };
-  hw(0xBCC00070) = 0;
-  hw(0xBCC00020) = -1;
-  hw(0xBCC00030) = 1;
-  hw(0xBCC00040) = 2; // 1
-  meLibSync();
-}
+#define meLibSuspendCpuIntr(var) \
+  asm volatile(                  \
+    "mfic  %0, $0 \n"            \
+    "mtic  $0, $0 \n"            \
+    "sync         \n"            \
+    : "=r"(var)                  \
+    :                            \
+    : "$8"                       \
+  )
 
-extern char __start__me_section;
-extern char __stop__me_section;
-extern u32Me SC_HW_RESET;
-
-extern void meLibOnProcess(void);
+#define meLibResumeCpuIntr(var)  \
+  asm volatile(                  \
+    "mtic  %0, $0 \n"            \
+    "sync         \n"            \
+    :                            \
+    : "r"(var)                   \
+  )
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  extern void meLibSaveContext(void);
-  extern void meLibRestoreContext(void);
-  extern void meLibOnExternalInterrupt(void);
-  extern void meLibOnException(void);
-  extern void meLibOnSleep(void);
-  extern void meLibOnWake(void);
+
   int  meLibLoadPrx();
-  int  meLibDefaultInit();
-  void meLibExceptionHandlerInit(const u8 ip7);
-  void meLibGetUncached32(volatile u32Me** const mem, const u32Me size);
+  void meLibHalt();
+  
+  int meLibSendExternalSoftInterrupt();
+  u32Me meLibGetCpuId();
+  // kernel function to unlock the mutex
+  int meLibHwMutexUnlock();
+  // kernel function that waits and attempts to lock and acquire the mutex
+  int meLibHwMutexLock();
+  // kernel function to attempt locking and acquiring the mutex
+  int meLibHwMutexTryLock();
+
+  // note:
+  // it appears that the main CPU can read the mutex and only set bit[0],
+  // while the Me can read the mutex and only set bit[1]
+  //
+  // mutex    unique
+  // 11  xor  01 =>   not 10 = 0
+  // 11  xor  10 =>   not 01 = 0
+  // 10  xor  01 =>   not 11 = 0
+  // 10  xor  10 =>   not 00 = 1
+  // 01  xor  01 =>   not 00 = 1
+  // 01  xor  10 =>   not 11 = 0
+
+  void meLibDcacheWritebackInvalidateAll();
+  void meLibDcacheWritebackInvalidateRange(const u32Me addr, const u32Me size);
+  void meLibDcacheInvalidateRange(const u32Me addr, const u32Me size);
+  void meLibDcacheWritebackRange(const u32Me addr, const u32Me size);
+
+  void meLibIcacheInvalidateAll();
+  void meLibIcacheInvalidateRange(const u32Me addr, const u32Me size);
+
 #ifdef __cplusplus
 }
 #endif
 
-
-#define ME_LIB_SETUP_DEFAULT_SUSPEND_HANDLER() \
-extern "C" __attribute__((noinline, aligned(4))) \
-void meLibOnExternalInterrupt(void) { \
-  asm volatile( \
-    ".set push                       \n" \
-    ".set noreorder                  \n" \
-    ".set noat                       \n" \
-    \
-    /* save regs context */ \
-    "addi     $sp, $sp, -16          \n" \
-    "sw       $k0, 0($sp)            \n" \
-    "sw       $k1, 4($sp)            \n" \
-    "sw       $ra, 8($sp)            \n" \
-    "sw       $at, 12($sp)           \n" \
-    \
-    /* if SRAM_SHARED_VAR_0 equal 1 */   \
-    "li       $k0, %2                \n" \
-    "lw       $k1, 0($k0)            \n" \
-    "li       $k0, 1                 \n" \
-    "bne      $k1, $k0, 1f           \n" \
-    "nop                             \n" \
-    \
-    /* call meLibSaveContext */ \
-    "la       $k0, %0                \n" \
-    "li       $k1, 0x80000000        \n" \
-    "or       $k0, $k0, $k1          \n" \
-    "cache    0x8, 0($k0)            \n" \
-    "sync                            \n" \
-    "jal      $k0                    \n" \
-    "nop                             \n" \
-    "1:                              \n" \
-    \
-    /* if SRAM_SHARED_VAR_0 equal 2 */ \
-    "li       $k0, %2                \n" \
-    "lw       $k1, 0($k0)            \n" \
-    "li       $k0, 2                 \n" \
-    "bne      $k1, $k0, 2f           \n" \
-    "nop                             \n" \
-    \
-    /* call meLibRestoreContext */ \
-    "la       $k0, %1                \n" \
-    "li       $k1, 0x80000000        \n" \
-    "or       $k0, $k0, $k1          \n" \
-    "cache    0x8, 0($k0)            \n" \
-    "sync                            \n" \
-    "jal      $k0                    \n" \
-    "nop                             \n" \
-    "2:                              \n" \
-    \
-    /* reset SRAM_SHARED_VAR_0 */ \
-    "li       $k0, %2                \n" \
-    "sw       $zero, 0($k0)          \n" \
-    "sync                            \n" \
-    \
-    /* restore regs context */ \
-    "lw       $k0, 0($sp)            \n" \
-    "lw       $k1, 4($sp)            \n" \
-    "lw       $ra, 8($sp)            \n" \
-    "lw       $at, 12($sp)           \n" \
-    "addi     $sp, $sp, 16           \n" \
-    \
-    ".set pop                        \n" \
-    : \
-    :  "i" (meLibSaveContext), "i" (meLibRestoreContext), "i" (SRAM_SHARED_VAR_0) \
-    : "k0", "k1", "memory" \
-  ); \
-} \
-\
-extern "C" void meLibOnSleep() { \
-  SET_SRAM_SHARED_VAR(0, 1); \
-  meCoreEmitSoftwareInterrupt(); \
-  while (GET_SRAM_SHARED_VAR(0)) { \
-    meLibSync(); \
-  } \
-  HW_SYS_RESET_ENABLE = 0x14; \
-  meLibSync(); \
-} \
-\
-extern "C" void meLibOnWake() { \
-  SET_SRAM_SHARED_VAR(0, 3); \
-  HW_SYS_RESET_ENABLE = 0x14; \
-  HW_SYS_RESET_ENABLE = 0x00; \
-  meLibSync(); \
-  while (GET_SRAM_SHARED_VAR(0)) { \
-    meLibSync(); \
-  } \
-  SET_SRAM_SHARED_VAR(0, 2); \
-  meCoreEmitSoftwareInterrupt(); \
-}
-
 #endif
-
