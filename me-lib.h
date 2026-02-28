@@ -1,5 +1,5 @@
-#ifndef ME_LIB_EXTENDED_H
-#define ME_LIB_EXTENDED_H
+#ifndef ME_LIB_H
+#define ME_LIB_H
 
 // Use this file instead of 'me-lib.h' if you wish to use the custom extended
 // functions as an alternative to meCore. This is useful for debugging.

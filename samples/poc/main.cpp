@@ -40,6 +40,7 @@ int main() {
   pspDebugScreenPrintf("Me Core Poc");
   
   SceCtrlData ctl;
+  u32 count = 0;
   do {
     pspDebugScreenSetXY(1, 2);
     pspDebugScreenPrintf("clock buses enabled: 0x%08x", clockBuses);
@@ -48,9 +49,17 @@ int main() {
     pspDebugScreenSetXY(1, 4);
     pspDebugScreenPrintf("sp register: 0x%08x", sp);
     sceCtrlPeekBufferPositive(&ctl, 1);
-  } while(!meExit && !(ctl.Buttons & PSP_CTRL_HOME));
+    
+    if (meExit) {
+      count++;
+      if (count >= 10) {
+        break;
+      }
+      sceKernelDelayThread(100000);
+    }
+    
+  } while (!(ctl.Buttons & PSP_CTRL_HOME));
   
-  sceKernelDelayThread(1000000);
   sceKernelExitGame();
   
   return 0;

@@ -6,7 +6,7 @@ add_executable(mehwmutex
   main.cpp
 )
 
-target_compile_options(mehwmutex PRIVATE -Ofast -G0 -Wall -fno-pic)
+target_compile_options(mehwmutex PRIVATE -Os -G0 -Wall -fno-pic)
 
 target_compile_options(mehwmutex PRIVATE 
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>

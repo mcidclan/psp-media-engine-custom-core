@@ -6,7 +6,7 @@ add_executable(mecore
   main.cpp
 )
 
-target_compile_options(mecore PRIVATE -Ofast -G0 -Wall -fno-pic)
+target_compile_options(mecore PRIVATE -Os -G0 -Wall -fno-pic)
 
 target_compile_options(mecore PRIVATE 
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>

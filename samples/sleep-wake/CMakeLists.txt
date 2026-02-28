@@ -6,7 +6,7 @@ add_executable(mesleep
   main.cpp
 )
 
-target_compile_options(mesleep PRIVATE -Ofast -G0 -Wall -fno-pic)
+target_compile_options(mesleep PRIVATE -Os -G0 -Wall -fno-pic)
 
 target_compile_options(mesleep PRIVATE 
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>

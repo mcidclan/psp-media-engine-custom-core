@@ -1,5 +1,5 @@
-#ifndef ME_LIB_H
-#define ME_LIB_H
+#ifndef ME_CORE_CUSTOM_H
+#define ME_CORE_CUSTOM_H
 
 #include "me-core-mapper.h"
 #include "me-lib.h"
@@ -23,13 +23,46 @@ extern "C" {
   void meLibExceptionHandlerInit(const u8 ip7);
   
   void meLibGetUncached32(volatile u32Me** const mem, const u32Me size);
-  void meLibUnlockHwUserRegisters();
-  void meLibUnlockMemory();
-  void meLibSetMinimalVmeConfig();
 #ifdef __cplusplus
 }
 #endif
 
+#define meLibUnlockHwUserRegisters()            \
+{                                               \
+  const u32Me START = 0xbc000030;               \
+  const u32Me END   = 0xbc000044;               \
+  for(u32Me reg = START; reg <= END; reg+=4) {  \
+    hw(reg) = -1;                               \
+  }                                             \
+  meLibSync();                                  \
+}                                               \
+  
+
+#define meLibUnlockMemory()                     \
+{                                               \
+  const u32Me START = 0xbc000000;               \
+  const u32Me END   = 0xbc00002c;               \
+  for(u32Me reg = START; reg <= END; reg+=4) {  \
+    hw(reg) = -1;                               \
+  }                                             \
+  meLibSync();                                  \
+}                                               \
+  
+
+#define meLibSetMinimalVmeConfig()              \
+{                                               \
+  hw(0xBCC00000) = -1;                          \
+  hw(0xBCC00010) = 1;                           \
+  while (hw(0xBCC00010)) {                      \
+    meLibSync();                                \
+  };                                            \
+  hw(0xBCC00070) = 0;                           \
+  hw(0xBCC00020) = -1;                          \
+  hw(0xBCC00030) = 1;                           \
+  hw(0xBCC00040) = 2; /*1*/                     \
+  meLibSync();                                  \
+}                                               \
+  
 
 #define ME_LIB_SETUP_DEFAULT_SUSPEND_HANDLER() \
 extern "C" __attribute__((noinline, aligned(4))) \

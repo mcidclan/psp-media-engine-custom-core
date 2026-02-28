@@ -6,7 +6,7 @@ add_executable(meexceptions
   main.cpp
 )
 
-target_compile_options(meexceptions PRIVATE -Ofast -G0 -Wall -fno-pic)
+target_compile_options(meexceptions PRIVATE -Os -G0 -Wall -fno-pic)
 
 target_compile_options(meexceptions PRIVATE 
   $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>

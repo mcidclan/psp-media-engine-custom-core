@@ -1,3 +1,6 @@
+#ifndef ME_CORE_H
+#define ME_CORE_H
+
 #include "me-core-custom.h"
 
 __attribute__((noinline, aligned(4)))
@@ -59,3 +62,5 @@ void meLibHandler() { // size 0xec (236)
     : "k0", "k1", "memory"
   );
 }
+
+#endif
