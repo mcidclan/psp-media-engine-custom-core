@@ -17,7 +17,7 @@ void meLibOnPreProcess() {
 }
 
 __attribute__((section("_me_section"), used))
-void meLibHandler() { // size 0xec (236)
+void meLibHandler() { // size 0x108 (264)
   HW_SYS_BUS_CLOCK_ENABLE      = 0x0f;
   HW_SYS_TACHYON_CONFIG_STATUS |= 0x02;
   HW_SYS_NMI_FLAGS             = 0xffffffff;

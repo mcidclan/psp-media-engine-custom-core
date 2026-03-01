@@ -233,13 +233,8 @@ void meLibExceptionHandlerInit(const u8 ip7) {
 
 u32Me SC_HW_RESET = 0x14;
 
-static inline int meLibInit() {
-  const int tableId = meCoreGetTableIdFromWitnessWord();
-  if (tableId < 2) {
-    return -1;
-  }
-  meCoreSelectSystemTable(tableId);
-  
+void meLibReset() {
+
   #define me_section_size (&__stop__me_section - &__start__me_section)
   memcpy((void*)ME_HANDLER_BASE, (void*)&__start__me_section, me_section_size);
   
@@ -249,18 +244,31 @@ static inline int meLibInit() {
   HW_SYS_RESET_ENABLE = SC_HW_RESET; // 0x14;
   HW_SYS_RESET_ENABLE = 0x00;
   meLibSync();
+}
+
+static inline int meLibInit() {
+  const int tableId = meCoreGetTableIdFromWitnessWord();
+  if (tableId < 2) {
+    return -1;
+  }
+  meCoreSelectSystemTable(tableId);
+  
+  meLibReset();
   return tableId;
 }
 
+__attribute__((noinline, aligned(4)))
 static int eventHandler(int eventId) {
-  switch(eventId) {
-    case 0x00004005:
-      meLibOnSleep();
-    break;
-    case 0x00010005:
-      meLibOnWake();
-    break;
+    
+  static unsigned int lastId = 0;
+  if ((eventId == 0x00000402) && (lastId != 0x00000402)) {
+    meLibOnSleep();
+    lastId = 0x00000402;
   }
+  else if ((eventId == 0x00010005) && (lastId != 0x00010005)) {
+    meLibOnWake();
+    lastId = 0x00010005;
+  }  
   return 0;
 }
 
