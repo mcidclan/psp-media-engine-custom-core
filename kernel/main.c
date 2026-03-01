@@ -7,14 +7,23 @@
 PSP_MODULE_INFO("kcall", 0x1006, 1, 1);
 PSP_NO_CREATE_MAIN_THREAD();
 
-int kcall(FCall const f, const int seg) {
+int kcall(FCall const f, const unsigned int seg) {
+  const unsigned int addr = (seg | (unsigned int)f);
   sceKernelIcacheInvalidateAll();
+  /*
   switch (seg) {
     case 1: return ((FCall)(0x80000000 | (unsigned int)f))();
     case 2: return ((FCall)(0x40000000 | (unsigned int)f))();
     case 3: return ((FCall)(0xa0000000 | (unsigned int)f))();
   }
-  return f();
+  */
+  return ((FCall)addr)();
+}
+
+int kcall(FPCall const f, const unsigned int seg, void* const param) {
+  const unsigned int addr = (seg | (unsigned int)f);
+  sceKernelIcacheInvalidateAll();
+  return ((FPCall)addr)(param);
 }
 
 int kinit(const void* const handler) {
