@@ -28,6 +28,10 @@ target_link_options(kcall PRIVATE
   -Wl,--strip-all
 )
 
+target_link_libraries(kcall PRIVATE
+  -lpspkernel
+)
+
 option(USE_PRX_COMPRESSION "Enable PRX compression with gzip" OFF)
 find_package(Python3 COMPONENTS Interpreter QUIET)
 

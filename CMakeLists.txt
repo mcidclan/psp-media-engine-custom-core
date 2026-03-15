@@ -5,8 +5,9 @@ execute_process(
 )
 string(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+)" PSP_GCC_VERSION "${PSP_GCC_VERSION_OUTPUT}")
 string(REGEX MATCH "^[^\n]*" PSP_GCC_VERSION_LINE "${PSP_GCC_VERSION_OUTPUT}")
-if(PSP_GCC_VERSION VERSION_LESS "15.1.1")
-  message(WARNING "Please make sure you have the minimum gcc version:\n    Required: psp-gcc (GCC) 15.1.1 20250425\n    Current:  ${PSP_GCC_VERSION_LINE}")
+string(REGEX MATCH "[0-9]{8}" PSP_GCC_DATE "${PSP_GCC_VERSION_OUTPUT}")
+if(NOT PSP_GCC_VERSION STREQUAL "15.2.0" OR NOT PSP_GCC_DATE STREQUAL "")
+  message(WARNING "This project has been tested and developed with a GCC version that may differ from yours.\n    Reference version: psp-gcc (GCC) 15.2.0\n    Your version:      ${PSP_GCC_VERSION_LINE}")
 endif()
 
 cmake_minimum_required(VERSION 3.10)
