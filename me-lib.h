@@ -1,9 +1,6 @@
 #ifndef ME_LIB_H
 #define ME_LIB_H
 
-// Use this file instead of 'me-lib.h' if you wish to use the custom extended
-// functions as an alternative to meCore. This is useful for debugging.
-
 #include <pspsdk.h>
 #include <pspkernel.h>
 #include <psppower.h>
