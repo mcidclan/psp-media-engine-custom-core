@@ -11,7 +11,7 @@ This allows drawing commands to be written concurrently to the Graphics Engine f
 Build it with CMake, then copy the EBOOT.PBP into a folder within the GAME directory.  
 
 
-## Disclamer
+## Disclaimer
 This project and code are provided as-is without warranty. Users assume full responsibility for any implementation or consequences. Use at your own discretion and risk
 
 
