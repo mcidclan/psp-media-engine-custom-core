@@ -32,27 +32,44 @@ void meLibOnProcess(void) {
   meLibHalt();
 }
 
+void exiting() {
+  pspDebugScreenPrintf("exiting...\n");
+  sceKernelDelayThread(3000000);
+  sceKernelExitGame();
+}
+
 int main() {
   pspDebugScreenInit();
+  pspDebugScreenSetXY(0, 0);
+  pspDebugScreenPrintf("Me Core Poc\n");
+
   const int tableId = meLibDefaultInit();
-    
-  pspDebugScreenSetXY(1, 1);
-  pspDebugScreenPrintf("Me Core Poc");
+  
+  if (
+    (tableId != ME_CORE_T2_IMG_TABLE) &&
+    (tableId != ME_CORE_IMG_TABLE)
+  ) {
+    pspDebugScreenPrintf("table not available: %d   \n", tableId);
+    exiting();
+  }
+  
+  if (tableId < 0) {
+    pspDebugScreenPrintf("error: %d   \n", tableId);
+    exiting();
+  }
   
   SceCtrlData ctl;
   u32 count = 0;
   do {
-    pspDebugScreenSetXY(1, 2);
-    pspDebugScreenPrintf("clock buses enabled: 0x%08x", clockBuses);
-    pspDebugScreenSetXY(1, 3);
-    pspDebugScreenPrintf("table Id: %i", tableId);
-    pspDebugScreenSetXY(1, 4);
-    pspDebugScreenPrintf("sp register: 0x%08x", sp);
+    pspDebugScreenSetXY(0, 1);
+    pspDebugScreenPrintf("clock buses enabled: 0x%08x   \n", clockBuses);
+    pspDebugScreenPrintf("table Id: %i   \n", tableId);
+    pspDebugScreenPrintf("sp register: 0x%08x   \n", sp);
     sceCtrlPeekBufferPositive(&ctl, 1);
     
     if (meExit) {
       count++;
-      if (count >= 10) {
+      if (count >= 30) {
         break;
       }
       sceKernelDelayThread(100000);
@@ -60,7 +77,7 @@ int main() {
     
   } while (!(ctl.Buttons & PSP_CTRL_HOME));
   
-  sceKernelExitGame();
+  exiting();
   
   return 0;
 }

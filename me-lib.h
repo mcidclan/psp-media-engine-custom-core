@@ -9,6 +9,11 @@
 #include "hw-registers.h"
 #include "kernel/kcall.h"
 
+#define ERROR_ON_WRITE_PRX  -3
+#define ERROR_ON_LOAD_PRX   -4
+#define ERROR_ON_KINIT      -5
+#define ERROR_ON_ME_IMG     -6
+
 #define meLibSync()                       asm volatile("sync")
 #define meLibDelayPipeline()              asm volatile("nop; nop; nop; nop; nop; nop; nop; sync;")
 #define meLibCallHwMutexTryLock()         (kcall(meCoreHwMutexTryLock, CACHED_KERNEL_MASK))

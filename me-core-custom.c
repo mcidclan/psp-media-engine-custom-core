@@ -248,8 +248,8 @@ void meLibReset() {
 
 static inline int meLibInit() {
   const int tableId = meCoreGetTableIdFromWitnessWord();
-  if (tableId < 2) {
-    return -1;
+  if (tableId < 2) { // tmp bl and sd img
+    return ERROR_ON_ME_IMG;
   }
   meCoreSelectSystemTable(tableId);
   
@@ -275,11 +275,12 @@ static int eventHandler(int eventId) {
 int meLibDefaultInit() {
   sceKernelDcacheWritebackInvalidateAll();
   sceKernelIcacheInvalidateAll();
-  if (meLibLoadPrx() < 0) {
-    return -3;
+  int error = meLibLoadPrx();
+  if (error < 0) {
+    return error;
   }
   if(kinit((void*)eventHandler) < 0) {
-    return -3;
+    return ERROR_ON_KINIT;
   };
   return kcall(meLibInit, 0);
 }
