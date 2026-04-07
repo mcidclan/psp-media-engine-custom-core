@@ -273,6 +273,8 @@ static int eventHandler(int eventId) {
 }
 
 int meLibDefaultInit() {
+  sceKernelDcacheWritebackInvalidateAll();
+  sceKernelIcacheInvalidateAll();
   if (meLibLoadPrx() < 0) {
     return -3;
   }
