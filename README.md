@@ -116,6 +116,24 @@ make clean; make install;
 
 This will copy the .a file to your pspdev/psp/lib folder and the related headers to the pspdev/psp/include folder. It embeds the small PRX used as a kernel bridge in a dedicated data section. At runtime, the library will extract the PRX next to the EBOOT and then load it.
 
+## Contribution Guidelines
+
+### AI-assisted development
+
+AI tools (such as Claude, ChatGPT, Copilot, etc.) may be used as development aids.
+
+However, the following rules apply strictly:
+
+* All commits must be authored by a human contributor (pseudonyms are perfectly acceptable).
+* The commit history must not contain any AI attribution (e.g. "Claude", "ChatGPT", or similar) as author or co-author.
+* Contributors must fully review, understand, and validate all submitted code before opening a pull request.
+* Contributors are expected to be able to explain and justify their changes during code review.
+* The contributor takes full responsibility for the submitted code.
+
+In short: AI can assist, but humans must retain full ownership of the work.
+
+Pull requests that include AI attribution in commits, or that are not clearly understood and validated by the contributor, will be rejected.
+
 ## Disclaimer
 This project and code are provided as-is without warranty. Users assume full responsibility for any implementation or consequences. Use at your own discretion and risk
 
