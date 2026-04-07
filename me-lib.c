@@ -6,6 +6,7 @@ extern unsigned char embedded_kcall[];
 extern unsigned int embedded_kcall_len;
 
 static int writePrx(void* start, int size) {
+  sceKernelDcacheWritebackRange(start, size);
   SceUID fd = sceIoOpen(PRX_FILE, PSP_O_WRONLY | PSP_O_CREAT, 0777);
   if (fd < 0) {
     return -1;
