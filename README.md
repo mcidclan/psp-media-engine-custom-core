@@ -128,7 +128,7 @@ However, the following rules apply strictly:
 * The commit history must not contain any AI attribution (e.g. "Claude", "ChatGPT", or similar) as author or co-author.
 * Contributors must fully review, understand, and validate all submitted code before opening a pull request.
 * Contributors are expected to be able to explain and justify their changes during code review.
-* The contributor takes full responsibility for the submitted code.
+* The contributor is responsible for ensuring their code does not break existing functionality, including dependencies and the overall library behavior.
 
 In short: AI can assist, but humans must retain full ownership of the work.
 
