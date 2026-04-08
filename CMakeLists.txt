@@ -30,6 +30,7 @@ add_custom_command(
   COMMAND sed -i 's/unsigned char [^[]*/unsigned char embedded_kcall/' ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
   COMMAND sed -i 's/unsigned int [^ ]*_len/unsigned int embedded_kcall_len/' ${CMAKE_CURRENT_BINARY_DIR}/embedded.c
   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/kernel/kcall.prx
+  DEPENDS kcall_prx
   COMMENT "Embedding kcall.prx into C file"
 )
 
