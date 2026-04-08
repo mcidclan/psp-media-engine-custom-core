@@ -23,8 +23,7 @@ int meLibLoadPrx() {
   if(writePrx(embedded_kcall, (int)embedded_kcall_len) < 0) {
     return ERROR_ON_WRITE_PRX;
   }
-  if (pspSdkLoadStartModule(PRX_FILE, PSP_MEMORY_PARTITION_KERNEL) < 0){
-    sceKernelExitGame();
+  if (pspSdkLoadStartModule(PRX_FILE, PSP_MEMORY_PARTITION_KERNEL) < 0) {
     return ERROR_ON_LOAD_PRX;
   }
   return 0;
