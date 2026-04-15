@@ -54,13 +54,13 @@ int main() {
   pspDebugScreenPrintf("Me Sleep");
   
   SceCtrlData ctl;
-  u32Me scCounter = 0;
+  u32 scCounter = 0;
   do {
     sceCtrlPeekBufferPositive(&ctl, 1);
     pspDebugScreenSetXY(1, 2);
-    pspDebugScreenPrintf("Me counter: %x", meCounter);
+    pspDebugScreenPrintf("Me counter: %lx", meCounter);
     pspDebugScreenSetXY(1, 3);
-    pspDebugScreenPrintf("Sc counter: %x", scCounter++);
+    pspDebugScreenPrintf("Sc counter: %lx", scCounter++);
     sceDisplayWaitVblank();
   } while (!(ctl.Buttons & PSP_CTRL_HOME));
   

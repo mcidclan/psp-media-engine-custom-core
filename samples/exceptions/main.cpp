@@ -12,10 +12,10 @@ meLibSetSharedUncached32(2);
 #define meExit          (meLibSharedMemory[0])
 #define meCounter       (meLibSharedMemory[1])
 
-meLibMakeUncachedMem(_meExtIntrProof, 1, u32Me);
-meLibMakeUncachedMem(_meExpProof, 1, u32Me);
-#define meExtIntrProof  (meLibMakeMemSegVar(_meExtIntrProof, UNCACHED_USER_MASK, u32Me)[0])
-#define meExpProof      (meLibMakeMemSegVar(_meExpProof, UNCACHED_USER_MASK, u32Me)[0])
+meLibMakeUncachedMem(_meExtIntrProof, 1, u32);
+meLibMakeUncachedMem(_meExpProof, 1, u32);
+#define meExtIntrProof  (meLibMakeMemSegVar(_meExtIntrProof, UNCACHED_USER_MASK, u32)[0])
+#define meExpProof      (meLibMakeMemSegVar(_meExpProof, UNCACHED_USER_MASK, u32)[0])
 
 extern "C" __attribute__((noinline, aligned(4)))
 void meLibOnExternalInterrupt(void) {
@@ -92,14 +92,14 @@ int main() {
   do {
     sceCtrlPeekBufferPositive(&ctl, 1);
     pspDebugScreenSetXY(1, 2);
-    pspDebugScreenPrintf("Me Counter: %x", meCounter);
+    pspDebugScreenPrintf("Me Counter: %lx", meCounter);
 
     pspDebugScreenSetXY(1, 4);
     pspDebugScreenPrintf("Press Triangle");
     pspDebugScreenSetXY(1, 5);
-    pspDebugScreenPrintf("Me Ext Intr Proof: %x", meExtIntrProof);
+    pspDebugScreenPrintf("Me Ext Intr Proof: %lx", meExtIntrProof);
     pspDebugScreenSetXY(1, 6);
-    pspDebugScreenPrintf("Me Exception Proof: %x", meExpProof);
+    pspDebugScreenPrintf("Me Exception Proof: %lx", meExpProof);
     
     if (!triangle && (ctl.Buttons & PSP_CTRL_TRIANGLE)) {
       meLibEmitSoftwareInterrupt();

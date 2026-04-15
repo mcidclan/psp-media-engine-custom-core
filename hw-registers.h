@@ -1,8 +1,10 @@
 #ifndef HW_REGISTERS_H
 #define HW_REGISTERS_H
 
-#define u32Me                             unsigned int
-#define u32_me                            u32Me
+#include <psptypes.h>
+
+//#define u32Me                             unsigned int
+//#define u32_me                            u32Me
 
 #define ME_HANDLER_BASE                   0xbfc00000
 #define ME_EDRAM_BASE                     0x00000000
@@ -10,9 +12,9 @@
 #define CACHED_KERNEL_MASK                0x80000000
 #define UNCACHED_KERNEL_MASK              0xA0000000
 
-#define hwp                               volatile u32Me*
+#define hwp                               volatile u32*
 #define hw(addr)                          (*((hwp)(addr)))
-#define uhw(addr)                         ((u32Me*)(0x40000000 | ((u32Me)addr)))
+#define uhw(addr)                         ((u32*)(0x40000000 | ((u32)addr)))
 
 #define HW_MEM_PROTECT_KERNEL_LOW_0       hw(0xbc000000)
 #define HW_MEM_PROTECT_KERNEL_LOW_1       hw(0xbc000004)

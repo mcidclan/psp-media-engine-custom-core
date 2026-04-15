@@ -15,110 +15,110 @@
 #define sysCall(index)        ((void*)(ME_CORE_BASE_ADDR + meCoreSystemTable[(index)]))
 
 // me core functions
-#define meCoreUnknown_000002e4                    ((void  (*)(u32Me, u32Me))sysCall(0))
+#define meCoreUnknown_000002e4                    ((void  (*)(u32, u32))sysCall(0))
 #define meCoreWaitForScSyscalls                   ((void  (*)(void))sysCall(1))
 #define meCoreUnknown_00000570                    ((int   (*)(int, int))sysCall(2))
-#define meCoreUnknown_00000618                    ((int   (*)(u32Me, u32Me, u32Me, u32Me))sysCall(3))
-#define meCoreUnknown_00000708                    ((void  (*)(u32Me, u32Me, u32Me, u32Me, u32Me, u32Me, u32Me, u32Me))sysCall(4))
+#define meCoreUnknown_00000618                    ((int   (*)(u32, u32, u32, u32))sysCall(3))
+#define meCoreUnknown_00000708                    ((void  (*)(u32, u32, u32, u32, u32, u32, u32, u32))sysCall(4))
 #define meCoreUnknown_00000948                    ((int   (*)(void))sysCall(5))
-#define meCoreGenerate2DBlockFromQuad             ((u32Me (*)(u32Me*))sysCall(6))
-#define meCoreGetDualBuffers                      ((int   (*)(u32Me, u32Me, u32Me*, u32Me*))sysCall(7))
-#define meCoreCopy2DMemoryBlock                   ((void  (*)(u32Me*, void*, u32Me, u32Me, u32Me, u32Me, u32Me))sysCall(8))
-#define meCoreInterleave2DBlockPixelData          ((void  (*)(u32Me*, void*, u32Me, u32Me, u32Me, u32Me, u32Me))sysCall(9))
-#define meCoreCompose2DBlockFromQuad              ((u32Me (*)(u32Me*))sysCall(10))
+#define meCoreGenerate2DBlockFromQuad             ((u32 (*)(u32*))sysCall(6))
+#define meCoreGetDualBuffers                      ((int   (*)(u32, u32, u32*, u32*))sysCall(7))
+#define meCoreCopy2DMemoryBlock                   ((void  (*)(u32*, void*, u32, u32, u32, u32, u32))sysCall(8))
+#define meCoreInterleave2DBlockPixelData          ((void  (*)(u32*, void*, u32, u32, u32, u32, u32))sysCall(9))
+#define meCoreCompose2DBlockFromQuad              ((u32 (*)(u32*))sysCall(10))
 #define meCoreBusClockAWEdramEnable               ((void  (*)(void))sysCall(11))
 #define meCoreBusClockEnableDMACPrimMux           ((void  (*)(void))sysCall(12))
 #define meCoreBusClockDisableDMACPrimMux          ((int   (*)(void))sysCall(13))
 #define meCoreBusClockEnableKirk                  ((void  (*)(void))sysCall(14))
 #define meCoreBusClockDisableKirk                 ((void  (*)(void))sysCall(15))
-#define meCoreBusClockEnable                      ((int   (*)(u32Me))sysCall(16))
-#define meCoreBusClockPreserve                    ((int   (*)(u32Me))sysCall(17))
+#define meCoreBusClockEnable                      ((int   (*)(u32))sysCall(16))
+#define meCoreBusClockPreserve                    ((int   (*)(u32))sysCall(17))
 #define meCoreBusClockStorageEnableATAHDD         ((int   (*)(void))sysCall(18))
 #define meCoreBusClockStorageDisableATAHDD        ((void  (*)(void))sysCall(19))
 #define meCoreBusClockStorageEnableATA            ((void  (*)(void))sysCall(20))
 #define meCoreBusClockStorageDisableATA           ((void  (*)(void))sysCall(21))
-#define meCoreBusClockStorageEnableDisable        ((int   (*)(u32Me, u32Me))sysCall(22))
-#define meCoreBusClockMemoryStickSelect           ((int   (*)(u32Me))sysCall(23))
-#define meCoreSetCpuFrequency                     ((int   (*)(u32Me, u32Me))sysCall(24))
-#define meCoreSetBusFrequency                     ((int   (*)(u32Me, u32Me))sysCall(25))
+#define meCoreBusClockStorageEnableDisable        ((int   (*)(u32, u32))sysCall(22))
+#define meCoreBusClockMemoryStickSelect           ((int   (*)(u32))sysCall(23))
+#define meCoreSetCpuFrequency                     ((int   (*)(u32, u32))sysCall(24))
+#define meCoreSetBusFrequency                     ((int   (*)(u32, u32))sysCall(25))
 #define meCoreDMACPrimMuxWaitStatus_0x800         ((void  (*)(void))sysCall(26))
-#define meCoreDMACPrimMuxSetState                 ((void  (*)(u32Me))sysCall(27))
+#define meCoreDMACPrimMuxSetState                 ((void  (*)(u32))sysCall(27))
 #define meCoreDMACPrimMuxSetCtrl_0x002            ((void  (*)(void))sysCall(28))
 #define meCoreDMACPrimMuxSetCtrl_0x008            ((void  (*)(void))sysCall(29))
 #define meCoreDMACPrimMuxSetCtrl_0x003            ((void  (*)(void))sysCall(30))
 #define meCoreDMACPrimMuxSetCtrl_0x018            ((void  (*)(void))sysCall(31))
 #define meCoreDMACPrimaryTransferUnknown_00020ce8 ((void  (*)(void))sysCall(32))
-#define meCoreDMACPrimaryProcessUnknown_000210b4  ((void  (*)(u32Me, u32Me, u32Me, u32Me, u32Me, u32Me, u32Me, u32Me))sysCall(33))
-#define meCoreDMACPrimMuxWaitStatus               ((void  (*)(u32Me))sysCall(34))
-#define meCoreMemcpy                              ((void* (*)(void*, void*, u32Me))sysCall(35))
-#define meCoreMemset                              ((void* (*)(void*, u32Me, u32Me))sysCall(36))
-#define meCoreEDRAMAlloc                          ((void* (*)(u32Me))sysCall(37))
-#define meCoreEDRAMFree                           ((u32Me (*)(void*))sysCall(38))
+#define meCoreDMACPrimaryProcessUnknown_000210b4  ((void  (*)(u32, u32, u32, u32, u32, u32, u32, u32))sysCall(33))
+#define meCoreDMACPrimMuxWaitStatus               ((void  (*)(u32))sysCall(34))
+#define meCoreMemcpy                              ((void* (*)(void*, void*, u32))sysCall(35))
+#define meCoreMemset                              ((void* (*)(void*, u32, u32))sysCall(36))
+#define meCoreEDRAMAlloc                          ((void* (*)(u32))sysCall(37))
+#define meCoreEDRAMFree                           ((u32 (*)(void*))sysCall(38))
 #define meCoreUnknown_00021884                    ((int   (*)(void))sysCall(39))
-#define meCore32PoolsEnqueueEntry                 ((u32Me (*)(u32Me, u32Me, int*))sysCall(40))
+#define meCore32PoolsEnqueueEntry                 ((u32 (*)(u32, u32, int*))sysCall(40))
 #define meCore32PoolsInitMemory                   ((void  (*)(void))sysCall(41))
 #define meCore32PoolsUpdateDispatchQueues         ((int   (*)(void))sysCall(42))
-#define meCoreInterruptSetMask                    ((int   (*)(u32Me))sysCall(43))
+#define meCoreInterruptSetMask                    ((int   (*)(u32))sysCall(43))
 #define meCoreInterruptClearMask                  ((int   (*)(void))sysCall(44))
-#define meCoreInterruptSetMask_2                  ((int   (*)(u32Me))sysCall(45))
+#define meCoreInterruptSetMask_2                  ((int   (*)(u32))sysCall(45))
 #define meCoreExceptionInitHandlers               ((u64   (*)(void))sysCall(46))
 #define meCorePriorityQueueDefaultInsert          ((int   (*)(void))sysCall(47))
 #define meCoreEmitSoftwareInterrupt               ((int   (*)(void))sysCall(48))
 #define meCoreHwMutexTryLock                      ((int   (*)(void))sysCall(49))
 #define meCoreHwMutexUnlock                       ((int   (*)(void))sysCall(50))
-#define meCoreHwMutexAtomicRead                   ((u32Me (*)(u32Me*))sysCall(51))
-#define meCoreHwMutexAtomicWrite                  ((u32Me (*)(u32Me*, u32Me, u32Me))sysCall(52))
-#define meCoreProcessAudioMixer                   ((int   (*)(u32Me*, u32Me*, u32Me))sysCall(53))
-#define meCoreProcessMultiChannelAudio            ((u32Me* (*)(u32Me*, u32Me*, int))sysCall(54))
-#define meCoreConfigureReverbEffect               ((void  (*)(u32Me*, u32Me))sysCall(55))
-#define meCoreProcessReverbEffectSamples          ((u32Me* (*)(u32Me**, u32Me*, u32Me*))sysCall(56))
-#define meCoreIsIndexValidFor                     ((u32Me (*)(u32Me, u32Me*))sysCall(57))
-#define meCoreGetIndexedValueFor                  ((u32Me (*)(int, u32Me*, void*))sysCall(58))
-#define meCoreCheckAndCopy164bytesFromOffset0x8308 ((u32Me (*)(u32Me, u32Me))sysCall(59))
-#define meCoreCheck0xdec264                       ((bool  (*)(u32Me*))sysCall(60))
-#define meCoreCopy164bytesFromOffset0x8308        ((u32Me (*)(u32Me, u32Me*))sysCall(61))
-#define meCoreAllocateSlotFrom                    ((void  (*)(u32Me**, u32Me))sysCall(62))
-#define meCoreAllocateSlot                        ((u32Me* (*)(u32Me*))sysCall(63))
+#define meCoreHwMutexAtomicRead                   ((u32 (*)(u32*))sysCall(51))
+#define meCoreHwMutexAtomicWrite                  ((u32 (*)(u32*, u32, u32))sysCall(52))
+#define meCoreProcessAudioMixer                   ((int   (*)(u32*, u32*, u32))sysCall(53))
+#define meCoreProcessMultiChannelAudio            ((u32* (*)(u32*, u32*, int))sysCall(54))
+#define meCoreConfigureReverbEffect               ((void  (*)(u32*, u32))sysCall(55))
+#define meCoreProcessReverbEffectSamples          ((u32* (*)(u32**, u32*, u32*))sysCall(56))
+#define meCoreIsIndexValidFor                     ((u32 (*)(u32, u32*))sysCall(57))
+#define meCoreGetIndexedValueFor                  ((u32 (*)(int, u32*, void*))sysCall(58))
+#define meCoreCheckAndCopy164bytesFromOffset0x8308 ((u32 (*)(u32, u32))sysCall(59))
+#define meCoreCheck0xdec264                       ((bool  (*)(u32*))sysCall(60))
+#define meCoreCopy164bytesFromOffset0x8308        ((u32 (*)(u32, u32*))sysCall(61))
+#define meCoreAllocateSlotFrom                    ((void  (*)(u32**, u32))sysCall(62))
+#define meCoreAllocateSlot                        ((u32* (*)(u32*))sysCall(63))
 #define meCoreDcacheWritebackInvalidateAll        ((int   (*)(void))sysCall(64))
-#define meCoreDcacheWritebackInvalidateRange      ((int   (*)(void*, u32Me))sysCall(65))
-#define meCoreDcacheInvalidateRange               ((int   (*)(void*, u32Me))sysCall(66))
-#define meCoreDcacheWritebackRange                ((int   (*)(void*, u32Me))sysCall(67))
-#define meCoreDecompressKL4E                      ((int   (*)(byte*, int, char*, u32Me*))sysCall(68))
+#define meCoreDcacheWritebackInvalidateRange      ((int   (*)(void*, u32))sysCall(65))
+#define meCoreDcacheInvalidateRange               ((int   (*)(void*, u32))sysCall(66))
+#define meCoreDcacheWritebackRange                ((int   (*)(void*, u32))sysCall(67))
+#define meCoreDecompressKL4E                      ((int   (*)(byte*, int, char*, u32*))sysCall(68))
 
 //
 #define meCoreEDRAMAllocWords                     ((int   (*)(uint, uint))sysCall(69))
-#define meCoreEDRAMHeapInit                       ((u32Me* (*)(void))sysCall(70))
+#define meCoreEDRAMHeapInit                       ((u32* (*)(void))sysCall(70))
 
 // t2img (slim+)
 // img (fat), Todo.
 // see me-core-mapping.def.h
 
 // bl (?)
-static const u32Me blImgTable[] __attribute__((aligned(64))) = {};
+static const u32 blImgTable[] __attribute__((aligned(64))) = {};
 // sd (?)
-static const u32Me sdImgTable[] __attribute__((aligned(64))) = {};
+static const u32 sdImgTable[] __attribute__((aligned(64))) = {};
 
-extern u32Me* meCoreSystemTable __attribute__((aligned(64)));
+extern u32* meCoreSystemTable __attribute__((aligned(64)));
 
-static inline void meCoreSelectSystemTable(const u32Me id) {
+static inline void meCoreSelectSystemTable(const u32 id) {
   switch(id) {
     case ME_CORE_BL_IMG_TABLE:
-      meCoreSystemTable = (u32Me*)blImgTable;
+      meCoreSystemTable = (u32*)blImgTable;
       break;
     case ME_CORE_SD_IMG_TABLE:
-      meCoreSystemTable = (u32Me*)sdImgTable;
+      meCoreSystemTable = (u32*)sdImgTable;
       break;
     case ME_CORE_T2_IMG_TABLE:
-      meCoreSystemTable = (u32Me*)t2ImgTable;
+      meCoreSystemTable = (u32*)t2ImgTable;
       break;
     default:
-      meCoreSystemTable = (u32Me*)ogImgTable;
+      meCoreSystemTable = (u32*)ogImgTable;
   }
 }
 
 // select table Id according the word at 0x88300018
 static inline int meCoreGetTableIdFromWitnessWord() {
-  const u32Me word = hw(ME_CORE_KERNEL_ADDR | 0x00000018);
+  const u32 word = hw(ME_CORE_KERNEL_ADDR | 0x00000018);
   switch(word) {
     case 0x279ccba8: return ME_CORE_BL_IMG_TABLE;
     case 0x279cb300: return ME_CORE_SD_IMG_TABLE;

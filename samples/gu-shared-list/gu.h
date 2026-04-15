@@ -17,7 +17,7 @@ struct Vertex {
 
 #define SHARED_LIST_SIZE 2048
 
-meLibMakeSharedUncachedMem(guShared, 4, u32Me);
+meLibMakeSharedUncachedMem(guShared, 4, u32);
 #define meListBase        (guShared[0])
 #define meList            (guShared[1])
 #define meCmdCursor       (guShared[2])

@@ -6,7 +6,7 @@
 
 extern char __start__me_section;
 extern char __stop__me_section;
-extern u32Me SC_HW_RESET;
+extern u32 SC_HW_RESET;
 
 extern void meLibOnProcess(void);
 
@@ -23,16 +23,16 @@ extern "C" {
   int  meLibDefaultInit();
   void meLibExceptionHandlerInit(const u8 ip7);
   
-  void meLibGetUncached32(volatile u32Me** const mem, const u32Me size);
+  void meLibGetUncached32(volatile u32** const mem, const u32 size);
 #ifdef __cplusplus
 }
 #endif
 
 #define meLibUnlockHwUserRegisters()            \
 {                                               \
-  const u32Me START = 0xbc000030;               \
-  const u32Me END   = 0xbc000044;               \
-  for(u32Me reg = START; reg <= END; reg+=4) {  \
+  const u32 START = 0xbc000030;               \
+  const u32 END   = 0xbc000044;               \
+  for(u32 reg = START; reg <= END; reg+=4) {  \
     hw(reg) = -1;                               \
   }                                             \
   meLibSync();                                  \
@@ -41,9 +41,9 @@ extern "C" {
 
 #define meLibUnlockMemory()                     \
 {                                               \
-  const u32Me START = 0xbc000000;               \
-  const u32Me END   = 0xbc00002c;               \
-  for(u32Me reg = START; reg <= END; reg+=4) {  \
+  const u32 START = 0xbc000000;               \
+  const u32 END   = 0xbc00002c;               \
+  for(u32 reg = START; reg <= END; reg+=4) {  \
     hw(reg) = -1;                               \
   }                                             \
   meLibSync();                                  \

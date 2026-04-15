@@ -9,7 +9,7 @@ PSP_HEAP_SIZE_KB(-1024);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 
 // align shared vars to 64 for cached/uncached access compatibility
-volatile u32Me* shared __attribute__((aligned(64))) = nullptr;
+volatile u32* shared __attribute__((aligned(64))) = nullptr;
 
 meLibSetSharedUncached32(3);
 #define meExit           (meLibSharedMemory[0])
@@ -21,7 +21,7 @@ void meLibOnProcess() {
     meLibDelayPipeline();
   } while (!meStart);
   
-  const u32Me sharedSize = (sizeof(u32Me) * 4 + 63) & ~63;
+  const u32 sharedSize = (sizeof(u32) * 4 + 63) & ~63;
     
   do {
     meCounter++;
@@ -49,7 +49,7 @@ void meLibOnProcess() {
 
 // function used to hold the mutex in the main loop as a proof
 static bool holdMutex() {
-  static u32Me hold = 100;
+  static u32 hold = 100;
   if (hold-- > 0) {
     return true;
   }
@@ -75,22 +75,22 @@ int main() {
   const int tableId = meLibDefaultInit();
   
   // 64-byte alignment is required while using to use Dcache... Range
-  shared = (u32Me*)memalign(64, (sizeof(u32Me) * 4 + 63) & ~63);
-  memset((void*)shared, 0, sizeof(u32Me) * 4);
+  shared = (u32*)memalign(64, (sizeof(u32) * 4 + 63) & ~63);
+  memset((void*)shared, 0, sizeof(u32) * 4);
   sceKernelDcacheWritebackAll();
   
   pspDebugScreenSetXY(1, 1);
   pspDebugScreenPrintf("Me Core Mutex Demo");
   
   SceCtrlData ctl;
-  u32Me counter = 0;
+  u32 counter = 0;
   bool switchMessage = false;
   
   // start the process on the Me just before the main loop
   meStart = true;
   do {
     // invalidate cache, forcing next read to fetch from memory
-    sceKernelDcacheInvalidateRange((void*)shared, sizeof(u32Me) * 4);
+    sceKernelDcacheInvalidateRange((void*)shared, sizeof(u32) * 4);
     
     // try to lock and modify shared variable
     if (meLibCallHwMutexTryLock() >= 0) {
@@ -109,18 +109,18 @@ int main() {
     }
     
     // push cache to memory and invalidate it, refill cache during the next access
-    sceKernelDcacheWritebackInvalidateRange((void*)shared, sizeof(u32Me) * 4);
+    sceKernelDcacheWritebackInvalidateRange((void*)shared, sizeof(u32) * 4);
 
     sceCtrlPeekBufferPositive(&ctl, 1);
     
     pspDebugScreenSetXY(1, 2);
     pspDebugScreenPrintf("Table Id: %i    ", tableId);
     pspDebugScreenSetXY(1, 3);
-    pspDebugScreenPrintf("Sc counter %u   ", counter++);
+    pspDebugScreenPrintf("Sc counter %lu   ", counter++);
     pspDebugScreenSetXY(1, 4);
-    pspDebugScreenPrintf("Me counter %u   ", meCounter);
+    pspDebugScreenPrintf("Me counter %lu   ", meCounter);
     pspDebugScreenSetXY(1, 5);
-    pspDebugScreenPrintf("Shared counters %u, %u  ", shared[1], shared[2]);
+    pspDebugScreenPrintf("Shared counters %lu, %lu  ", shared[1], shared[2]);
     
     pspDebugScreenSetXY(1, 6);
     if (switchMessage) {

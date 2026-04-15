@@ -20,7 +20,7 @@
 #define meLibCallHwMutexUnlock()          (kcall(meCoreHwMutexUnlock, CACHED_KERNEL_MASK))
 #define meLibEmitSoftwareInterrupt()      (kcall(meCoreEmitSoftwareInterrupt, CACHED_KERNEL_MASK))
 
-#define meLibSetSharedUncached32(size)    meLibSetSharedUncachedMem(size, u32Me)
+#define meLibSetSharedUncached32(size)    meLibSetSharedUncachedMem(size, u32)
 
 #ifdef __cplusplus
   #define meLibSetSharedUncachedMem(size, type) \
@@ -77,7 +77,7 @@ extern "C" {
   void meLibHalt();
   
   int meLibSendExternalSoftInterrupt();
-  u32Me meLibGetCpuId();
+  u32 meLibGetCpuId();
   // kernel function to unlock the mutex
   int meLibHwMutexUnlock();
   // kernel function that waits and attempts to lock and acquire the mutex
@@ -98,12 +98,12 @@ extern "C" {
   // 01  xor  10 =>   not 11 = 0
 
   void meLibDcacheWritebackInvalidateAll();
-  void meLibDcacheWritebackInvalidateRange(const u32Me addr, const u32Me size);
-  void meLibDcacheInvalidateRange(const u32Me addr, const u32Me size);
-  void meLibDcacheWritebackRange(const u32Me addr, const u32Me size);
+  void meLibDcacheWritebackInvalidateRange(const u32 addr, const u32 size);
+  void meLibDcacheInvalidateRange(const u32 addr, const u32 size);
+  void meLibDcacheWritebackRange(const u32 addr, const u32 size);
 
   void meLibIcacheInvalidateAll();
-  void meLibIcacheInvalidateRange(const u32Me addr, const u32Me size);
+  void meLibIcacheInvalidateRange(const u32 addr, const u32 size);
 
 #ifdef __cplusplus
 }

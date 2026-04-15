@@ -231,7 +231,7 @@ void meLibExceptionHandlerInit(const u8 ip7) {
   );
 }
 
-u32Me SC_HW_RESET = 0x14;
+u32 SC_HW_RESET = 0x14;
 
 void meLibReset() {
 
@@ -285,14 +285,14 @@ int meLibDefaultInit() {
   return kcall(meLibInit, 0);
 }
 
-void meLibGetUncached32(volatile u32Me** const mem, const u32Me size) {
+void meLibGetUncached32(volatile u32** const mem, const u32 size) {
   static void* _base = NULL;
   if (!_base) {
-    const u32Me byteCount = size * 4;
+    const u32 byteCount = size * 4;
     _base = memalign(16, byteCount);
     memset(_base, 0, byteCount);
     sceKernelDcacheWritebackInvalidateAll();
-    *mem = (u32Me*)(UNCACHED_USER_MASK | (u32Me)_base);
+    *mem = (u32*)(UNCACHED_USER_MASK | (u32)_base);
     __asm__ volatile (
       "cache 0x1b, 0(%0)  \n"
       "sync               \n"
