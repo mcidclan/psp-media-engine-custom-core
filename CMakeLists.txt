@@ -45,20 +45,24 @@ add_library(me-core STATIC
   ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
 )
 
+add_library(me-core-mapper STATIC
+  me-core-mapping.c
+)
+
+add_library(me-core-lib STATIC
+  me-lib.c
+  embedded.c
+  ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
+)
+
 add_dependencies(me-core kcall_files)
 
-target_compile_options(me-core PRIVATE 
-  -Os
-  -G0
-  -Wall 
-  -fno-pic
-)
+foreach(target me-core me-core-lib me-core-mapper)
+  target_compile_options(${target} PRIVATE -Os -G0 -Wall -fno-pic)
+  target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endforeach()
 
-target_include_directories(me-core PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-install(TARGETS me-core
+install(TARGETS me-core me-core-lib me-core-mapper
   ARCHIVE DESTINATION "$ENV{PSPDEV}/psp/lib"
 )
 
@@ -73,24 +77,4 @@ file(GLOB KERNEL_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/kernel/*.h")
 
 install(FILES ${KERNEL_HEADER_FILES}
   DESTINATION "$ENV{PSPDEV}/psp/include/me-core-mapper/kernel"
-)
-
-
-add_library(me-core-mapper STATIC
-  me-core-mapping.c
-)
-
-target_compile_options(me-core-mapper PRIVATE
-  -Os
-  -G0
-  -Wall
-  -fno-pic
-)
-
-target_include_directories(me-core-mapper PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-install(TARGETS me-core-mapper
-  ARCHIVE DESTINATION "$ENV{PSPDEV}/psp/lib"
 )
