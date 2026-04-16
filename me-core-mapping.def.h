@@ -22,8 +22,10 @@
   {0x000019f4, 0x000019c0}, // int  _meCoreBusClockPreserve(u32)                  // takes a mask which preserves the specified bits
   {0x00001a38, 0x00000000}, // int  _meCoreBusClockStorageEnableATAHDD()          // dsp related clock instead ?
   {0x00001a58, 0x00000000}, // void _meCoreBusClockStorageDisableATAHDD()         // dsp related clock instead ?
-  {0x00001a78, 0x00000000}, // void _meCoreBusClockStorageEnableATA()             // dsp related clock instead ?
-  {0x00001a98, 0x00000000}, // void _meCoreBusClockStorageDisableATA()            // dsp related clock instead ?
+  
+  {0x00001a78, 0x00000000}, // void _meCoreBusClockEnableVMEPrimMux()
+  {0x00001a98, 0x00000000}, // void _meCoreBusClockDisableVMEPrimMux()
+  
   {0x00001ab8, 0x00000000}, // int  _meCoreBusClockStorageEnableDisable(u32, u32) // mask, value
   {0x00001b14, 0x00000000}, // int  _meCoreBusClockMemoryStickSelect(u32)
   

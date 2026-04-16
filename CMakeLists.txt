@@ -74,3 +74,23 @@ file(GLOB KERNEL_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/kernel/*.h")
 install(FILES ${KERNEL_HEADER_FILES}
   DESTINATION "$ENV{PSPDEV}/psp/include/me-core-mapper/kernel"
 )
+
+
+add_library(me-core-mapper STATIC
+  me-core-mapping.c
+)
+
+target_compile_options(me-core-mapper PRIVATE
+  -Os
+  -G0
+  -Wall
+  -fno-pic
+)
+
+target_include_directories(me-core-mapper PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+install(TARGETS me-core-mapper
+  ARCHIVE DESTINATION "$ENV{PSPDEV}/psp/lib"
+)
