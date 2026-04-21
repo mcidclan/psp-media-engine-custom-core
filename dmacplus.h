@@ -5,6 +5,10 @@
 #include <pspkernel.h>
 #include <me-core-mapper/hw-registers.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define DMA_CONTROL_SC2SC(width, size)  DMA_CONTROL_CONFIG(1, 1, 0, 0, (width), (size))
 #define DMA_CONTROL_SC2ME(width, size)  DMA_CONTROL_CONFIG(0, 0, 1, 0, (width), (size))
 #define DMA_CONTROL_ME2SC(width, size)  DMA_CONTROL_CONFIG(0, 0, 0, 1, (width), (size))
@@ -32,32 +36,41 @@
 //  3 => 8 bytes,
 //  4 => 16 bytes
 
-struct DMADescriptor {
+enum DMACPLUS_BYTE_COUNT {
+  
+  DMACPLUS_BYTE_COUNT_1,  //0
+  DMACPLUS_BYTE_COUNT_2,  //1
+  DMACPLUS_BYTE_COUNT_4,  //2
+  DMACPLUS_BYTE_COUNT_8,  //3
+  DMACPLUS_BYTE_COUNT_16  //4
+};
+
+typedef struct DMADescriptor {
   
   u32 src;
   u32 dst;
   u32 next;
   u32 ctrl;
   u32 status;
-} __attribute__((aligned(16)));
+} DMADescriptor __attribute__((aligned(16)));
 
 typedef u32 (*DmaControl)(const u32, const u32);
 
 // hardware registers behind sceDmacplusSc2Me
-inline void dmacplusFromSc(const u32 src, const u32 dst, const u32 size) {
+static inline void dmacplusFromSc(const u32 src, const u32 dst, const u32 width, const u32 size) {
 
   int intr = sceKernelCpuSuspendIntr();
   hw(0xBC800180) = src;                          // src
   hw(0xBC800184) = dst;                          // dest
   hw(0xBC800188) = 0;                            // addr of the next LLI
-  hw(0xBC80018c) = DMA_CONTROL_SC2ME(4, size);   // control attr
+  hw(0xBC80018c) = DMA_CONTROL_SC2ME(width, size);   // control attr
   hw(0xBC800190) =                               // status
     (1 << 0);                                     // channel enable
   asm volatile("sync");
   sceKernelCpuResumeIntrWithSync(intr);
 }
 
-inline void dmacplusLLIFromSc(const DMADescriptor* const lli) {
+static inline void dmacplusLLIFromSc(const DMADescriptor* const lli) {
   
   int intr = sceKernelCpuSuspendIntr();
   hw(0xBC800180) = lli->src;                          // src
@@ -69,26 +82,26 @@ inline void dmacplusLLIFromSc(const DMADescriptor* const lli) {
   sceKernelCpuResumeIntrWithSync(intr);
 }
 
-inline u32 dmaControlMe2Sc(const u32 width, const u32 size) {
+static inline u32 dmaControlMe2Sc(const u32 width, const u32 size) {
   
   return DMA_CONTROL_ME2SC(width, size);
 }
 
 // hardware registers behind sceDmacplusMe2Sc
-inline void dmacplusFromMe(const u32 src, const u32 dst, const u32 size) {
+static inline void dmacplusFromMe(const u32 src, const u32 dst, const u32 width, const u32 size) {
 
   int intr = sceKernelCpuSuspendIntr();
   hw(0xBC8001a0) = src;                          // src
   hw(0xBC8001a4) = dst;                          // dest
   hw(0xBC8001a8) = 0;                            // addr of the next LLI
-  hw(0xBC8001ac) = DMA_CONTROL_ME2SC(4, size);   // control attr
+  hw(0xBC8001ac) = DMA_CONTROL_ME2SC(width, size);   // control attr
   hw(0xBC8001b0) =                               // status
     (1 << 0);                                     // channel enable
   asm volatile("sync");
   sceKernelCpuResumeIntrWithSync(intr);
 }
 
-inline void dmacplusLLIFromMe(const DMADescriptor* const lli) {
+static inline void dmacplusLLIFromMe(const DMADescriptor* const lli) {
   
   int intr = sceKernelCpuSuspendIntr();
   hw(0xBC8001a0) = lli->src;                          // src
@@ -100,12 +113,12 @@ inline void dmacplusLLIFromMe(const DMADescriptor* const lli) {
   sceKernelCpuResumeIntrWithSync(intr);
 }
 
-inline u32 dmaControlSc2Me(const u32 width, const u32 size) {
+static inline u32 dmaControlSc2Me(const u32 width, const u32 size) {
   
   return DMA_CONTROL_SC2ME(width, size);
 }
 
-inline void dmacplusLLIOverSc(const DMADescriptor* const lli) {
+static inline void dmacplusLLIOverSc(const DMADescriptor* const lli) {
   
   int intr = sceKernelCpuSuspendIntr();
   hw(0xBC8001c0) = lli->src;                          // src
@@ -117,8 +130,31 @@ inline void dmacplusLLIOverSc(const DMADescriptor* const lli) {
   sceKernelCpuResumeIntrWithSync(intr);
 }
 
-// 
-inline void cleanChannels() {
+//
+static inline void cleanSc2MeChannel() {
+  
+  int intr = sceKernelCpuSuspendIntr();
+  hw(0xBC800190) = 0;
+  asm volatile("sync");
+  sceKernelCpuResumeIntrWithSync(intr);
+}
+
+static inline void waitSc2MeChannel() {
+  
+  int intr = sceKernelCpuSuspendIntr();
+  while (1) {
+    asm volatile("sync");
+    const u32 ch0 = hw(0xBC800190);
+    asm volatile("sync");
+    if (!ch0) {
+      break;
+    }
+    asm volatile("nop;nop;nop;nop;nop;nop;nop");
+  }
+  sceKernelCpuResumeIntrWithSync(intr);
+}
+
+static inline void cleanChannels() {
   
   int intr = sceKernelCpuSuspendIntr();
   hw(0xBC800190) = 0;
@@ -128,37 +164,40 @@ inline void cleanChannels() {
   sceKernelCpuResumeIntrWithSync(intr);
 }
 
-inline void waitChannels() {
+static inline void waitChannels() {
   
+  int intr = sceKernelCpuSuspendIntr();
   while (1) {
-    int intr = sceKernelCpuSuspendIntr();
     asm volatile("sync");
-    if (!hw(0xBC800190) && !hw(0xBC8001b0) && !hw(0xBC8001d0)) {
+    const u32 ch0 = hw(0xBC800190);
+    const u32 ch1 = hw(0xBC8001b0);
+    const u32 ch2 = hw(0xBC8001d0);
+    asm volatile("sync");
+    if (!ch0 && !ch1 && !ch2) {
       break;
     }
-    asm volatile("sync");
-    sceKernelCpuResumeIntrWithSync(intr);
-    sceKernelDelayThread(10);
-  };
+    asm volatile("nop;nop;nop;nop;nop;nop;nop");
+  }
+  sceKernelCpuResumeIntrWithSync(intr);
 }
 
 typedef void* (*LLIAllocator)(int, int);
 
-struct LLIConfig {
+typedef struct  LLIConfig {
   
   DmaControl dc;
   u32 src;
   u32 dst;
   u32 size;
   LLIAllocator alloc;
-} __attribute__((aligned(16)));
+} LLIConfig __attribute__((aligned(16)));
 
 // custom LLI builder
-inline DMADescriptor* dmacplusInitLLIs(const LLIConfig* const cfg) {
+static inline DMADescriptor* dmacplusInitLLIs(const LLIConfig* const cfg) {
 // const DmaControl dc, const u32 src, const u32 dst, const u32 size
 
-  constexpr u32 MAX_TRANSFER_SIZE = 4095;
-  constexpr struct { u32 width; u32 widthBit; } modes[] = {
+  static const u32 MAX_TRANSFER_SIZE = 4095;
+  static const struct { u32 width; u32 widthBit; } modes[] = {
     {16, 4}, {8, 3}, {4, 2}, {2, 1}, {1, 0}
   };
 
@@ -214,5 +253,9 @@ inline DMADescriptor* dmacplusInitLLIs(const LLIConfig* const cfg) {
   sceKernelDcacheWritebackInvalidateRange((void*)lli, byteCount);
   return lli;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
