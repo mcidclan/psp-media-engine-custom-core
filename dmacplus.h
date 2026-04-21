@@ -2,6 +2,7 @@
 #ifndef ME_CUSTOM_DMACPLUS_H
 #define ME_CUSTOM_DMACPLUS_H
 
+#include <pspkernel.h>
 #include <me-core-mapper/hw-registers.h>
 
 #define DMA_CONTROL_SC2SC(width, size)  DMA_CONTROL_CONFIG(1, 1, 0, 0, (width), (size))
@@ -32,6 +33,7 @@
 //  4 => 16 bytes
 
 struct DMADescriptor {
+  
   u32 src;
   u32 dst;
   u32 next;
@@ -140,19 +142,31 @@ inline void waitChannels() {
   };
 }
 
-// custom LLI builder
-inline DMADescriptor* dmacplusInitLLIs(const DmaControl dc, const u32 src,
-  const u32 dst, const u32 size) {
+typedef void* (*LLIAllocator)(int, int);
+
+struct LLIConfig {
   
+  DmaControl dc;
+  u32 src;
+  u32 dst;
+  u32 size;
+  LLIAllocator alloc;
+} __attribute__((aligned(16)));
+
+// custom LLI builder
+inline DMADescriptor* dmacplusInitLLIs(const LLIConfig* const cfg) {
+// const DmaControl dc, const u32 src, const u32 dst, const u32 size
+
   constexpr u32 MAX_TRANSFER_SIZE = 4095;
   constexpr struct { u32 width; u32 widthBit; } modes[] = {
     {16, 4}, {8, 3}, {4, 2}, {2, 1}, {1, 0}
   };
 
   u32 lliCount = 0;
-  u32 remaining = size;
+  u32 remaining = cfg->size;
   
   for (int w = 0; w < 4 && remaining > 0; w++) {
+    
     u32 block = modes[w].width * MAX_TRANSFER_SIZE;
     lliCount += remaining / block;
     remaining %= block;
@@ -160,13 +174,14 @@ inline DMADescriptor* dmacplusInitLLIs(const DmaControl dc, const u32 src,
   lliCount += (remaining > 0);
 
   const u32 byteCount = sizeof(DMADescriptor) * lliCount;
-  DMADescriptor* const lli = (DMADescriptor*) memalign(64, (byteCount + 63) & ~63);
+  DMADescriptor* const lli = (DMADescriptor*) cfg->alloc(64, (byteCount + 63) & ~63);
 
   u32 i = 0;
   u32 offset = 0;
-  remaining = size;
+  remaining = cfg->size;
 
   for (int w = 0; w < 5 && remaining > 0; w++) {
+    
     u32 width = modes[w].width;
     u32 widthBit = modes[w].widthBit;
     u32 block = width * MAX_TRANSFER_SIZE;
@@ -174,9 +189,9 @@ inline DMADescriptor* dmacplusInitLLIs(const DmaControl dc, const u32 src,
     if (w < 4 && remaining >= block) {
       u32 blockCount = remaining / block;
       for (u32 j = 0; j < blockCount; j++) {
-        lli[i].src = src + offset;
-        lli[i].dst = dst + offset;
-        lli[i].ctrl = dc(widthBit, MAX_TRANSFER_SIZE);
+        lli[i].src = cfg->src + offset;
+        lli[i].dst = cfg->dst + offset;
+        lli[i].ctrl = cfg->dc(widthBit, MAX_TRANSFER_SIZE);
         lli[i].status = 1;
         lli[i].next = (i < (lliCount - 1)) ? ((u32)&lli[i + 1]) : 0;
         offset += block;
@@ -185,9 +200,10 @@ inline DMADescriptor* dmacplusInitLLIs(const DmaControl dc, const u32 src,
       }
     }
     else if (remaining > 0) {
-      lli[i].src = src + offset;
-      lli[i].dst = dst + offset;
-      lli[i].ctrl = dc(0, remaining);
+      
+      lli[i].src = cfg->src + offset;
+      lli[i].dst = cfg->dst + offset;
+      lli[i].ctrl = cfg->dc(0, remaining);
       lli[i].status = 1;
       lli[i].next = 0;
       i++;
