@@ -66,7 +66,7 @@ install(TARGETS me-core me-core-lib me-core-mapper
   ARCHIVE DESTINATION "$ENV{PSPDEV}/psp/lib"
 )
 
-file(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+file(GLOB HEADER_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 list(FILTER HEADER_FILES EXCLUDE REGEX ".*me-core-mapping\\.def\\.h$")
 
 install(FILES ${HEADER_FILES}
