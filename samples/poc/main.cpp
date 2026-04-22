@@ -62,9 +62,9 @@ int main() {
   u32 count = 0;
   do {
     pspDebugScreenSetXY(0, 1);
-    pspDebugScreenPrintf("clock buses enabled: 0x%08x   \n", clockBuses);
+    pspDebugScreenPrintf("clock buses enabled: 0x%08lx   \n", clockBuses);
     pspDebugScreenPrintf("table Id: %i   \n", tableId);
-    pspDebugScreenPrintf("sp register: 0x%08x   \n", sp);
+    pspDebugScreenPrintf("sp register: 0x%08lx   \n", sp);
     sceCtrlPeekBufferPositive(&ctl, 1);
     
     if (meExit) {

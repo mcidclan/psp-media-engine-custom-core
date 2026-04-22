@@ -3,7 +3,7 @@
 #define ME_CUSTOM_DMACPLUS_H
 
 #include <pspkernel.h>
-#include <me-core-mapper/hw-registers.h>
+#include "hw-registers.h"
 
 #ifdef __cplusplus
 extern "C" {
