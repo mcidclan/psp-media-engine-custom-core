@@ -49,7 +49,7 @@
   name[0] = 0;
 
 // define the non-cached kernel mutex
-#define mutex hw(0xbc100048)
+#define meLibMutex hw(0xbc100048)
 
 #define meLibSuspendCpuIntr(var) \
   asm volatile(                  \

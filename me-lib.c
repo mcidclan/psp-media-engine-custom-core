@@ -19,6 +19,7 @@ static int writePrx(void* start, int size) {
   return 0;
 }
 
+// todo: move to me-core-kcall
 int meLibLoadPrx() {
   if(writePrx(embedded_kcall, (int)embedded_kcall_len) < 0) {
     return ERROR_ON_WRITE_PRX;
@@ -59,7 +60,7 @@ int meLibHwMutexUnlock() {
   // if acquired, briefly holds the lock with a pipeline delay,
   // allowing cache operations to complete, could be useful
   meLibDelayPipeline();
-  mutex = 0;
+  meLibMutex = 0;
   asm volatile("sync");
   // provides opportunities for others with a pipeline delay
   meLibDelayPipeline();
@@ -70,9 +71,9 @@ int meLibHwMutexUnlock() {
 int meLibHwMutexLock() {
   const u32 unique = meLibGetCpuId();
   do {
-    mutex = unique; // the main CPU can affect only bit[0] (0b01), while the Me can only affect bit[1] (0b10)
+    meLibMutex = unique; // the main CPU can affect only bit[0] (0b01), while the Me can only affect bit[1] (0b10)
     asm volatile("sync");
-    if (!(((mutex & 3) ^ unique))) { // see note
+    if (!(((meLibMutex & 3) ^ unique))) { // see note
       return 0; // lock acquired
     }
     // gives a breath with a pipeline delay (7 stages)
@@ -84,9 +85,9 @@ int meLibHwMutexLock() {
 // kernel function to attempt locking and acquiring the mutex
 int meLibHwMutexTryLock() {
   const u32 unique = meLibGetCpuId();
-  mutex = unique;
+  meLibMutex = unique;
   asm volatile("sync");
-  if (!(((mutex & 3) ^ unique))) { // see note
+  if (!(((meLibMutex & 3) ^ unique))) { // see note
     return 0; // lock acquired
   }
   asm volatile("sync"); // make sure to be sync before leaving kernel mode
