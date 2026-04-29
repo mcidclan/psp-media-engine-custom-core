@@ -6,8 +6,10 @@
 #include <psppower.h>
 #include <malloc.h>
 #include <string.h>
+
 #include "hw-registers.h"
 #include "kernel/kcall.h"
+#include "vme-lib.h"
 
 #define ERROR_ON_WRITE_PRX  -3
 #define ERROR_ON_LOAD_PRX   -4
@@ -51,6 +53,42 @@
 // define the non-cached kernel mutex
 #define meLibMutex hw(0xbc100048)
 
+#define meLibUnlockHwUserRegisters()            \
+{                                               \
+  const u32 START = 0xbc000030;               \
+  const u32 END   = 0xbc000044;               \
+  for(u32 reg = START; reg <= END; reg+=4) {  \
+    hw(reg) = -1;                               \
+  }                                             \
+  meLibSync();                                  \
+}                                               \
+  
+
+#define meLibUnlockMemory()                     \
+{                                               \
+  const u32 START = 0xbc000000;               \
+  const u32 END   = 0xbc00002c;               \
+  for(u32 reg = START; reg <= END; reg+=4) {  \
+    hw(reg) = -1;                               \
+  }                                             \
+  meLibSync();                                  \
+}                                               \
+  
+
+#define meLibSetMinimalVmeConfig()              \
+{                                               \
+  hw(0xBCC00000) = -1;                          \
+  hw(0xBCC00010) = 1;                           \
+  while (hw(0xBCC00010)) {                      \
+    meLibSync();                                \
+  };                                            \
+  hw(0xBCC00070) = 0;                           \
+  hw(0xBCC00020) = -1;                          \
+  hw(0xBCC00030) = 1;                           \
+  hw(0xBCC00040) = 2; /*1*/                     \
+  meLibSync();                                  \
+}                                               \
+
 #define meLibSuspendCpuIntr(var) \
   asm volatile(                  \
     "mfic  %0, $0 \n"            \
@@ -84,18 +122,6 @@ extern "C" {
   int meLibHwMutexLock();
   // kernel function to attempt locking and acquiring the mutex
   int meLibHwMutexTryLock();
-
-  // note:
-  // it appears that the main CPU can read the mutex and only set bit[0],
-  // while the Me can read the mutex and only set bit[1]
-  //
-  // mutex    unique
-  // 11  xor  01 =>   not 10 = 0
-  // 11  xor  10 =>   not 01 = 0
-  // 10  xor  01 =>   not 11 = 0
-  // 10  xor  10 =>   not 00 = 1
-  // 01  xor  01 =>   not 00 = 1
-  // 01  xor  10 =>   not 11 = 0
 
   void meLibDcacheWritebackInvalidateAll();
   void meLibDcacheWritebackInvalidateRange(const u32 addr, const u32 size);

@@ -1,3 +1,4 @@
-build
+build/
 libme-core.a
+samples/usbhostfs_pc 
 

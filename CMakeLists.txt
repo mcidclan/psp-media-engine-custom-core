@@ -38,6 +38,7 @@ add_custom_target(kcall_files DEPENDS kcall.S)
 
 add_library(me-core STATIC
   me-lib.c
+  vme-lib.c
   me-core-custom.c
   me-core-mapping.c
   context.S
@@ -51,6 +52,7 @@ add_library(me-core-mapper STATIC
 
 add_library(me-core-lib STATIC
   me-lib.c
+  vme-lib.c
   embedded.c
   ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
 )

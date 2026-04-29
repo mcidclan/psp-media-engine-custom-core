@@ -23,8 +23,8 @@
   {0x00001a38, 0x00000000}, // int  _meCoreBusClockStorageEnableATAHDD()          // dsp related clock instead ?
   {0x00001a58, 0x00000000}, // void _meCoreBusClockStorageDisableATAHDD()         // dsp related clock instead ?
   
-  {0x00001a78, 0x00000000}, // void _meCoreBusClockEnableVMEPrimMux()
-  {0x00001a98, 0x00000000}, // void _meCoreBusClockDisableVMEPrimMux()
+  {0x00001a78, 0x00000000}, // void _meCoreBusClockEnableVMECtrl()
+  {0x00001a98, 0x00000000}, // void _meCoreBusClockDisableVMECtrl()
   
   {0x00001ab8, 0x00000000}, // int  _meCoreBusClockStorageEnableDisable(u32, u32) // mask, value
   {0x00001b14, 0x00000000}, // int  _meCoreBusClockMemoryStickSelect(u32)
@@ -32,14 +32,14 @@
   {0x00001b7c, 0x00001b48}, // int  _meCoreSetCpuFrequency(u32 num, u32 den);
   {0x00001bc4, 0x00001b90}, // int  _meCoreSetBusFrequency(u32 num, u32 den);
 
-  // dmac
-  {0x000209d0, 0x00000000}, // void _meCoreDMACPrimMuxWaitStatus_0x800(void)
-  {0x00020a08, 0x00000000}, // void _meCoreDMACPrimMuxSetState(u32)               // not sure
+  // dmac, vme
+  {0x000209d0, 0x00000000}, // void _meCoreDMACPrimWaitVMEFinish(void)
+  {0x00020a08, 0x00000000}, // void _meCoreDMACPrimMuxSetConfig(u32)              // unclear
   {0x00020ca8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x002(void)         // init
   {0x00020cb8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x008(void)         // ?
   {0x00020cc8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x003(void)         // ?
   {0x00020cd8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start  
-  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimaryTransferUnknown_00020ce8(void)          // why ? // void  _meCoreDMACPrimarySetupBuffers(void)
+  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimSendDefaultVMEBitstream(void)
   
   {0x000210b4, 0x00000000}, // void _meCoreDMACPrimaryProcessUnknown_000210b4(u32 memSrc, u32 bufSrc, u32 blockCount, u32 lastBlockIndex, u32 memDst, u32 bufDstLow, u32 bufDstHigh, u32 dstCount) // not sure
   {0x00021168, 0x00012a88}, // void _meCoreDMACPrimMuxWaitStatus(u32)
@@ -102,4 +102,6 @@
   // typedef struct { u32 width; u32 height; u32 unk2; void* src0; void* src1; void* dst0; void* dst1; void* src2; void* src3; void* dst2; void* dst3; void* dst; void* inter0; void* inter1; } Quad;
   // typedef struct {u8  blockCount; /*0x8*/ u8  effectsEnabled; /*0x9*/ AudioChannel channels[32]; /*0x714*/ u32 channelMask; /*0xe14*/ u16  global1; /*0xe1a*/ u16  global2; /*0x387*4*/ u16  config; /*0x386*4*/ u32* reverbEffect; } AudioMixer;
 
+  {0x00020a2c, 0x00000000}, // void _meCoreDMACPrimMemoryToRingBuffer(void* src, u32 dst offset, u32 count);
+  {0x000209b4, 0x00000000}, // void _meCoreDMACPrimWaitTransferFinish();
 }
