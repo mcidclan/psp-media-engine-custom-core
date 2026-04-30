@@ -6,15 +6,17 @@ void vmeLibInit() {
   meCoreBusClockEnableDMACPrimMux();
   meCoreBusClockEnableVMECtrl();
   
-  hw(0x440ff000) = 0;      // default status
+  hw(0x440ff000) = 0;      // minimal default status
   hw(0x440ff004) = 0x10;   // minimal default config
   meLibSync();
 }
 
 void vmeLibWipe() {
   
-  // todo: clean datapath
   meLibSetMinimalVmeConfig();
+
+  meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x1A8);
+  vmeLibRefreshProcess();
 }
 
 void vmeLibSendCustomBitstream(void* bitstream) {

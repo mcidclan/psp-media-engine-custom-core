@@ -3,7 +3,11 @@
 
 #include "hw-registers.h"
 
-#define VME_BASE(index)   (0x440f8000 + (index * 4))
+#define VME_BUFFERS_PRIMARY   0x44000000
+#define VME_BUFFERS_SECONDARY 0x44020000
+#define VME_DATAPATH_BASE     0x440f8000
+
+#define VME_BASE(index) (hw(VME_DATAPATH_BASE + (index * 4)))
 
 // descriptors
 #define VME_DESCRIPTOR_0      0
@@ -143,7 +147,7 @@
 #define VME_PE_3_DST_PARAM_3  104
 
 // End ?
-#define VME_UNKNOWN_105     105
+#define VME_UNKNOWN_105       105
 
 #define vme_set(regIdx, val) ((VME_BASE(regIdx)) = (val))
 
