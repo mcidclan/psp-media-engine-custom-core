@@ -152,6 +152,7 @@ extern "C" {
 #endif
 
 void vmeLibInit();
+void vmeLibWipe();
 void vmeLibSendCustomBitstream(void* bitstream);
 void vmeLibRefreshProcess();
 

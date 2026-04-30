@@ -3,14 +3,18 @@
 
 void vmeLibInit() {
   
-  meLibSetMinimalVmeConfig();
-  meCoreExceptionInitHandlers();
   meCoreBusClockEnableDMACPrimMux();
   meCoreBusClockEnableVMECtrl();
   
   hw(0x440ff000) = 0;      // default status
   hw(0x440ff004) = 0x10;   // minimal default config
   meLibSync();
+}
+
+void vmeLibWipe() {
+  
+  // todo: clean datapath
+  meLibSetMinimalVmeConfig();
 }
 
 void vmeLibSendCustomBitstream(void* bitstream) {
