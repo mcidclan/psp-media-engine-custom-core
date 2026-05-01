@@ -158,7 +158,8 @@ extern "C" {
 void vmeLibInit();
 void vmeLibWipe();
 void vmeLibSendCustomBitstream(void* bitstream);
-void vmeLibRefreshProcess();
+void vmeLibStart();
+void vmeLibFinish();
 
 #ifdef __cplusplus
 }

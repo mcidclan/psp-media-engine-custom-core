@@ -6,8 +6,8 @@ void vmeLibInit() {
   meCoreBusClockEnableDMACPrimMux();
   meCoreBusClockEnableVMECtrl();
   
-  hw(0x440ff000) = 0;      // minimal default status
-  hw(0x440ff004) = 0x10;   // minimal default config
+  hw(0x440ff000) = 0;    // minimal default status
+  hw(0x440ff004) = 0x10; // minimal default config
   meLibSync();
 }
 
@@ -15,8 +15,12 @@ void vmeLibWipe() {
   
   meLibSetMinimalVmeConfig();
 
-  meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x1A8);
-  vmeLibRefreshProcess();
+  vmeLibStart();
+  meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x01a8);
+  vmeLibFinish();
+  
+  meCoreMemset((void*)VME_BUFFERS_PRIMARY, 0, 0x8000);
+  meCoreMemset((void*)VME_BUFFERS_SECONDARY, 0, 0x8000);
 }
 
 void vmeLibSendCustomBitstream(void* bitstream) {
@@ -29,7 +33,12 @@ void vmeLibSendCustomBitstream(void* bitstream) {
   meCoreDMACPrimWaitVMEFinish();
 }
 
-void vmeLibRefreshProcess() {
+void vmeLibStart() {
+  
+  meCoreDMACPrimMuxSetCtrl_0x003();
+}
+
+void vmeLibFinish() {
 
   meCoreDMACPrimMuxSetCtrl_0x018();
   meCoreDMACPrimWaitVMEFinish();
