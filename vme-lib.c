@@ -33,6 +33,14 @@ void vmeLibSendCustomBitstream(void* bitstream) {
   meCoreDMACPrimWaitVMEFinish();
 }
 
+void vmeLibClearLocalBuffer(const int dst, const int count) {
+  
+  hw(0x440ff014) = count - 1;
+  hw(0x440ff018) = dst;
+  hw(0x440ff008) = 0x21;
+  meCoreDMACPrimWaitTransferFinish();
+}
+
 void vmeLibStart() {
   
   meCoreDMACPrimMuxSetCtrl_0x003();

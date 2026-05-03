@@ -172,6 +172,7 @@ extern "C" {
 void vmeLibInit();
 void vmeLibWipe();
 void vmeLibSendCustomBitstream(void* bitstream);
+void vmeLibClearLocalBuffer(const int dst, const int count);
 void vmeLibStart();
 void vmeLibFinish();
 
