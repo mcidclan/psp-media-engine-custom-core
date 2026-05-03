@@ -5,9 +5,14 @@
 
 #define vmeLibRefresh vmeLibFinish
 
-#define VME_BUFFERS_PRIMARY   0x44000000
-#define VME_BUFFERS_SECONDARY 0x44020000
-#define VME_DATAPATH_BASE     0x440f8000
+#define VME_BUFFERS_PRIMARY       0x44000000
+#define VME_BUFFERS_SECONDARY     0x44020000
+#define VME_DATAPATH_BASE         0x440f8000
+
+#define VME_DEF_SRC               0x84000000
+#define VME_DEF_DST               0x84060000
+#define VME_DEF_PARAM             0x00010000
+#define VME_DEF_MAPPER            0x00003210
 
 #define VME_BASE(index) (hw(VME_DATAPATH_BASE + (index * 4)))
 
