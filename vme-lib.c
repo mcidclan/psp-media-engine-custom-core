@@ -15,7 +15,7 @@ void vmeLibDisable() {
 
 void vmeLibWipe() {
   
-  meLibSetMinimalVmeConfig();
+  //meLibSetMinimalVmeConfig();
   
   vmeLibStart();
   meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x01a8);
