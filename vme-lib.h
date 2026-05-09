@@ -27,35 +27,43 @@
 
 #define VME_BASE(index) (hw(VME_DATAPATH_BASE + (index * 4)))
 
-// descriptors
-#define VME_PE_0_TOP_DESCRIPTOR    0
-#define VME_PE_1_TOP_DESCRIPTOR    1
-#define VME_PE_2_TOP_DESCRIPTOR    2
-#define VME_PE_3_TOP_DESCRIPTOR    3
+// descriptors for top buffers processes
+#define VME_PE_0_TOP_DESCRIPTOR    0 // PE 0
+#define VME_PE_1_TOP_DESCRIPTOR    1 // PE 1
+#define VME_PE_2_TOP_DESCRIPTOR    2 // PE 2
+#define VME_PE_3_TOP_DESCRIPTOR    3 // PE 3
 
-// unknown
-#define VME_PE_0_BASE_DESCRIPTOR   4
-#define VME_PE_1_BASE_DESCRIPTOR   5
-#define VME_PE_2_BASE_DESCRIPTOR   6
-#define VME_PE_3_BASE_DESCRIPTOR   7
+// descriptors for base buffers processes
+#define VME_PE_0_BASE_DESCRIPTOR   4 // PE 0
+#define VME_PE_1_BASE_DESCRIPTOR   5 // PE 1
+#define VME_PE_2_BASE_DESCRIPTOR   6 // PE 2
+#define VME_PE_3_BASE_DESCRIPTOR   7 // PE 3
 
 // DSP operation registers for top src
+// PE 0
 #define VME_PE_0_TOP_REGISTER_A    8
 #define VME_PE_0_TOP_REGISTER_B    9
+// PE 1
 #define VME_PE_1_TOP_REGISTER_A    10
 #define VME_PE_1_TOP_REGISTER_B    11
+// PE 2
 #define VME_PE_2_TOP_REGISTER_A    12
 #define VME_PE_2_TOP_REGISTER_B    13
+// PE 3
 #define VME_PE_3_TOP_REGISTER_A    14
 #define VME_PE_3_TOP_REGISTER_B    15
 
 // DSP operation registers for base src
+// PE 0
 #define VME_PE_0_BASE_REGISTER_A   16
 #define VME_PE_0_BASE_REGISTER_B   17
+// PE 1
 #define VME_PE_1_BASE_REGISTER_A   18
 #define VME_PE_1_BASE_REGISTER_B   19
+// PE 2
 #define VME_PE_2_BASE_REGISTER_A   20
 #define VME_PE_2_BASE_REGISTER_B   21
+// PE 3
 #define VME_PE_3_BASE_REGISTER_A   22
 #define VME_PE_3_BASE_REGISTER_B   23
 
@@ -64,8 +72,10 @@
 #define VME_GLOBAL_MIXER_B         25
 #define VME_GLOBAL_MIXER_C         26
 
-//
+// base buffers feed base input and enable base descriptors
 #define VME_GLOBAL_BASE_INPUT      27
+
+// input index from which the pipeline starts
 #define VME_GLOBAL_INPUT_INDEX     28
 
 // mapper
@@ -79,21 +89,21 @@
 #define VME_GLOBAL_BITFIELD        32
 
 // PE 0
-// source I
+// top buffer source
 #define VME_PE_0_TOP_SRC           33
 #define VME_PE_0_TOP_COUNT         34
 #define VME_PE_0_TOP_PARAM_0       35
 #define VME_PE_0_TOP_PARAM_1       36
 #define VME_PE_0_TOP_PARAM_2       37
 #define VME_PE_0_TOP_PARAM_3       38
-// source II
+// base buffer source
 #define VME_PE_0_BASE_SRC          39
 #define VME_PE_0_BASE_COUNT        40
 #define VME_PE_0_BASE_PARAM_0      41
 #define VME_PE_0_BASE_PARAM_1      42
 #define VME_PE_0_BASE_PARAM_2      43
 #define VME_PE_0_BASE_PARAM_3      44
-// DST
+// destination
 #define VME_PE_0_DST               45
 #define VME_PE_0_DST_COUNT         46
 #define VME_PE_0_DST_PARAM_0       47
@@ -102,21 +112,21 @@
 #define VME_PE_0_DST_PARAM_3       50
 
 // PE 1
-// source I
+// top buffer source
 #define VME_PE_1_TOP_SRC           51
 #define VME_PE_1_TOP_COUNT         52
 #define VME_PE_1_TOP_PARAM_0       53
 #define VME_PE_1_TOP_PARAM_1       54
 #define VME_PE_1_TOP_PARAM_2       55
 #define VME_PE_1_TOP_PARAM_3       56
-// source II
+// base buffer source
 #define VME_PE_1_BASE_SRC          57
 #define VME_PE_1_BASE_COUNT        58
 #define VME_PE_1_BASE_PARAM_0      59
 #define VME_PE_1_BASE_PARAM_1      60
 #define VME_PE_1_BASE_PARAM_2      61
 #define VME_PE_1_BASE_PARAM_3      62
-// DST
+// destination
 #define VME_PE_1_DST               63
 #define VME_PE_1_DST_COUNT         64
 #define VME_PE_1_DST_PARAM_0       65
@@ -125,21 +135,21 @@
 #define VME_PE_1_DST_PARAM_3       68
 
 // PE 2
-// source I
+// top buffer source
 #define VME_PE_2_TOP_SRC           69
 #define VME_PE_2_TOP_COUNT         70
 #define VME_PE_2_TOP_PARAM_0       71
 #define VME_PE_2_TOP_PARAM_1       72
 #define VME_PE_2_TOP_PARAM_2       73
 #define VME_PE_2_TOP_PARAM_3       74
-// source II
+// base buffer source
 #define VME_PE_2_BASE_SRC          75
 #define VME_PE_2_BASE_COUNT        76
 #define VME_PE_2_BASE_PARAM_0      77
 #define VME_PE_2_BASE_PARAM_1      78
 #define VME_PE_2_BASE_PARAM_2      79
 #define VME_PE_2_BASE_PARAM_3      80
-// DST
+// destination
 #define VME_PE_2_DST               81
 #define VME_PE_2_DST_COUNT         82
 #define VME_PE_2_DST_PARAM_0       83
@@ -148,21 +158,21 @@
 #define VME_PE_2_DST_PARAM_3       86
 
 // PE 3
-// source I
+// top buffer source
 #define VME_PE_3_TOP_SRC           87
 #define VME_PE_3_TOP_COUNT         88
 #define VME_PE_3_TOP_PARAM_0       89
 #define VME_PE_3_TOP_PARAM_1       90
 #define VME_PE_3_TOP_PARAM_2       91
 #define VME_PE_3_TOP_PARAM_3       92
-// source II
+// base buffer source
 #define VME_PE_3_BASE_SRC          93
 #define VME_PE_3_BASE_COUNT        94
 #define VME_PE_3_BASE_PARAM_0      95
 #define VME_PE_3_BASE_PARAM_1      96
 #define VME_PE_3_BASE_PARAM_2      97
 #define VME_PE_3_BASE_PARAM_3      98
-// DST
+// destination
 #define VME_PE_3_DST               99
 #define VME_PE_3_DST_COUNT         100
 #define VME_PE_3_DST_PARAM_0       101
