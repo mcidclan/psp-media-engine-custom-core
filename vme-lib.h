@@ -183,12 +183,27 @@
 // End ?
 #define VME_UNKNOWN_105            105
 
+
+// PE processing flow modes
+#define VME_UNKNOWN_0   0
+#define VME_UNKNOWN_1   1
+#define VME_UNKNOWN_2   2
+#define VME_DEFAULT     3
+#define VME_UNKNOWN_4   4
+#define VME_UNKNOWN_5   5
+#define VME_UNKNOWN_6   6
+#define VME_UNKNOWN_7   7
+#define VME_UNKNOWN_8   8
+
 #define vmeLibStart() \
+{                     \
   int VME_BASE_ADDR = VME_DATAPATH_BASE; \
   _vmeLibStart();
+  
 
 #define vmeLibFinish() \
-  _vmeLibFinish();
+  _vmeLibFinish();     \
+}
 
 #define vme_set_base(n) VME_BASE_ADDR = (n);
 
@@ -215,10 +230,15 @@ extern "C" {
 void vmeLibEnable();
 void vmeLibDisable();
 void vmeLibWipe();
+
 void vmeLibSendCustomBitstream(void* bitstream);
 void vmeLibClearLocalBuffer(const int dst, const int count);
+
 void _vmeLibStart();
-void vmeLibFinish();
+void _vmeLibFinish();
+
+void vmeLibSetFlow(const int mode);
+void vmeLibTrigger();
 
 #ifdef __cplusplus
 }

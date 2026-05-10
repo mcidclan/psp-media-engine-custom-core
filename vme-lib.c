@@ -18,7 +18,7 @@ void vmeLibWipe() {
   //meLibSetMinimalVmeConfig();
   
   _vmeLibStart();
-  meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x400*4/*0x01a8*/);
+  meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x01a8); // 0x400
   _vmeLibFinish();
 
   meCoreMemset((void*)VME_TOP_BUFFERS, 0, 0x8000);
@@ -45,13 +45,26 @@ void vmeLibClearLocalBuffer(const int dst, const int count) {
   meCoreDMACPrimWaitTransferFinish();
 }
 
+void vmeLibTrigger() {
+  
+  meCoreDMACPrimMuxSetCtrl_0x018();
+}
+
+void vmeSetFlowMode(const int mode) {
+  
+  hw(0x440ff008) = mode;
+}
+
 void _vmeLibStart() {
-    
-  meCoreDMACPrimMuxSetCtrl_0x003();
+  
+  vmeSetFlowMode(VME_DEFAULT);
+  meLibSync();
 }
 
 void _vmeLibFinish() {
 
-  meCoreDMACPrimMuxSetCtrl_0x018();
+  vmeLibTrigger();
   meCoreDMACPrimWaitVMEFinish();
 }
+
+
