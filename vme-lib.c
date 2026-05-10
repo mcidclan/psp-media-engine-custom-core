@@ -13,30 +13,31 @@ void vmeLibDisable() {
   meCoreBusClockDisableVMECtrl();
 }
 
-void vmeLibConfigTransfer() {
+void vmeLibConfigTransfer(const int status) {
   
-  hw(0x440ff000) = 0;                           // minimal default status
-  hw(0x440ff004) = 0x10;                        // minimal default config
+  hw(0x440ff000) |= status | 0x80; // 0;   // set default status
+  hw(0x440ff004) |= 0x10;                  // set default config
+  meLibSync();
 }
 
 void vmeLibWipe() {
   
-  vmeLibConfigTransfer();
+  vmeLibConfigTransfer(0);
 
   _vmeLibStart();
   meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x01a8); // 0x400
   _vmeLibFinish();
 
-  //vmeLibClearLocalBuffer(0, 0x2000);
-  //vmeLibClearLocalBuffer(0x8000, 0x2000);
-
-  meCoreMemset((void*)VME_TOP_BUFFERS, 0, 0x8000);
-  meCoreMemset((void*)VME_BASE_BUFFERS, 0, 0x8000);
+  vmeLibClearLocalBuffer(0, 0x2000);
+  vmeLibClearLocalBuffer(0x8000, 0x2000);
+  
+  // meCoreMemset((void*)VME_TOP_BUFFERS, 0, 0x8000);
+  // meCoreMemset((void*)VME_BASE_BUFFERS, 0, 0x8000);
 }
 
 void vmeLibSendCustomBitstream(void* bitstream) {
   
-  vmeLibConfigTransfer();
+  vmeLibConfigTransfer(0x1c);
 
   hw(0x440ff010) = 0x40000000 | (u32)bitstream; // bitstream source address
   hw(0x440ff008) = 0x1c; // 0x1d;               // minimal control value for bitstream transfer
@@ -48,7 +49,7 @@ void vmeLibSendCustomBitstream(void* bitstream) {
 
 void vmeLibClearLocalBuffer(const int dst, const int count) {
   
-  vmeLibConfigTransfer();
+  vmeLibConfigTransfer(0);
 
   hw(0x440ff014) = count - 1;
   hw(0x440ff018) = dst;

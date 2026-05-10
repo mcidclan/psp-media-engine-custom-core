@@ -227,11 +227,11 @@
 extern "C" {
 #endif
 
-void vmeLibConfigTransfer();
 void vmeLibEnable();
 void vmeLibDisable();
 void vmeLibWipe();
 
+void vmeLibConfigTransfer(const int status);
 void vmeLibSendCustomBitstream(void* bitstream);
 void vmeLibClearLocalBuffer(const int dst, const int count);
 

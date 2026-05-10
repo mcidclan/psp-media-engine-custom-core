@@ -219,7 +219,7 @@ int main() {
     pspDebugScreenPrintf("Use Triangle/Cross to change its values");
 
     pspDebugScreenSetXY(0, 28);
-    pspDebugScreenPrintf("%lu", meCounter);
+    pspDebugScreenPrintf("meCounter: 0x%lx", meCounter);
         
     updateFactor(&ctl);
     sceDisplayWaitVblank();
