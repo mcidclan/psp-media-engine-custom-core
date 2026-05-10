@@ -25,7 +25,7 @@
 #define VME_BASE_2                0x60000000
 #define VME_BASE_3                0x70000000
 
-#define VME_BASE(index) (hw(VME_DATAPATH_BASE + (index * 4)))
+#define VME_BASE(index) (hw(VME_BASE_ADDR + (index * 4)))
 
 // descriptors for top buffers processes
 #define VME_PE_0_TOP_DESCRIPTOR    0 // PE 0
@@ -183,6 +183,15 @@
 // End ?
 #define VME_UNKNOWN_105            105
 
+#define vmeLibStart() \
+  int VME_BASE_ADDR = VME_DATAPATH_BASE; \
+  _vmeLibStart();
+
+#define vmeLibFinish() \
+  _vmeLibFinish();
+
+#define vme_set_base(n) VME_BASE_ADDR = (n);
+
 #define _vme_set_n(regIdx, val) ((VME_BASE(regIdx)) = (val))
 
 #define vme_set_1(n, NAME, a)                       _vme_set_n(VME_##n##_##NAME, (a))
@@ -208,7 +217,7 @@ void vmeLibDisable();
 void vmeLibWipe();
 void vmeLibSendCustomBitstream(void* bitstream);
 void vmeLibClearLocalBuffer(const int dst, const int count);
-void vmeLibStart();
+void _vmeLibStart();
 void vmeLibFinish();
 
 #ifdef __cplusplus
