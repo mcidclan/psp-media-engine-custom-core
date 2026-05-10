@@ -13,6 +13,7 @@ extern void meLibOnProcess(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
+
   extern void meLibSaveContext(void);
   extern void meLibRestoreContext(void);
   extern void meLibOnExternalInterrupt(void);
@@ -22,11 +23,26 @@ extern "C" {
   void meLibReset();
   int  meLibDefaultInit();
   void meLibExceptionHandlerInit(const u8 ip7);
-  
-  void meLibGetUncached32(volatile u32** const mem, const u32 size);
+
 #ifdef __cplusplus
 }
 #endif
+
+#define ME_LIB_SETUP_SIMPLE_SUSPEND_HANDLER()     \
+extern "C" __attribute__((noinline, aligned(4)))  \
+void meLibOnSleep() {                             \
+                                                  \
+  HW_SYS_RESET_ENABLE = SC_HW_RESET;              \
+  meLibSync();                                    \
+}                                                 \
+                                                  \
+extern "C" __attribute__((noinline, aligned(4)))  \
+void meLibOnWake() {                              \
+                                                  \
+  HW_SYS_RESET_ENABLE = SC_HW_RESET;              \
+  HW_SYS_RESET_ENABLE = 0;                        \
+  meLibSync();                                    \
+}
 
 #define ME_LIB_SETUP_DEFAULT_SUSPEND_HANDLER() \
 extern "C" __attribute__((noinline, aligned(4))) \
@@ -103,31 +119,29 @@ void meLibOnExternalInterrupt(void) { \
   ); \
 } \
 \
-extern "C" __attribute__((noinline, aligned(4))) \
-void meLibOnSleep() { \
-  SET_SRAM_SHARED_VAR(0, 1); \
-  meLibSendExternalSoftInterrupt(); \
-  while (GET_SRAM_SHARED_VAR(0)) { \
-    meLibDelayPipeline(); \
-  } \
-  HW_SYS_RESET_ENABLE = 0x14; \
-  meLibSync(); \
-} \
-\
-extern "C" __attribute__((noinline, aligned(4))) \
-void meLibOnWake() { \
-  SET_SRAM_SHARED_VAR(0, 3); \
-  HW_SYS_RESET_ENABLE = SC_HW_RESET; \
-  HW_SYS_RESET_ENABLE = 0x00; \
-  meLibSync(); \
-  while (GET_SRAM_SHARED_VAR(0)) { \
-    meLibDelayPipeline(); \
-  } \
-  SET_SRAM_SHARED_VAR(0, 2); \
-  meLibSendExternalSoftInterrupt(); \
-} \
-  
-
+extern "C" __attribute__((noinline, aligned(4)))  \
+void meLibOnSleep() {                             \
+  SET_SRAM_SHARED_VAR(0, 1);                      \
+  meLibSendExternalSoftInterrupt();               \
+  while (GET_SRAM_SHARED_VAR(0)) {                \
+    meLibDelayPipeline();                         \
+  }                                               \
+  HW_SYS_RESET_ENABLE = SC_HW_RESET;              \
+  meLibSync();                                    \
+}                                                 \
+                                                  \
+extern "C" __attribute__((noinline, aligned(4)))  \
+void meLibOnWake() {                              \
+  SET_SRAM_SHARED_VAR(0, 3);                      \
+  HW_SYS_RESET_ENABLE = SC_HW_RESET;              \
+  HW_SYS_RESET_ENABLE = 0x00;                     \
+  meLibSync();                                    \
+  while (GET_SRAM_SHARED_VAR(0)) {                \
+    meLibDelayPipeline();                         \
+  }                                               \
+  SET_SRAM_SHARED_VAR(0, 2);                      \
+  meLibSendExternalSoftInterrupt();               \
+}
 
 #endif
 

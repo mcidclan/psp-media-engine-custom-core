@@ -227,6 +227,7 @@
 extern "C" {
 #endif
 
+void vmeLibConfigTransfer();
 void vmeLibEnable();
 void vmeLibDisable();
 void vmeLibWipe();

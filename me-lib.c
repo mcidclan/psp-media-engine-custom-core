@@ -171,3 +171,32 @@ void meLibIcacheInvalidateRange(const u32 addr, const u32 size) {
   }
   asm volatile("sync");
 }
+
+void meLibAllocUncached32(Uncached32* const ptr, const u32 size) {
+  
+  if (!ptr->base) {
+    
+    const u32 byteCount = size * 4;
+    ptr->base = memalign(64, byteCount);
+    memset(ptr->base, 0, byteCount);
+    sceKernelDcacheWritebackInvalidateAll();
+    *(ptr->mem) = (u32*)(UNCACHED_USER_MASK | (u32)ptr->base);
+    
+    asm volatile (
+      ".set push          \n"
+      ".set noreorder     \n"
+      "cache 0x1b, 0(%0)  \n"
+      "sync               \n"
+      ".set pop           \n"
+      : : "r" (ptr->mem) : "memory"
+    );
+    return;
+  }
+  else if (!size) {
+    
+    free(ptr->base);
+  }
+  
+  *(ptr->mem) = NULL;
+  return;
+}

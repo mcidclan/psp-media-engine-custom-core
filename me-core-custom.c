@@ -284,24 +284,3 @@ int meLibDefaultInit() {
   };
   return kcall(meLibInit, 0);
 }
-
-void meLibGetUncached32(volatile u32** const mem, const u32 size) {
-  static void* _base = NULL;
-  if (!_base) {
-    const u32 byteCount = size * 4;
-    _base = memalign(16, byteCount);
-    memset(_base, 0, byteCount);
-    sceKernelDcacheWritebackInvalidateAll();
-    *mem = (u32*)(UNCACHED_USER_MASK | (u32)_base);
-    __asm__ volatile (
-      "cache 0x1b, 0(%0)  \n"
-      "sync               \n"
-      : : "r" (mem) : "memory"
-    );
-    return;
-  } else if (!size) {
-    free(_base);
-  }
-  *mem = NULL;
-  return;
-}

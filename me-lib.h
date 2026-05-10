@@ -107,30 +107,40 @@
     : "r"(var)                   \
   )
 
+typedef struct Uncached32 {
+  volatile u32** mem;
+  void* base;
+} Uncached32;
+
+#define meLibGetUncached32(var, size)       \
+  Uncached32 _##var = {&(var), NULL}; \
+  meLibAllocUncached32(&_##var, size);
+
+#define meLibFreeUncached32(var) \
+  meLibAllocUncached32(&_##var, 0);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-  int  meLibLoadPrx();
   void meLibHalt();
+  int  meLibSendExternalSoftInterrupt();
   
-  int meLibSendExternalSoftInterrupt();
   u32 meLibGetCpuId();
-  // kernel function to unlock the mutex
   int meLibHwMutexUnlock();
-  // kernel function that waits and attempts to lock and acquire the mutex
   int meLibHwMutexLock();
-  // kernel function to attempt locking and acquiring the mutex
   int meLibHwMutexTryLock();
 
   void meLibDcacheWritebackInvalidateAll();
   void meLibDcacheWritebackInvalidateRange(const u32 addr, const u32 size);
   void meLibDcacheInvalidateRange(const u32 addr, const u32 size);
   void meLibDcacheWritebackRange(const u32 addr, const u32 size);
-
   void meLibIcacheInvalidateAll();
   void meLibIcacheInvalidateRange(const u32 addr, const u32 size);
-
+  
+  int  meLibLoadPrx();
+  void meLibAllocUncached32(Uncached32* const mem, const u32 size);
+  
 #ifdef __cplusplus
 }
 #endif
