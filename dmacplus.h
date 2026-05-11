@@ -131,6 +131,13 @@ static inline void dmacplusLLIOverSc(const DMADescriptor* const lli) {
 }
 
 //
+static inline void clearPendingOperations() {
+  
+  hw(0xBC800010) = 0xffffffff;
+  hw(0xBC800008) = 0xffffffff;
+  asm volatile("sync");
+}
+
 static inline void cleanSc2MeChannel() {
   
   int intr = sceKernelCpuSuspendIntr();
@@ -152,6 +159,8 @@ static inline void waitSc2MeChannel() {
     asm volatile("nop;nop;nop;nop;nop;nop;nop");
   }
   sceKernelCpuResumeIntrWithSync(intr);
+  
+  clearPendingOperations();
 }
 
 static inline void cleanChannels() {
@@ -179,6 +188,8 @@ static inline void waitChannels() {
     asm volatile("nop;nop;nop;nop;nop;nop;nop");
   }
   sceKernelCpuResumeIntrWithSync(intr);
+  
+  clearPendingOperations();
 }
 
 typedef void* (*LLIAllocator)(int, int);
