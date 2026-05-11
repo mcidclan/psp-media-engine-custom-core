@@ -3,9 +3,9 @@ A library project to map the PSP's Media Engine core functions with the purpose 
 The main idea is simply to make the native kernel/core functions of the media engine available to homebrew developers.  
 
 Additionally, the library comes with some custom functions and processes to ease the use and integration of the Media Engine into homebrew projects.
-It provides a Media Engine Core Mapper (meCoreMapper) and a Media Engine Custom Library (meLib).
+It provides a Media Engine Core Mapper (meCoreMapper), a Media Engine Custom Library (meLib) and a Virtual Mobile Engine Custom Library (vmeLib).
 
-The media engine core is loaded at address 0x88300000, however depending on the device model, it is loaded from a different image which means that addresses are not the same for models prior to the slim.
+The Media Engine Core is loaded at address 0x88300000, however depending on the device model, it is loaded from a different image which means that addresses are not the same for models prior to the slim.
 As a solution, we have several static correspondence tables and the code will select the table corresponding to our device before launching the Media Engine.
 
 **Note:** This is a work in progress, and the mapping table for newer device generations is evolving faster than for older ones.
@@ -16,6 +16,8 @@ As a solution, we have several static correspondence tables and the code will se
 + It does not depend on the ME wrapper
 + It embeds a minimalistic PRX providing kernel callbacks and patching sceMeRpc on the main CPU side
 + It puts the VME in an optimized state, giving the ME CPU core additional resources
++ It implements a custom library providing access to the VME capabilities
++ It implements a custom library for DMACPLUS usage
 + It redefines the top of the local stack according to the device model, which provides larger local available eDRAM to work with
 + It removes main RAM and hardware register access restrictions
 + It manages suspend events (sleep/wake) callback handlers
@@ -33,6 +35,8 @@ As a solution, we have several static correspondence tables and the code will se
 - me-core, me-core-custom
 - me-core-mapper
 - me-lib
+- vme-lib
+- dmacplus.h
 
 ### Basic Integration
 
@@ -140,9 +144,9 @@ All code submitted to this repository must be compatible with the MIT License. D
 This project and code are provided as-is without warranty. Users assume full responsibility for any implementation or consequences. Use at your own discretion and risk
 
 ## Related work
+[PSP Media Engine Cracking The Unknown](https://github.com/mcidclan/psp-media-engine-cracking-the-unknown)  
 [PSP Media Engine Safe Task](https://github.com/mcidclan/psp-media-engine-safe-task)  
 [PSP Media Engine Reload](https://github.com/mcidclan/psp-media-engine-reload)  
-[PSP Media Engine Cracking The Unknown](https://github.com/mcidclan/psp-media-engine-cracking-the-unknown)
 
 ## Thanks
 Thanks to:
