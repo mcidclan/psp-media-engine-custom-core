@@ -47,7 +47,7 @@
 #define meCoreDMACPrimMuxSetCtrl_0x008             ((void  (*)(void))sysCall(29))
 #define meCoreDMACPrimMuxSetCtrl_0x003             ((void  (*)(void))sysCall(30))
 #define meCoreDMACPrimMuxSetCtrl_0x018             ((void  (*)(void))sysCall(31))
-#define meCoreDMACPrimSendDefaultVMEBitstream      ((void  (*)(void))sysCall(32))
+#define meCoreDMACPrimSendDefaultVMEContext        ((void  (*)(void))sysCall(32))
 #define meCoreDMACPrimaryProcessUnknown_000210b4   ((void  (*)(u32, u32, u32, u32, u32, u32, u32, u32))sysCall(33))
 #define meCoreDMACPrimMuxWaitStatus                ((void  (*)(u32))sysCall(34))
 #define meCoreMemcpy                               ((void* (*)(void*, void*, u32))sysCall(35))
@@ -89,7 +89,8 @@
 #define meCoreEDRAMAllocWords                      ((int   (*)(uint, uint))sysCall(69))
 #define meCoreEDRAMHeapInit                        ((u32*  (*)(void))sysCall(70))
 #define meCoreDMACPrimMemoryToRingBuffer           ((void  (*)(void*, u32, u32))sysCall(71))
-#define meCoreDMACPrimWaitTransferFinish          ((int   (*)(void))sysCall(72))
+#define meCoreDMACPrimWaitTransferFinish           ((int   (*)(void))sysCall(72))
+#define meCoreDMACPrimPreloadVMEContext            ((int   (*)(void*))sysCall(73))
   
   
 // t2img (slim+)

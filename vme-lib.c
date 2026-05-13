@@ -35,12 +35,12 @@ void vmeLibWipe() {
   // meCoreMemset((void*)VME_BASE_BUFFERS, 0, 0x8000);
 }
 
-void vmeLibSendCustomBitstream(void* bitstream) {
+void vmeLibSendCustomContext(void* context) {
   
   vmeLibConfigTransfer(0x1c);
 
-  hw(0x440ff010) = 0x40000000 | (u32)bitstream; // bitstream source address
-  hw(0x440ff008) = 0x1c; // 0x1d;               // minimal control value for bitstream transfer
+  hw(0x440ff010) = 0x40000000 | (u32)context; // context source address
+  hw(0x440ff008) = 0x1c; // 0x1d;             // minimal control value for context transfer
   meLibSync();
   
   meCoreDMACPrimWaitTransferFinish();

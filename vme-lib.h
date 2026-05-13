@@ -39,7 +39,7 @@
 #define VME_PE_2_BASE_DESCRIPTOR   6 // PE 2
 #define VME_PE_3_BASE_DESCRIPTOR   7 // PE 3
 
-// DSP operation registers for top src
+// DSP operation registers / operands for top src
 // PE 0
 #define VME_PE_0_TOP_REGISTER_A    8
 #define VME_PE_0_TOP_REGISTER_B    9
@@ -53,7 +53,7 @@
 #define VME_PE_3_TOP_REGISTER_A    14
 #define VME_PE_3_TOP_REGISTER_B    15
 
-// DSP operation registers for base src
+// DSP operation registers / operands for base src
 // PE 0
 #define VME_PE_0_BASE_REGISTER_A   16
 #define VME_PE_0_BASE_REGISTER_B   17
@@ -232,7 +232,7 @@ void vmeLibDisable();
 void vmeLibWipe();
 
 void vmeLibConfigTransfer(const int status);
-void vmeLibSendCustomBitstream(void* bitstream);
+void vmeLibSendCustomContext(void* context);
 void vmeLibClearLocalBuffer(const int dst, const int count);
 
 void _vmeLibStart();

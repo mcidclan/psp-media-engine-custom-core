@@ -39,7 +39,7 @@
   {0x00020cb8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x008(void)         // ?
   {0x00020cc8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x003(void)         // ?
   {0x00020cd8, 0x00000000}, // void _meCoreDMACPrimMuxSetCtrl_0x018(void)         // start  
-  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimSendDefaultVMEBitstream(void)
+  {0x00020ce8, 0x00000000}, // void _meCoreDMACPrimSendDefaultVMEContext(void)
   
   {0x000210b4, 0x00000000}, // void _meCoreDMACPrimaryProcessUnknown_000210b4(u32 memSrc, u32 bufSrc, u32 blockCount, u32 lastBlockIndex, u32 memDst, u32 bufDstLow, u32 bufDstHigh, u32 dstCount) // not sure
   {0x00021168, 0x00012a88}, // void _meCoreDMACPrimMuxWaitStatus(u32)
@@ -104,4 +104,5 @@
 
   {0x00020a2c, 0x00000000}, // void _meCoreDMACPrimMemoryToRingBuffer(void* src, u32 dst offset, u32 count);
   {0x000209b4, 0x00000000}, // void _meCoreDMACPrimWaitTransferFinish();
+  {0x00020c84, 0x00000000}, // void _meCoreDMACPrimPreloadVMEContext);
 }
