@@ -197,7 +197,7 @@
 
 #define vmeLibStart() \
 {                     \
-  int VME_BASE_ADDR = VME_DATAPATH_BASE; \
+  volatile u32 VME_BASE_ADDR = VME_DATAPATH_BASE; \
   _vmeLibStart();
   
 
@@ -205,7 +205,7 @@
   _vmeLibFinish();     \
 }
 
-#define vme_set_base(n) VME_BASE_ADDR = (n);
+#define vme_set_base(n) VME_BASE_ADDR = ((0x40000000 | n));
 
 #define _vme_set_n(regIdx, val) ((VME_BASE(regIdx)) = (val))
 
