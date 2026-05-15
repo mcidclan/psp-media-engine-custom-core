@@ -95,8 +95,8 @@ void meLibOnProcess(void) {
     vme_set(PE_1, TOP_DESCRIPTOR, VME_BASE_0, (0x04 << 24), op, k);
     vme_set(PE_1, TOP_REGISTER_B, b);
     
-    vme_set(PE_1, BASE_SRC, VME_PFX_ROUTE);
-    vme_set(PE_1, BASE_COUNT, VME_PFX_PARAM, count);
+    //vme_set(PE_1, BASE_SRC, VME_PFX_ROUTE);
+    //vme_set(PE_1, BASE_COUNT, VME_PFX_PARAM, count);
     
     vme_set(PE_1, DST, VME_PFX_ROUTE, (9 << 16));
     vme_set(PE_1, DST_COUNT, VME_PFX_PARAM, count);
