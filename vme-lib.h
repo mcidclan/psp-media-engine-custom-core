@@ -14,6 +14,7 @@
 #define VME_PFX_ROUTE             0x84000000
 #define VME_PFX_PARAM             0x00010000
 #define VME_DEF_MAPPER            0x00003210
+#define VME_PFX_END_TOKEN         0x00200000
 
 // co-operand data source selectors
 #define VME_TOP_0                 0x00000000
