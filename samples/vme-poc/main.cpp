@@ -61,7 +61,7 @@ void meLibOnProcess(void) {
   // Start of the VME related code
   vmeLibStart();
   
-  vme_set(GLOBAL, MAPPER_B, VME_DEF_MAPPER);
+  vme_set(GLOBAL, INTER_CROSSBAR, VME_DEF_MAPPER);
 
   const u8  k = Q_FORMAT;
   const u32 b = F2Q(DEFAULT_FACTOR);

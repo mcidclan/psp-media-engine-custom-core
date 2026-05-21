@@ -76,12 +76,10 @@
 // base buffers feed base input and enable base descriptors
 #define VME_GLOBAL_BASE_INPUT      27
 
-// input index from which the pipeline starts
-#define VME_GLOBAL_INPUT_INDEX     28
-
-// mapper
+// crossbars
+#define VME_GLOBAL_INPUT_CROSSBAR  28 // input matrix mapping 8 source buffers to PE inputs
 #define VME_GLOBAL_MAPPER_A        29
-#define VME_GLOBAL_MAPPER_B        30
+#define VME_GLOBAL_INTER_CROSSBAR  30 // inter-PE routing matrix. Each nibble selects the source PE index for a target PE lane.
 
 // unclear / not sure
 #define VME_GLOBAL_MAPPER_C        31
