@@ -61,7 +61,8 @@ void meLibOnProcess(void) {
   // Start of the VME related code
   vmeLibStart();
   
-  vme_set(GLOBAL, INTER_CROSSBAR, VME_DEF_MAPPER);
+  vme_set(GLOBAL, CROSSBAR_FLOW, 0);
+  vme_set(GLOBAL, CROSSBAR_ARCH, VME_DEF_MAPPER);
 
   const u8  k = Q_FORMAT;
   const u32 b = F2Q(DEFAULT_FACTOR);
@@ -70,17 +71,20 @@ void meLibOnProcess(void) {
   const int count = (size + prologue) - 1;
   
   {
-    // r1 = (x * b) >> k
+    // r1 = (x0 * b) >> k
     const u32 op = 0x00204000;
     vme_set(PE_0, TOP_DESCRIPTOR, op, k);
     vme_set(PE_0, TOP_REGISTER_B, b);
     
+    // x0 source control
     vme_set(PE_0, TOP_SRC, VME_PFX_ROUTE);
     vme_set(PE_0, TOP_COUNT, VME_PFX_PARAM, count);
     
+    // r1 source control
     vme_set(PE_0, BASE_SRC, VME_PFX_ROUTE);
     vme_set(PE_0, BASE_COUNT, VME_PFX_PARAM, count);
     
+    // r1 destination control
     vme_set(PE_0, DST, VME_PFX_ROUTE, (6 << 16));
     vme_set(PE_0, DST_COUNT, VME_PFX_PARAM, count);
 
@@ -97,9 +101,7 @@ void meLibOnProcess(void) {
     vme_set(PE_1, TOP_DESCRIPTOR, VME_BASE_0, (0x04 << 24), op, k);
     vme_set(PE_1, TOP_REGISTER_B, b);
     
-    //vme_set(PE_1, BASE_SRC, VME_PFX_ROUTE);
-    //vme_set(PE_1, BASE_COUNT, VME_PFX_PARAM, count);
-    
+    // r2 destination control
     vme_set(PE_1, DST, VME_PFX_ROUTE, (9 << 16));
     vme_set(PE_1, DST_COUNT, VME_PFX_PARAM, count);
     
@@ -114,6 +116,7 @@ void meLibOnProcess(void) {
     const u32 op = 0x02010000;
     vme_set(PE_2, TOP_DESCRIPTOR, VME_BASE_1, op);
     
+    // r3 destination control
     const int offset = 0x10000 - prologue; // cancel prologue/padding (-0x10)
     vme_set(PE_2, DST, VME_PFX_ROUTE, (6 << 16), offset);
     vme_set(PE_2, DST_COUNT, VME_PFX_PARAM, count);
