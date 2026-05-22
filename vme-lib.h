@@ -68,7 +68,7 @@
 #define VME_PE_3_BASE_REGISTER_A   22
 #define VME_PE_3_BASE_REGISTER_B   23
 
-// mixer (unclear)
+// mixer/mux ? (unclear)
 #define VME_GLOBAL_MIXER_A         24
 #define VME_GLOBAL_MIXER_B         25
 #define VME_GLOBAL_MIXER_C         26
@@ -78,14 +78,10 @@
 
 // crossbars
 #define VME_GLOBAL_CROSSBAR_INPUT  28 // input paths, mapping source buffers to PE
-#define VME_GLOBAL_CROSSBAR_FLOW   29 // inter-PE routing matrix. Each nibble selects the source arch PE index for a target PE lane.
-#define VME_GLOBAL_CROSSBAR_ARCH   30 // inter-PE routing matrix. Each nibble selects the source flow PE index for a target PE lane.
-
-// unclear / not sure
-#define VME_GLOBAL_MAPPER_C        31
-
-// bitfield (unclear)
-#define VME_GLOBAL_BITFIELD        32
+#define VME_GLOBAL_CROSSBAR_FLOW   29 // inter-PE routing register. Each nibble selects the source arch PE index for a target PE lane.
+#define VME_GLOBAL_CROSSBAR_ARCH   30 // inter-PE routing register. Each nibble selects the source flow PE index for a target PE lane.
+#define VME_GLOBAL_CROSSBAR_UNK    31 // unknown
+#define VME_GLOBAL_CROSSBAR_SKEW   32 // applies a cycle skew to the data stream forwarded to the target PE.
 
 // PE 0
 // top buffer source
