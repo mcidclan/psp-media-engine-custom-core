@@ -29,154 +29,154 @@
 #define VME_BASE(index) (hw(VME_BASE_ADDR + (index * 4)))
 
 // descriptors for top buffers processes
-#define VME_PE_0_TOP_DESCRIPTOR    0 // PE 0
-#define VME_PE_1_TOP_DESCRIPTOR    1 // PE 1
-#define VME_PE_2_TOP_DESCRIPTOR    2 // PE 2
-#define VME_PE_3_TOP_DESCRIPTOR    3 // PE 3
+#define VME_PE_0_TOP_DESCRIPTOR    0   // 0x000 // PE 0
+#define VME_PE_1_TOP_DESCRIPTOR    1   // 0x004 // PE 1
+#define VME_PE_2_TOP_DESCRIPTOR    2   // 0x008 // PE 2
+#define VME_PE_3_TOP_DESCRIPTOR    3   // 0x00c // PE 3
 
 // descriptors for base buffers processes
-#define VME_PE_0_BASE_DESCRIPTOR   4 // PE 0
-#define VME_PE_1_BASE_DESCRIPTOR   5 // PE 1
-#define VME_PE_2_BASE_DESCRIPTOR   6 // PE 2
-#define VME_PE_3_BASE_DESCRIPTOR   7 // PE 3
+#define VME_PE_0_BASE_DESCRIPTOR   4   // 0x010 // PE 0
+#define VME_PE_1_BASE_DESCRIPTOR   5   // 0x014 // PE 1
+#define VME_PE_2_BASE_DESCRIPTOR   6   // 0x018 // PE 2
+#define VME_PE_3_BASE_DESCRIPTOR   7   // 0x01c // PE 3
 
 // DSP operation registers / operands for top src
 // PE 0
-#define VME_PE_0_TOP_REGISTER_A    8
-#define VME_PE_0_TOP_REGISTER_B    9
+#define VME_PE_0_TOP_REGISTER_A    8   // 0x020
+#define VME_PE_0_TOP_REGISTER_B    9   // 0x024
 // PE 1
-#define VME_PE_1_TOP_REGISTER_A    10
-#define VME_PE_1_TOP_REGISTER_B    11
+#define VME_PE_1_TOP_REGISTER_A    10  // 0x028
+#define VME_PE_1_TOP_REGISTER_B    11  // 0x02c
 // PE 2
-#define VME_PE_2_TOP_REGISTER_A    12
-#define VME_PE_2_TOP_REGISTER_B    13
+#define VME_PE_2_TOP_REGISTER_A    12  // 0x030
+#define VME_PE_2_TOP_REGISTER_B    13  // 0x034
 // PE 3
-#define VME_PE_3_TOP_REGISTER_A    14
-#define VME_PE_3_TOP_REGISTER_B    15
+#define VME_PE_3_TOP_REGISTER_A    14  // 0x038
+#define VME_PE_3_TOP_REGISTER_B    15  // 0x03c
 
 // DSP operation registers / operands for base src
 // PE 0
-#define VME_PE_0_BASE_REGISTER_A   16
-#define VME_PE_0_BASE_REGISTER_B   17
+#define VME_PE_0_BASE_REGISTER_A   16  // 0x040
+#define VME_PE_0_BASE_REGISTER_B   17  // 0x044
 // PE 1
-#define VME_PE_1_BASE_REGISTER_A   18
-#define VME_PE_1_BASE_REGISTER_B   19
+#define VME_PE_1_BASE_REGISTER_A   18  // 0x048
+#define VME_PE_1_BASE_REGISTER_B   19  // 0x04c
 // PE 2
-#define VME_PE_2_BASE_REGISTER_A   20
-#define VME_PE_2_BASE_REGISTER_B   21
+#define VME_PE_2_BASE_REGISTER_A   20  // 0x050
+#define VME_PE_2_BASE_REGISTER_B   21  // 0x054
 // PE 3
-#define VME_PE_3_BASE_REGISTER_A   22
-#define VME_PE_3_BASE_REGISTER_B   23
+#define VME_PE_3_BASE_REGISTER_A   22  // 0x058
+#define VME_PE_3_BASE_REGISTER_B   23  // 0x05c
 
 // mixer/mux ? (unclear)
-#define VME_GLOBAL_MIXER_A         24
-#define VME_GLOBAL_MIXER_B         25
-#define VME_GLOBAL_MIXER_C         26
+#define VME_GLOBAL_MIXER_A         24  // 0x060
+#define VME_GLOBAL_MIXER_B         25  // 0x064
+#define VME_GLOBAL_MIXER_C         26  // 0x068
 
 // base buffers feed base input and enable base descriptors
-#define VME_GLOBAL_BASE_INPUT      27
+#define VME_GLOBAL_BASE_INPUT      27  // 0x06c
 
 // crossbars
-#define VME_GLOBAL_CROSSBAR_INPUT  28 // input paths, mapping source buffers to PE
-#define VME_GLOBAL_CROSSBAR_FLOW   29 // inter-PE routing register. Each nibble selects the source arch PE index for a target PE lane.
-#define VME_GLOBAL_CROSSBAR_ARCH   30 // inter-PE routing register. Each nibble selects the source flow PE index for a target PE lane.
-#define VME_GLOBAL_CROSSBAR_UNK    31 // unknown
-#define VME_GLOBAL_CROSSBAR_SKEW   32 // applies a cycle skew to the data stream forwarded to the target PE.
+#define VME_GLOBAL_CROSSBAR_INPUT  28  // 0x070 // input paths, mapping source buffers to PE
+#define VME_GLOBAL_CROSSBAR_FLOW   29  // 0x074 // inter-PE routing register. Each nibble selects the source arch PE index for a target PE lane.
+#define VME_GLOBAL_CROSSBAR_ARCH   30  // 0x078 // inter-PE routing register. Each nibble selects the source flow PE index for a target PE lane.
+#define VME_GLOBAL_CROSSBAR_UNK    31  // 0x07c // unknown
+#define VME_GLOBAL_CROSSBAR_SKEW   32  // 0x080 // applies a cycle skew to the data stream forwarded to the target PE.
 
 // PE 0
 // top buffer source
-#define VME_PE_0_TOP_SRC           33
-#define VME_PE_0_TOP_COUNT         34
-#define VME_PE_0_TOP_PARAM_0       35
-#define VME_PE_0_TOP_PARAM_1       36
-#define VME_PE_0_TOP_PARAM_2       37
-#define VME_PE_0_TOP_PARAM_3       38
+#define VME_PE_0_TOP_SRC           33  // 0x084
+#define VME_PE_0_TOP_COUNT         34  // 0x088
+#define VME_PE_0_TOP_PARAM_0       35  // 0x08c
+#define VME_PE_0_TOP_PARAM_1       36  // 0x090
+#define VME_PE_0_TOP_PARAM_2       37  // 0x094
+#define VME_PE_0_TOP_PARAM_3       38  // 0x098
 // base buffer source
-#define VME_PE_0_BASE_SRC          39
-#define VME_PE_0_BASE_COUNT        40
-#define VME_PE_0_BASE_PARAM_0      41
-#define VME_PE_0_BASE_PARAM_1      42
-#define VME_PE_0_BASE_PARAM_2      43
-#define VME_PE_0_BASE_PARAM_3      44
+#define VME_PE_0_BASE_SRC          39  // 0x09c
+#define VME_PE_0_BASE_COUNT        40  // 0x0a0
+#define VME_PE_0_BASE_PARAM_0      41  // 0x0a4
+#define VME_PE_0_BASE_PARAM_1      42  // 0x0a8
+#define VME_PE_0_BASE_PARAM_2      43  // 0x0ac
+#define VME_PE_0_BASE_PARAM_3      44  // 0x0b0
 // destination
-#define VME_PE_0_DST               45
-#define VME_PE_0_DST_COUNT         46
-#define VME_PE_0_DST_PARAM_0       47
-#define VME_PE_0_DST_PARAM_1       48
-#define VME_PE_0_DST_PARAM_2       49
-#define VME_PE_0_DST_PARAM_3       50
+#define VME_PE_0_DST               45  // 0x0b4
+#define VME_PE_0_DST_COUNT         46  // 0x0b8
+#define VME_PE_0_DST_PARAM_0       47  // 0x0bc
+#define VME_PE_0_DST_PARAM_1       48  // 0x0c0
+#define VME_PE_0_DST_PARAM_2       49  // 0x0c4
+#define VME_PE_0_DST_PARAM_3       50  // 0x0c8
 
 // PE 1
 // top buffer source
-#define VME_PE_1_TOP_SRC           51
-#define VME_PE_1_TOP_COUNT         52
-#define VME_PE_1_TOP_PARAM_0       53
-#define VME_PE_1_TOP_PARAM_1       54
-#define VME_PE_1_TOP_PARAM_2       55
-#define VME_PE_1_TOP_PARAM_3       56
+#define VME_PE_1_TOP_SRC           51  // 0x0cc
+#define VME_PE_1_TOP_COUNT         52  // 0x0d0
+#define VME_PE_1_TOP_PARAM_0       53  // 0x0d4
+#define VME_PE_1_TOP_PARAM_1       54  // 0x0d8
+#define VME_PE_1_TOP_PARAM_2       55  // 0x0dc
+#define VME_PE_1_TOP_PARAM_3       56  // 0x0e0
 // base buffer source
-#define VME_PE_1_BASE_SRC          57
-#define VME_PE_1_BASE_COUNT        58
-#define VME_PE_1_BASE_PARAM_0      59
-#define VME_PE_1_BASE_PARAM_1      60
-#define VME_PE_1_BASE_PARAM_2      61
-#define VME_PE_1_BASE_PARAM_3      62
+#define VME_PE_1_BASE_SRC          57  // 0x0e4
+#define VME_PE_1_BASE_COUNT        58  // 0x0e8
+#define VME_PE_1_BASE_PARAM_0      59  // 0x0ec
+#define VME_PE_1_BASE_PARAM_1      60  // 0x0f0
+#define VME_PE_1_BASE_PARAM_2      61  // 0x0f4
+#define VME_PE_1_BASE_PARAM_3      62  // 0x0f8
 // destination
-#define VME_PE_1_DST               63
-#define VME_PE_1_DST_COUNT         64
-#define VME_PE_1_DST_PARAM_0       65
-#define VME_PE_1_DST_PARAM_1       66
-#define VME_PE_1_DST_PARAM_2       67
-#define VME_PE_1_DST_PARAM_3       68
+#define VME_PE_1_DST               63  // 0x0fc
+#define VME_PE_1_DST_COUNT         64  // 0x100
+#define VME_PE_1_DST_PARAM_0       65  // 0x104
+#define VME_PE_1_DST_PARAM_1       66  // 0x108
+#define VME_PE_1_DST_PARAM_2       67  // 0x10c
+#define VME_PE_1_DST_PARAM_3       68  // 0x110
 
 // PE 2
 // top buffer source
-#define VME_PE_2_TOP_SRC           69
-#define VME_PE_2_TOP_COUNT         70
-#define VME_PE_2_TOP_PARAM_0       71
-#define VME_PE_2_TOP_PARAM_1       72
-#define VME_PE_2_TOP_PARAM_2       73
-#define VME_PE_2_TOP_PARAM_3       74
+#define VME_PE_2_TOP_SRC           69  // 0x114
+#define VME_PE_2_TOP_COUNT         70  // 0x118
+#define VME_PE_2_TOP_PARAM_0       71  // 0x11c
+#define VME_PE_2_TOP_PARAM_1       72  // 0x120
+#define VME_PE_2_TOP_PARAM_2       73  // 0x124
+#define VME_PE_2_TOP_PARAM_3       74  // 0x128
 // base buffer source
-#define VME_PE_2_BASE_SRC          75
-#define VME_PE_2_BASE_COUNT        76
-#define VME_PE_2_BASE_PARAM_0      77
-#define VME_PE_2_BASE_PARAM_1      78
-#define VME_PE_2_BASE_PARAM_2      79
-#define VME_PE_2_BASE_PARAM_3      80
+#define VME_PE_2_BASE_SRC          75  // 0x12c
+#define VME_PE_2_BASE_COUNT        76  // 0x130
+#define VME_PE_2_BASE_PARAM_0      77  // 0x134
+#define VME_PE_2_BASE_PARAM_1      78  // 0x138
+#define VME_PE_2_BASE_PARAM_2      79  // 0x13c
+#define VME_PE_2_BASE_PARAM_3      80  // 0x140
 // destination
-#define VME_PE_2_DST               81
-#define VME_PE_2_DST_COUNT         82
-#define VME_PE_2_DST_PARAM_0       83
-#define VME_PE_2_DST_PARAM_1       84
-#define VME_PE_2_DST_PARAM_2       85
-#define VME_PE_2_DST_PARAM_3       86
+#define VME_PE_2_DST               81  // 0x144
+#define VME_PE_2_DST_COUNT         82  // 0x148
+#define VME_PE_2_DST_PARAM_0       83  // 0x14c
+#define VME_PE_2_DST_PARAM_1       84  // 0x150
+#define VME_PE_2_DST_PARAM_2       85  // 0x154
+#define VME_PE_2_DST_PARAM_3       86  // 0x158
 
 // PE 3
 // top buffer source
-#define VME_PE_3_TOP_SRC           87
-#define VME_PE_3_TOP_COUNT         88
-#define VME_PE_3_TOP_PARAM_0       89
-#define VME_PE_3_TOP_PARAM_1       90
-#define VME_PE_3_TOP_PARAM_2       91
-#define VME_PE_3_TOP_PARAM_3       92
+#define VME_PE_3_TOP_SRC           87  // 0x15c
+#define VME_PE_3_TOP_COUNT         88  // 0x160
+#define VME_PE_3_TOP_PARAM_0       89  // 0x164
+#define VME_PE_3_TOP_PARAM_1       90  // 0x168
+#define VME_PE_3_TOP_PARAM_2       91  // 0x16c
+#define VME_PE_3_TOP_PARAM_3       92  // 0x170
 // base buffer source
-#define VME_PE_3_BASE_SRC          93
-#define VME_PE_3_BASE_COUNT        94
-#define VME_PE_3_BASE_PARAM_0      95
-#define VME_PE_3_BASE_PARAM_1      96
-#define VME_PE_3_BASE_PARAM_2      97
-#define VME_PE_3_BASE_PARAM_3      98
+#define VME_PE_3_BASE_SRC          93  // 0x174
+#define VME_PE_3_BASE_COUNT        94  // 0x178
+#define VME_PE_3_BASE_PARAM_0      95  // 0x17c
+#define VME_PE_3_BASE_PARAM_1      96  // 0x180
+#define VME_PE_3_BASE_PARAM_2      97  // 0x184
+#define VME_PE_3_BASE_PARAM_3      98  // 0x188
 // destination
-#define VME_PE_3_DST               99
-#define VME_PE_3_DST_COUNT         100
-#define VME_PE_3_DST_PARAM_0       101
-#define VME_PE_3_DST_PARAM_1       102
-#define VME_PE_3_DST_PARAM_2       103
-#define VME_PE_3_DST_PARAM_3       104
+#define VME_PE_3_DST               99  // 0x18c
+#define VME_PE_3_DST_COUNT         100 // 0x190
+#define VME_PE_3_DST_PARAM_0       101 // 0x194
+#define VME_PE_3_DST_PARAM_1       102 // 0x198
+#define VME_PE_3_DST_PARAM_2       103 // 0x19c
+#define VME_PE_3_DST_PARAM_3       104 // 0x1a0
 
 // End ?
-#define VME_UNKNOWN_105            105
+#define VME_UNKNOWN_105            105 // 0x1a4
 
 
 // PE processing flow modes
