@@ -28,13 +28,13 @@
 
 #define VME_BASE(index) (hw(VME_BASE_ADDR + (index * 4)))
 
-// descriptors for top buffers processes
+// PE top descriptors, describing a local MUX, the ALU/Logic/MAC, a Saturator and Shifter.
 #define VME_PE_0_TOP_DESCRIPTOR    0   // 0x000 // PE 0
 #define VME_PE_1_TOP_DESCRIPTOR    1   // 0x004 // PE 1
 #define VME_PE_2_TOP_DESCRIPTOR    2   // 0x008 // PE 2
 #define VME_PE_3_TOP_DESCRIPTOR    3   // 0x00c // PE 3
 
-// descriptors for base buffers processes
+// PE base descriptors, describing a local MUX, the ALU/Logic/MAC, a Saturator and Shifter.
 #define VME_PE_0_BASE_DESCRIPTOR   4   // 0x010 // PE 0
 #define VME_PE_1_BASE_DESCRIPTOR   5   // 0x014 // PE 1
 #define VME_PE_2_BASE_DESCRIPTOR   6   // 0x018 // PE 2
