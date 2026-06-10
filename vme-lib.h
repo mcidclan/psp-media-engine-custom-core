@@ -42,8 +42,8 @@
 
 // DSP operation registers / operands for FU_0
 // PE 0
-#define VME_PE_0_FU_0_REGISTER_A   8   // 0x020 // VME_PE_0_TOP_REGISTER_A => VME_PE_0_FU_0_REGISTER_A, RA
-#define VME_PE_0_FU_0_REGISTER_B   9   // 0x024 // VME_PE_0_TOP_REGISTER_B => VME_PE_0_FU_0_REGISTER_B, RB
+#define VME_PE_0_FU_0_REGISTER_A    8   // 0x020 // VME_PE_0_TOP_REGISTER_A => VME_PE_0_FU_0_REGISTER_A, RA
+#define VME_PE_0_FU_0_REGISTER_B    9   // 0x024 // VME_PE_0_TOP_REGISTER_B => VME_PE_0_FU_0_REGISTER_B, RB
 // PE 1
 #define VME_PE_1_FU_0_REGISTER_A   10  // 0x028
 #define VME_PE_1_FU_0_REGISTER_B   11  // 0x02c

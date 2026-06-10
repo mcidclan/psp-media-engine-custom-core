@@ -73,8 +73,8 @@ void meLibOnProcess(void) {
   {
     // r1 = (x0 * b) >> k
     const u32 op = 0x00204000;
-    vme_set(PE_0, TOP_DESCRIPTOR, op, k);
-    vme_set(PE_0, TOP_REGISTER_B, b);
+    vme_set(PE_0, FUNCTIONAL_UNIT_0, op, k);
+    vme_set(PE_0, FU_0_REGISTER_B, b);
     
     // x0 source control
     vme_set(PE_0, TOP_SRC, VME_PFX_ROUTE);
@@ -98,8 +98,8 @@ void meLibOnProcess(void) {
   {
     // r2 = (r1 * b) >> k
     const u32 op = 0x00204000;
-    vme_set(PE_1, TOP_DESCRIPTOR, VME_BASE_0, (0x04 << 24), op, k);
-    vme_set(PE_1, TOP_REGISTER_B, b);
+    vme_set(PE_1, FUNCTIONAL_UNIT_0, VME_BASE_0, (0x04 << 24), op, k);
+    vme_set(PE_1, FU_0_REGISTER_B, b);
     
     // r2 destination control
     vme_set(PE_1, DST, VME_PFX_ROUTE, (9 << 16));
@@ -114,7 +114,7 @@ void meLibOnProcess(void) {
   {
     // r3 = r1 + r2
     const u32 op = 0x02010000;
-    vme_set(PE_2, TOP_DESCRIPTOR, VME_BASE_1, op);
+    vme_set(PE_2, FUNCTIONAL_UNIT_0, VME_BASE_1, op);
     
     // r3 destination control
     const int offset = 0x10000 - prologue; // cancel prologue/padding (-0x10)
@@ -134,8 +134,8 @@ void meLibOnProcess(void) {
     
     // Start of the VME datapath update
     vmeLibStart();
-    vme_set(PE_0, TOP_REGISTER_B, meVars[0]);
-    vme_set(PE_1, TOP_REGISTER_B, meVars[1]);
+    vme_set(PE_0, FU_0_REGISTER_B, meVars[0]);
+    vme_set(PE_1, FU_0_REGISTER_B, meVars[1]);
 
     // End of the VME datapath update
     vmeLibFinish();
