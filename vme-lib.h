@@ -28,53 +28,53 @@
 
 #define VME_BASE(index) (hw(VME_BASE_ADDR + (index * 4)))
 
-// PE top descriptors, describing a local MUX, the ALU/Logic/MAC, a Saturator and Shifter.
-#define VME_PE_0_TOP_DESCRIPTOR    0   // 0x000 // PE 0
-#define VME_PE_1_TOP_DESCRIPTOR    1   // 0x004 // PE 1
-#define VME_PE_2_TOP_DESCRIPTOR    2   // 0x008 // PE 2
-#define VME_PE_3_TOP_DESCRIPTOR    3   // 0x00c // PE 3
+// PE functional unit 0 descriptors, describing a local MUX, the ALU/Logic/MAC, a Saturator and Shifter.
+#define VME_PE_0_FUNCTIONAL_UNIT_0  0   // 0x000 // PE 0 VME_PE_0_TOP_DESCRIPTOR => VME_PE_0_FUNCTIONAL_UNIT_0
+#define VME_PE_1_FUNCTIONAL_UNIT_0  1   // 0x004 // PE 1
+#define VME_PE_2_FUNCTIONAL_UNIT_0  2   // 0x008 // PE 2
+#define VME_PE_3_FUNCTIONAL_UNIT_0  3   // 0x00c // PE 3
 
-// PE base descriptors, describing a local MUX, the ALU/Logic/MAC, a Saturator and Shifter.
-#define VME_PE_0_BASE_DESCRIPTOR   4   // 0x010 // PE 0
-#define VME_PE_1_BASE_DESCRIPTOR   5   // 0x014 // PE 1
-#define VME_PE_2_BASE_DESCRIPTOR   6   // 0x018 // PE 2
-#define VME_PE_3_BASE_DESCRIPTOR   7   // 0x01c // PE 3
+// PE functional unit 1 descriptors, describing a local MUX, the ALU/Logic/MAC, a Saturator and Shifter.
+#define VME_PE_0_FUNCTIONAL_UNIT_1  4   // 0x010 // PE 0 VME_PE_0_BASE_DESCRIPTOR => VME_PE_0_FUNCTIONAL_UNIT_1
+#define VME_PE_1_FUNCTIONAL_UNIT_1  5   // 0x014 // PE 1
+#define VME_PE_2_FUNCTIONAL_UNIT_1  6   // 0x018 // PE 2
+#define VME_PE_3_FUNCTIONAL_UNIT_1  7   // 0x01c // PE 3
 
-// DSP operation registers / operands for top src
+// DSP operation registers / operands for FU_0
 // PE 0
-#define VME_PE_0_TOP_REGISTER_A    8   // 0x020
-#define VME_PE_0_TOP_REGISTER_B    9   // 0x024
+#define VME_PE_0_FU_0_REGISTER_A   8   // 0x020 // VME_PE_0_TOP_REGISTER_A => VME_PE_0_FU_0_REGISTER_A, RA
+#define VME_PE_0_FU_0_REGISTER_B   9   // 0x024 // VME_PE_0_TOP_REGISTER_B => VME_PE_0_FU_0_REGISTER_B, RB
 // PE 1
-#define VME_PE_1_TOP_REGISTER_A    10  // 0x028
-#define VME_PE_1_TOP_REGISTER_B    11  // 0x02c
+#define VME_PE_1_FU_0_REGISTER_A   10  // 0x028
+#define VME_PE_1_FU_0_REGISTER_B   11  // 0x02c
 // PE 2
-#define VME_PE_2_TOP_REGISTER_A    12  // 0x030
-#define VME_PE_2_TOP_REGISTER_B    13  // 0x034
+#define VME_PE_2_FU_0_REGISTER_A   12  // 0x030
+#define VME_PE_2_FU_0_REGISTER_B   13  // 0x034
 // PE 3
-#define VME_PE_3_TOP_REGISTER_A    14  // 0x038
-#define VME_PE_3_TOP_REGISTER_B    15  // 0x03c
+#define VME_PE_3_FU_0_REGISTER_A   14  // 0x038
+#define VME_PE_3_FU_0_REGISTER_B   15  // 0x03c
 
-// DSP operation registers / operands for base src
+// DSP operation registers / operands for FU_1
 // PE 0
-#define VME_PE_0_BASE_REGISTER_A   16  // 0x040
-#define VME_PE_0_BASE_REGISTER_B   17  // 0x044
+#define VME_PE_0_FU_1_REGISTER_A   16  // 0x040
+#define VME_PE_0_FU_1_REGISTER_B   17  // 0x044
 // PE 1
-#define VME_PE_1_BASE_REGISTER_A   18  // 0x048
-#define VME_PE_1_BASE_REGISTER_B   19  // 0x04c
+#define VME_PE_1_FU_1_REGISTER_A   18  // 0x048
+#define VME_PE_1_FU_1_REGISTER_B   19  // 0x04c
 // PE 2
-#define VME_PE_2_BASE_REGISTER_A   20  // 0x050
-#define VME_PE_2_BASE_REGISTER_B   21  // 0x054
+#define VME_PE_2_FU_1_REGISTER_A   20  // 0x050
+#define VME_PE_2_FU_1_REGISTER_B   21  // 0x054
 // PE 3
-#define VME_PE_3_BASE_REGISTER_A   22  // 0x058
-#define VME_PE_3_BASE_REGISTER_B   23  // 0x05c
+#define VME_PE_3_FU_1_REGISTER_A   22  // 0x058
+#define VME_PE_3_FU_1_REGISTER_B   23  // 0x05c
 
 // mixer/mux ? (unclear)
 #define VME_GLOBAL_MIXER_A         24  // 0x060
 #define VME_GLOBAL_MIXER_B         25  // 0x064
 #define VME_GLOBAL_MIXER_C         26  // 0x068
 
-// base buffers feed base input and enable base descriptors
-#define VME_GLOBAL_BASE_INPUT      27  // 0x06c
+// functional units controller hosting enable bits
+#define VME_GLOBAL_FU_CTRL         27  // 0x06c
 
 // crossbars
 #define VME_GLOBAL_CROSSBAR_INPUT  28  // 0x070 // input paths, mapping source buffers to PE
