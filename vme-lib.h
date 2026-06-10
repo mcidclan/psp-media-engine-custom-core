@@ -218,6 +218,8 @@
   _vme_set(__VA_ARGS__, vme_set_8, vme_set_7, vme_set_6, vme_set_5, \
   vme_set_4, vme_set_3, vme_set_2, vme_set_1)(index, NAME, __VA_ARGS__)
 
+#define vme_reg(FU, REG) FU##_REGISTER_##REG
+
 #ifdef __cplusplus
 extern "C" {
 #endif
