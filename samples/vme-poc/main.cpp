@@ -61,8 +61,8 @@ void meLibOnProcess(void) {
   // Start of the VME related code
   vmeLibStart();
   
-  vme_set(GLOBAL, CROSSBAR_FLOW, 0);
-  vme_set(GLOBAL, CROSSBAR_ARCH, VME_DEF_MAPPER);
+  vme_icn(FLOW, 0);
+  vme_icn(ARCH, VME_DEF_MAPPER);
 
   const u8  k = Q_FORMAT;
   const u32 b = F2Q(DEFAULT_FACTOR);
@@ -73,53 +73,58 @@ void meLibOnProcess(void) {
   {
     // r1 = (x0 * b) >> k
     const u32 op = 0x00204000;
-    vme_set(PE_0, FUNCTIONAL_UNIT_0, op, k);
-    vme_set(PE_0, FU_0_REGISTER_B, b);
+    const u32 mux = vme_mux(TOP_0);
+
+    vme_pe0(vme_fu(PRIMARY), mux, op, k);
+    vme_pe0(fu_reg(PRIMARY, B), b);
     
     // x0 source control
-    vme_set(PE_0, TOP_SRC, VME_PFX_ROUTE);
-    vme_set(PE_0, TOP_COUNT, VME_PFX_PARAM, count);
+    vme_pe0(agu_top(MODE), VME_DEF_MODE);
+    vme_pe0(agu_top(COUNT), VME_DEF_STEP, count);
     
     // r1 source control
-    vme_set(PE_0, BASE_SRC, VME_PFX_ROUTE);
-    vme_set(PE_0, BASE_COUNT, VME_PFX_PARAM, count);
+    vme_pe0(agu_base(MODE), VME_DEF_MODE);
+    vme_pe0(agu_base(COUNT), VME_DEF_STEP, count);
     
     // r1 destination control
-    vme_set(PE_0, DST, VME_PFX_ROUTE, (6 << 16));
-    vme_set(PE_0, DST_COUNT, VME_PFX_PARAM, count);
+    vme_pe0(agu_write(MODE), VME_DEF_MODE, VME_CYCLE_6);
+    vme_pe0(agu_write(COUNT), VME_DEF_STEP, count);
 
     // force update over local buffer with a 0x10 prologue/padding
     // necessary to get the correct result from the first cycle
-    vme_set(PE_0, DST_PARAM_2, prologue);
-    vme_set(PE_0, DST_PARAM_3, VME_PFX_END_TOKEN);
-    
+    vme_pe0(agu_write(FORMAT_0), prologue);
+    vme_pe0(agu_write(FORMAT_1), VME_END_TOKEN);
   }
   
   {
     // r2 = (r1 * b) >> k
     const u32 op = 0x00204000;
-    vme_set(PE_1, FUNCTIONAL_UNIT_0, VME_BASE_0, (0x04 << 24), op, k);
-    vme_set(PE_1, FU_0_REGISTER_B, b);
+    const u32 mux = vme_mux(BASE_0, STAGING);
+    
+    vme_pe1(vme_fu(PRIMARY), mux, op, k);
+    vme_pe1(fu_reg(PRIMARY, B), b);
     
     // r2 destination control
-    vme_set(PE_1, DST, VME_PFX_ROUTE, (9 << 16));
-    vme_set(PE_1, DST_COUNT, VME_PFX_PARAM, count);
+    vme_pe1(agu_write(MODE), VME_DEF_MODE, VME_CYCLE_9);
+    vme_pe1(agu_write(COUNT), VME_DEF_STEP, count);
     
     // force update over local buffer with a 0x10 prologue/padding
     // necessary to get the correct result from the first cycle
-    vme_set(PE_1, DST_PARAM_2, prologue);
-    vme_set(PE_1, DST_PARAM_3, VME_PFX_END_TOKEN);
+    vme_pe1(agu_write(FORMAT_0), prologue);
+    vme_pe1(agu_write(FORMAT_1), VME_END_TOKEN);
   }
   
   {
     // r3 = r1 + r2
-    const u32 op = 0x02010000;
-    vme_set(PE_2, FUNCTIONAL_UNIT_0, VME_BASE_1, op);
+    const u32 op = 0x00010000;
+    const u32 mux = vme_mux(BASE_1, BASE_0);
+    
+    vme_pe2(vme_fu(PRIMARY), mux, op);
     
     // r3 destination control
     const int offset = 0x10000 - prologue; // cancel prologue/padding (-0x10)
-    vme_set(PE_2, DST, VME_PFX_ROUTE, (6 << 16), offset);
-    vme_set(PE_2, DST_COUNT, VME_PFX_PARAM, count);
+    vme_pe2(agu_write(MODE), VME_DEF_MODE, VME_CYCLE_6, offset);
+    vme_pe2(agu_write(COUNT), VME_DEF_STEP, count);
   }
   
   // End of the VME related code
@@ -134,8 +139,8 @@ void meLibOnProcess(void) {
     
     // Start of the VME datapath update
     vmeLibStart();
-    vme_set(PE_0, FU_0_REGISTER_B, meVars[0]);
-    vme_set(PE_1, FU_0_REGISTER_B, meVars[1]);
+    vme_pe0(fu_reg(PRIMARY, B), meVars[0]);
+    vme_pe1(fu_reg(PRIMARY, B), meVars[1]);
 
     // End of the VME datapath update
     vmeLibFinish();

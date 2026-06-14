@@ -11,20 +11,32 @@
 #define VME_TOP_BUFFERS           0x44020000
 #define VME_DATAPATH_BASE         0x440f8000
 
-#define VME_PFX_ROUTE             0x84000000
-#define VME_PFX_PARAM             0x00010000
+#define VME_DEF_MODE              0x84000000
+#define VME_DEF_STEP              0x00010000
 #define VME_DEF_MAPPER            0x00003210
-#define VME_PFX_END_TOKEN         0x00200000
+#define VME_END_TOKEN             0x00200000
+
+#define VME_CYCLE_3               0x00030000
+#define VME_CYCLE_6               0x00060000
+#define VME_CYCLE_9               0x00090000
+#define VME_CYCLE_12              0x000c0000
 
 // co-operand data source selectors
-#define VME_TOP_0                 0x00000000
-#define VME_TOP_1                 0x10000000
-#define VME_TOP_2                 0x20000000
-#define VME_TOP_3                 0x30000000
-#define VME_BASE_0                0x40000000
-#define VME_BASE_1                0x50000000
-#define VME_BASE_2                0x60000000
-#define VME_BASE_3                0x70000000
+#define VME_MUX_FRONT_TOP_0       0x00000000
+#define VME_MUX_FRONT_TOP_1       0x10000000
+#define VME_MUX_FRONT_TOP_2       0x20000000
+#define VME_MUX_FRONT_TOP_3       0x30000000
+#define VME_MUX_FRONT_BASE_0      0x40000000
+#define VME_MUX_FRONT_BASE_1      0x50000000
+#define VME_MUX_FRONT_BASE_2      0x60000000
+#define VME_MUX_FRONT_BASE_3      0x70000000
+#define VME_MUX_FRONT_STAGING     0x80000000
+
+#define VME_MUX_BACK_TOP_0        0x00000000
+#define VME_MUX_BACK_TOP_2        0x01000000
+#define VME_MUX_BACK_BASE_0       0x02000000
+#define VME_MUX_BACK_BASE_2       0x03000000
+#define VME_MUX_BACK_STAGING      0x04000000
 
 #define VME_BASE(index) (hw(VME_BASE_ADDR + (index * 4)))
 
@@ -130,8 +142,8 @@
 #define VME_PE_1_WRITE_COUNT           64  // 0x100
 #define VME_PE_1_WRITE_INNER_0         65  // 0x104
 #define VME_PE_1_WRITE_INNER_1         66  // 0x108
-#define VME_PE_1_WRITE_FORMAT_2        67  // 0x10c
-#define VME_PE_1_WRITE_FORMAT_3        68  // 0x110
+#define VME_PE_1_WRITE_FORMAT_0        67  // 0x10c
+#define VME_PE_1_WRITE_FORMAT_1        68  // 0x110
 
 
 /*
@@ -159,8 +171,8 @@
 #define VME_PE_2_WRITE_COUNT           82  // 0x148
 #define VME_PE_2_WRITE_INNER_0         83  // 0x14c
 #define VME_PE_2_WRITE_INNER_1         84  // 0x150
-#define VME_PE_2_WRITE_FORMAT_2        85  // 0x154
-#define VME_PE_2_WRITE_FORMAT_3        86  // 0x158
+#define VME_PE_2_WRITE_FORMAT_0        85  // 0x154
+#define VME_PE_2_WRITE_FORMAT_1        86  // 0x158
 
 /*
  * PE2 AGUs
@@ -171,24 +183,24 @@
 #define VME_PE_3_READ_TOP_COUNT        88  // 0x160
 #define VME_PE_3_READ_TOP_INNER_0      89  // 0x164
 #define VME_PE_3_READ_TOP_INNER_1      90  // 0x168
-#define VME_PE_3_READ_TOP_FORMAT_2     91  // 0x16c
-#define VME_PE_3_READ_TOP_FORMAT_3     92  // 0x170
+#define VME_PE_3_READ_TOP_FORMAT_0     91  // 0x16c
+#define VME_PE_3_READ_TOP_FORMAT_1     92  // 0x170
 
 // base buffer source
 #define VME_PE_3_READ_BASE_MODE        93  // 0x174
 #define VME_PE_3_READ_BASE_COUNT       94  // 0x178
 #define VME_PE_3_READ_BASE_INNER_0     95  // 0x17c
 #define VME_PE_3_READ_BASE_INNER_1     96  // 0x180
-#define VME_PE_3_READ_BASE_FORMAT_2    97  // 0x184
-#define VME_PE_3_READ_BASE_FORMAT_3    98  // 0x188
+#define VME_PE_3_READ_BASE_FORMAT_0    97  // 0x184
+#define VME_PE_3_READ_BASE_FORMAT_1    98  // 0x188
 
 // destination
 #define VME_PE_3_WRITE_MODE            99  // 0x18c
 #define VME_PE_3_WRITE_COUNT           100 // 0x190
 #define VME_PE_3_WRITE_INNER_0         101 // 0x194
 #define VME_PE_3_WRITE_INNER_1         102 // 0x198
-#define VME_PE_3_WRITE_FORMAT_2        103 // 0x19c
-#define VME_PE_3_WRITE_FORMAT_3        104 // 0x1a0
+#define VME_PE_3_WRITE_FORMAT_0        103 // 0x19c
+#define VME_PE_3_WRITE_FORMAT_1        104 // 0x1a0
 
 // End ?
 #define VME_UNKNOWN_105                105 // 0x1a4
@@ -269,9 +281,15 @@
   vme_pe3(vme_agu(MODE, PARAM), __VA_ARGS__)
 */
 
-#define agu_top(PARAM)  vme_agu(READ, TOP, PARAM)
-#define agu_base(PARAM)  vme_agu(READ, BASE, PARAM)
+#define agu_top(PARAM)    vme_agu(READ, TOP, PARAM)
+#define agu_base(PARAM)   vme_agu(READ, BASE, PARAM)
 #define agu_write(PARAM)  vme_agu(WRITE, PARAM)
+
+// mux
+#define _vme_mux(_1, _2, NAME, ...) NAME
+#define vme_mux(...) _vme_mux(__VA_ARGS__, vme_mux_2, vme_mux_1)(__VA_ARGS__)
+#define vme_mux_2(R0, R1)  (VME_MUX_FRONT_##R0 | VME_MUX_BACK_##R1)
+#define vme_mux_1(R0)      (VME_MUX_FRONT_##R0)
 
 #ifdef __cplusplus
 extern "C" {
