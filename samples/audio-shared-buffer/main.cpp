@@ -17,7 +17,7 @@ PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU | PSP_THREAD_ATTR_USER);
 static int channel = -1;
 
 #define PSP_VOLUME_MAX 0x8000
-#define SAMPLES        1024
+#define SAMPLES        512
 #define PANS           2
 
 meLibSetSharedUncached32(10);
