@@ -145,6 +145,7 @@ This project and code are provided as-is without warranty. Users assume full res
 
 ## Related work
 [PSP Media Engine Cracking The Unknown](https://github.com/mcidclan/psp-media-engine-cracking-the-unknown)  
+[PSP Virtual Mobile Engine Extension](https://github.com/mcidclan/psp-virtual-mobile-engine-ext)  
 [PSP Media Engine Safe Task](https://github.com/mcidclan/psp-media-engine-safe-task)  
 [PSP Media Engine Reload](https://github.com/mcidclan/psp-media-engine-reload)  
 
