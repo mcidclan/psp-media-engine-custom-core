@@ -15,13 +15,18 @@
 #define VME_DEF_STEP              0x00010000
 #define VME_DEF_MAPPER            0x00003210
 #define VME_END_TOKEN             0x00200000
+#define VME_RING_TOKEN            0x00020000
 
 #define VME_CYCLE_3               0x00030000
 #define VME_CYCLE_6               0x00060000
 #define VME_CYCLE_9               0x00090000
 #define VME_CYCLE_12              0x000c0000
 
+#define vme_cyc(n) (n << 16)
+
 // co-operand data source selectors
+#define VME_MUX_FRONT_NONE        0x00000000
+
 #define VME_MUX_FRONT_TOP_0       0x00000000
 #define VME_MUX_FRONT_TOP_1       0x10000000
 #define VME_MUX_FRONT_TOP_2       0x20000000

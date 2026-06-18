@@ -41,6 +41,8 @@
 
 
 #define meLibMakeMemSegVar(name, mask, type) ((volatile type* const)((mask) | (type)name))
+#define meLibMakeUncachedUserSeg(name, type) meLibMakeMemSegVar(name, UNCACHED_USER_MASK, type)
+#define meLibMakeUncachedKernelSeg(name, type) meLibMakeMemSegVar(name, UNCACHED_KERNEL_MASK, type)
 
 #define defineVar(name) \
   volatile u32 _##name[1] __attribute__((aligned(64), section(".uncached"))) = {0}; \
