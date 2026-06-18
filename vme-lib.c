@@ -24,6 +24,23 @@ void vmeLibWipe() {
   
   vmeLibConfigTransfer(0);
 
+  vmeLibStart();
+  vme_icn(INPUT, 0x3210);
+  vme_icn(FLOW, 0x3210);
+  vme_icn(ARCH, 0x3210);
+  vme_set(ENABLE, FU_1, 0xf0000000);
+  vme_pe0(agu_top(MODE), 0x84000000);
+  vme_pe0(agu_top(COUNT), 0x00010000, 2048 - 1);
+  vme_pe0(vme_fu(PRIMARY), 0x00004000);
+  vme_pe0(vme_fu(SECONDARY), 0x00004000);
+  vme_pe1(vme_fu(PRIMARY), 0x00004000);
+  vme_pe1(vme_fu(SECONDARY), 0x00004000);
+  vme_pe2(vme_fu(PRIMARY), 0x00004000);
+  vme_pe2(vme_fu(SECONDARY), 0x00004000);
+  vme_pe3(vme_fu(PRIMARY), 0x00004000);
+  vme_pe3(vme_fu(SECONDARY), 0x00004000);
+  vmeLibFinish();
+  
   _vmeLibStart();
   meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x01a8); // 0x400
   _vmeLibFinish();

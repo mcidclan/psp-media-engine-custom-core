@@ -281,6 +281,8 @@
   vme_pe3(vme_agu(MODE, PARAM), __VA_ARGS__)
 */
 
+// agu_cnt(4)
+ 
 #define agu_top(PARAM)    vme_agu(READ, TOP, PARAM)
 #define agu_base(PARAM)   vme_agu(READ, BASE, PARAM)
 #define agu_write(PARAM)  vme_agu(WRITE, PARAM)
