@@ -222,18 +222,30 @@
 #define VME_UNKNOWN_7   7
 #define VME_UNKNOWN_8   8
 
-#define vmeLibStart() \
-{                     \
+#define vmeLibStart()                             \
+{                                                 \
   volatile u32 VME_BASE_ADDR = VME_DATAPATH_BASE; \
   _vmeLibStart();
-  
+
+#define vmeLibProcessAsync() \
+{                            \
+  vmeLibTrigger();           \
+}
 
 #define vmeLibFinish() \
   _vmeLibFinish();     \
 }
 
-#define vme_set_base(n) VME_BASE_ADDR = ((0x40000000 | n));
+#define vmeLibFinishAsync()      \
+  meCoreDMACPrimWaitVMEFinish(); \
+}
 
+#define vmeLibPreloadCustomContext(context) \
+{                                           \
+  meCoreDMACPrimPreloadVMEContext(context); \
+}
+
+#define vme_set_base(n) VME_BASE_ADDR = ((0x40000000 | n));
 #define _vme_set_n(regIdx, val) ((VME_BASE(regIdx)) = (val))
 
 #define vme_set_1(n, NAME, a)                       _vme_set_n(VME_##n##_##NAME, (a))
@@ -297,6 +309,16 @@
 #define vme_mux(...) _vme_mux(__VA_ARGS__, vme_mux_2, vme_mux_1)(__VA_ARGS__)
 #define vme_mux_2(R0, R1)  (VME_MUX_FRONT_##R0 | VME_MUX_BACK_##R1)
 #define vme_mux_1(R0)      (VME_MUX_FRONT_##R0)
+
+#define VME_LIB_CONTEXT_BUILDER(name, param, ...)                          \
+void* name(void* param) {                                                  \
+                                                                           \
+  static u32 context[112] __attribute__((aligned(64))) = {0};              \
+  volatile u32 VME_BASE_ADDR = (u32)context;                               \
+  __VA_ARGS__                                                              \
+  meCoreDcacheWritebackRange((void*)context, 112*4);                       \
+  return context;                                                          \
+}
 
 #ifdef __cplusplus
 extern "C" {

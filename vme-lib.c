@@ -95,8 +95,3 @@ void _vmeLibFinish() {
   vmeLibTrigger();
   meCoreDMACPrimWaitVMEFinish();
 }
-
-// vme memory config, context and datapath
-//vmeSetDst(0, 0x84, 0x06, 0xffff);
-//vmeSetDstCount(0, 0xffff, 0xffff);
-
