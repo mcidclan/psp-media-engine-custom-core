@@ -86,6 +86,10 @@
 #define VME_ENABLE_FU_1         27  // 0x06c
 
 // global interconnect
+#define VME_INTERCONNECT_AGU_TOP    28 
+#define VME_INTERCONNECT_AGU_BASE   29
+#define VME_INTERCONNECT_AGU_WRITE  30
+
 #define VME_INTERCONNECT_INPUT  28  // 0x070 // input paths, mapping source buffers to PE
 #define VME_INTERCONNECT_FLOW   29  // 0x074 // inter-PE routing register. Each nibble selects the source flow PE index for a target PE lane.
 #define VME_INTERCONNECT_ARCH   30  // 0x078 // inter-PE routing register. Each nibble selects the source arch PE index for a target PE lane.
