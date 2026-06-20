@@ -245,6 +245,12 @@
   meCoreDMACPrimPreloadVMEContext(context); \
 }
 
+#define vmeLibLoadCustomContext(context) \
+{                                        \
+  vmeLibPreloadCustomContext(context);   \
+  meCoreDMACPrimWaitTransferFinish();    \
+}
+
 #define vme_set_base(n) VME_BASE_ADDR = ((0x40000000 | n));
 #define _vme_set_n(regIdx, val) ((VME_BASE(regIdx)) = (val))
 
