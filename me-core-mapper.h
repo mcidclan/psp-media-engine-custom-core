@@ -88,9 +88,11 @@
 //
 #define meCoreEDRAMAllocWords                      ((int   (*)(uint, uint))sysCall(69))
 #define meCoreEDRAMHeapInit                        ((u32*  (*)(void))sysCall(70))
+
 #define meCoreDMACPrimMemoryToRingBuffer           ((void  (*)(void*, u32, u32))sysCall(71))
-#define meCoreDMACPrimWaitTransferFinish           ((int   (*)(void))sysCall(72))
-#define meCoreDMACPrimPreloadVMEContext            ((int   (*)(void*))sysCall(73))
+#define meCoreDMACPrimRingBufferToMemory           ((void  (*)(void*, u32, u32))sysCall(72))
+#define meCoreDMACPrimWaitTransferFinish           ((int   (*)(void))sysCall(73))
+#define meCoreDMACPrimPreloadVMEContext            ((int   (*)(void*))sysCall(74))
   
   
 // t2img (slim+)

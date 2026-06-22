@@ -103,6 +103,8 @@
   // typedef struct {u8  blockCount; /*0x8*/ u8  effectsEnabled; /*0x9*/ AudioChannel channels[32]; /*0x714*/ u32 channelMask; /*0xe14*/ u16  global1; /*0xe1a*/ u16  global2; /*0x387*4*/ u16  config; /*0x386*4*/ u32* reverbEffect; } AudioMixer;
 
   {0x00020a2c, 0x0001234c}, // void _meCoreDMACPrimMemoryToRingBuffer(void* src, u32 dst offset, u32 count);
+  {0x00020a5c, 0x0001237c}, // void _meCoreDMACPrimRingBufferToMemory(void* dst, u32 src offset, u32 count);
+  
   {0x000209b4, 0x000122d4}, // void _meCoreDMACPrimWaitTransferFinish();
   {0x00020c84, 0x000125a4}, // void _meCoreDMACPrimPreloadVMEContext);
 }
