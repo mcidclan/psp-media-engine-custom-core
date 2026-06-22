@@ -341,6 +341,8 @@ void vmeLibWipe();
 void vmeLibConfigTransfer(const int status);
 void vmeLibSendCustomContext(void* context);
 void vmeLibClearLocalBuffer(const int dst, const int count);
+void vmeLibMemoryToRingBuffer(void* const, const u32, const u32);
+void vmeLibRingBufferToMemory(const u32, void* const, const u32);
 
 void _vmeLibStart();
 void _vmeLibFinish();

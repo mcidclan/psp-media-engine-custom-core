@@ -95,3 +95,16 @@ void _vmeLibFinish() {
   vmeLibTrigger();
   meCoreDMACPrimWaitVMEFinish();
 }
+
+void vmeLibMemoryToRingBuffer(void* const src, const u32 dstOff, const u32 count) {
+  
+  meCoreDMACPrimMemoryToRingBuffer(src, dstOff, count);
+  meCoreDMACPrimWaitTransferFinish();
+}
+
+void vmeLibRingBufferToMemory(const u32 srcOff, void* const dst, const u32 count) {
+  
+  meCoreDMACPrimRingBufferToMemory(dst, srcOff, count);
+  meCoreDMACPrimWaitTransferFinish();
+}
+
