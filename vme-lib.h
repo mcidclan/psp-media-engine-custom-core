@@ -1,9 +1,10 @@
 #ifndef ME_VME_LIB_H
 #define ME_VME_LIB_H
 
-#define MECC_VME_LIB_VERSION      0xBe7a0004
+#define MECC_VME_LIB_VERSION      0xBe7a0005
 
 #include "hw-registers.h"
+#include "vme-opcodes.h"
 
 #define vmeLibRefresh vmeLibFinish
 
@@ -42,6 +43,12 @@
 #define VME_MUX_BACK_BASE_0       0x02000000
 #define VME_MUX_BACK_BASE_2       0x03000000
 #define VME_MUX_BACK_STAGING      0x04000000
+
+#define VME_MUX_BACK_STAGING_0    0x04000000
+#define VME_MUX_BACK_STAGING_1    0x04400000
+#define VME_MUX_BACK_STAGING_2    0x04800000
+#define VME_MUX_BACK_STAGING_3    0x04c00000
+
 
 #define VME_BASE(index) (hw(VME_BASE_ADDR + (index * 4)))
 
@@ -319,6 +326,13 @@
 #define vme_mux(...) _vme_mux(__VA_ARGS__, vme_mux_2, vme_mux_1)(__VA_ARGS__)
 #define vme_mux_2(R0, R1)  (VME_MUX_FRONT_##R0 | VME_MUX_BACK_##R1)
 #define vme_mux_1(R0)      (VME_MUX_FRONT_##R0)
+
+// opcodes
+#define _fu_op(_1, _2, _3, NAME, ...) NAME
+#define fu_op(...) _fu_op(__VA_ARGS__, _fu_op3, _fu_op2, _fu_op1)(__VA_ARGS__)
+#define _fu_op3(OPERATION, SOURCE, MODIFIER) VME_FU_OPCODE_##OPERATION##_##SOURCE##_##MODIFIER
+#define _fu_op2(OPERATION, SOURCE)           VME_FU_OPCODE_##OPERATION##_##SOURCE
+#define _fu_op1(OPERATION)                   VME_FU_OPCODE_##OPERATION
 
 #define VME_LIB_CONTEXT_BUILDER(name, param, ...)                          \
 void* name(void* param) {                                                  \
