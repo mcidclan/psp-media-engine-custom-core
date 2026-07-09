@@ -344,6 +344,9 @@ void* name(void* param) {                                                  \
   return context;                                                          \
 }
 
+#define VME_DMAC_NO_WAIT     0
+#define VME_DMAC_WAIT_FINISH 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -357,6 +360,9 @@ void vmeLibSendCustomContext(void* context);
 void vmeLibClearLocalBuffer(const int dst, const int count);
 void vmeLibMemoryToRingBuffer(void* const, const u32, const u32);
 void vmeLibRingBufferToMemory(const u32, void* const, const u32);
+
+void vmeLibMemTo16(const u32 src, const int offset, const int count, const int wait);
+void vmeLibMemFrom16(const u32 dst, const int offset, const int count, const int wait);
 
 void _vmeLibStart();
 void _vmeLibFinish();

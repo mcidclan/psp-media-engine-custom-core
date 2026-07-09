@@ -108,3 +108,31 @@ void vmeLibRingBufferToMemory(const u32 srcOff, void* const dst, const u32 count
   meCoreDMACPrimWaitTransferFinish();
 }
 
+void vmeLibMemTo16(const u32 src, const int offset, const int count, const int wait) {
+
+  hw(0x440ff010) = (src & 0x1fffffff) | 0x40000000;
+  hw(0x440ff014) = count - 1;
+  hw(0x440ff018) = offset;
+  hw(0x440ff008) = 0x52;
+  
+  if (wait) {
+    meCoreDMACPrimWaitTransferFinish();
+    return;
+  }
+  meLibSync();
+}
+
+void vmeLibMemFrom16(const u32 dst, const int offset, const int count, const int wait) {
+
+  hw(0x440ff010) = (dst & 0x1fffffff) | 0x40000000;
+  hw(0x440ff014) = count - 1;
+  hw(0x440ff018) = offset;
+  hw(0x440ff008) = 0x5a;
+  
+  if (wait) {
+    meCoreDMACPrimWaitTransferFinish();
+    return;
+  }
+  meLibSync();
+}
+
