@@ -136,3 +136,17 @@ void vmeLibMemFrom16(const u32 dst, const int offset, const int count, const int
   meLibSync();
 }
 
+void vmeLibSetInnerAGU1(const int offset, const int count, const int stride) {
+
+  hw(0x440ff020) = offset;
+  hw(0x440ff024) = count;
+  hw(0x440ff028) = stride;
+}
+
+void vmeLibSetInnerAGU2(const int offset, const int count, const int stride) {
+
+  hw(0x440ff030) = offset;
+  hw(0x440ff034) = count;
+  hw(0x440ff038) = stride;
+}
+
