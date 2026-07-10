@@ -344,8 +344,8 @@ void* name(void* param) {                                                  \
   return context;                                                          \
 }
 
-#define VME_DMAC_NO_WAIT     0
-#define VME_DMAC_WAIT_FINISH 1
+#define VME_DMAC_TRANSFERT_NO_WAIT     0
+#define VME_DMAC_TRANSFERT_WAIT_FINISH 1
 
 #ifdef __cplusplus
 extern "C" {
