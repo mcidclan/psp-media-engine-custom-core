@@ -348,8 +348,34 @@ void* name(void* param) {                                                  \
   return context;                                                          \
 }
 
+// dma
 #define VME_DMAC_TRANSFERT_NO_WAIT     0
 #define VME_DMAC_TRANSFERT_WAIT_FINISH 1
+
+#define VME_DMAC_TRANSFERT_REG_CTRL_VALUE     0x008
+#define VME_DMAC_TRANSFERT_REG_MEMORY_ADDR    0x010
+#define VME_DMAC_TRANSFERT_REG_ITERATION_DIMS 0x014 /*iter count, inner count*/
+#define VME_DMAC_TRANSFERT_REG_SPAD_OFFSET    0x018 /*scratchpad base offset*/
+#define VME_DMAC_TRANSFERT_REG_SPAD_TARGET    0x01c
+#define VME_DMAC_TRANSFERT_REG_ITERATION_STEP 0x020 /*in word bytes*/
+#define VME_DMAC_TRANSFERT_REG_GROUP_SIZE     0x024
+#define VME_DMAC_TRANSFERT_REG_GROUP_STEPS    0x028 /*outer step, inner step*/
+
+#define VME_DMAC_ADDR                 0x440ff000
+#define VME_DMAC_BASE(offset)         (hw(VME_DMAC_ADDR | (offset)))
+#define _vme_dma_set_n(regIdx, val)   ((VME_DMAC_BASE(regIdx)) = (val))
+
+#define vme_dma_set_1(n, NAME, a)         _vme_dma_set_n(VME_DMAC_TRANSFERT_REG_##n##_##NAME, (a))
+#define vme_dma_set_2(n, NAME, a, b)      _vme_dma_set_n(VME_DMAC_TRANSFERT_REG_##n##_##NAME, ((a) << 16)|(b))
+#define vme_dma_set_3(n, NAME, a, b, c)   _vme_dma_set_n(VME_DMAC_TRANSFERT_REG_##n##_##NAME, ((a) << 24)|((b) << 16)|(c))
+
+#define _vme_dma_set(_1,_2,_3, n, ...) n
+#define vme_dma_set(index, NAME, ...) \
+  _vme_dma_set(__VA_ARGS__, vme_dma_set_3, vme_dma_set_2, vme_dma_set_1)(index, NAME, __VA_ARGS__)
+  
+#define vme_dma(...) vme_dma_set(__VA_ARGS__)
+
+#define useg_mem(v) (((v) & 0x1fffffff) | 0x40000000)
 
 #ifdef __cplusplus
 extern "C" {
