@@ -8,11 +8,15 @@
 
 #define vmeLibRefresh vmeLibFinish
 
+#define VME_SCRATCHPAD_BASE       0x44000000
+
 #define VME_BASE_BUFFERS          0x44000000
 #define VME_TOP_BUFFERS           0x44020000
 #define VME_DATAPATH_BASE         0x440f8000
 
 #define VME_DEF_MODE              0x84000000
+#define agu_mode(mode)           (0x80000000 | (mode << 24))
+
 #define VME_DEF_STEP              0x00010000
 #define VME_DEF_MAPPER            0x00003210
 #define VME_END_TOKEN             0x00200000
@@ -338,15 +342,33 @@
 #define _fu_op2(OPERATION, SOURCE)           VME_FU_OPCODE_##OPERATION##_##SOURCE
 #define _fu_op1(OPERATION)                   VME_FU_OPCODE_##OPERATION
 
-#define VME_LIB_CONTEXT_BUILDER(name, param, ...)                          \
-void* name(void* param) {                                                  \
-                                                                           \
-  static u32 context[112] __attribute__((aligned(64))) = {0};              \
-  volatile u32 VME_BASE_ADDR = (u32)context;                               \
-  __VA_ARGS__                                                              \
-  meCoreDcacheWritebackRange((void*)context, 112*4);                       \
-  return context;                                                          \
+#define VME_CONTEXT_WORD_COUNT 112
+
+#define VME_LIB_CONTEXT_BUILDER(name, param, ...)                               \
+void* name(void* param) {                                                       \
+                                                                                \
+  static u32 context[VME_CONTEXT_WORD_COUNT] __attribute__((aligned(64))) = {0};\
+  volatile u32 VME_BASE_ADDR = (u32)context;                                    \
+  __VA_ARGS__                                                                   \
+  meCoreDcacheWritebackRange((void*)context, VME_CONTEXT_WORD_COUNT*4);         \
+  return context;                                                               \
 }
+
+#define vmeLibGenContext(generator, target, param)                              \
+                                                                                \
+  u32 vme_ctx(target)[VME_CONTEXT_WORD_COUNT] __attribute__((aligned(64)));\
+  generator((void*)vme_ctx(target), param);
+  
+#define VME_LIB_CONTEXT_GENERATOR(name, param, ...)              \
+void name(void* context, void* param) {                          \
+                                                                 \
+  meCoreMemset(context, 0, VME_CONTEXT_WORD_COUNT*4);            \
+  volatile u32 VME_BASE_ADDR = (u32)context;                     \
+  __VA_ARGS__                                                    \
+  meCoreDcacheWritebackRange(context, VME_CONTEXT_WORD_COUNT*4); \
+}
+
+#define vme_ctx(target) VME##target##CONTEXT
 
 // dma
 #define VME_DMAC_TRANSFERT_NO_WAIT     0
