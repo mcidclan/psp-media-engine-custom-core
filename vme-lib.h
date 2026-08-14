@@ -114,6 +114,7 @@
 #define VME_INTERCONNECT_FLOW   29  // 0x074 // inter-PE routing register. Each nibble selects the source flow PE index for a target PE lane.
 #define VME_INTERCONNECT_ARCH   30  // 0x078 // inter-PE routing register. Each nibble selects the source arch PE index for a target PE lane.
 #define VME_INTERCONNECT_UNK    31  // 0x07c // unknown
+#define VME_INTERCONNECT_XPCR   31  // 0x07c // cross pack control register (read unpack, write pack)
 #define VME_INTERCONNECT_SKEW   32  // 0x080 // applies a cycle skew to the data stream forwarded to the target PE.
 
 
