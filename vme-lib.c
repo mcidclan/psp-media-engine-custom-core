@@ -68,7 +68,7 @@ void vmeLibSendCustomContext(void* context) {
   meLibSync();
   
   meCoreDMACPrimWaitTransferFinish();
-  meCoreDMACPrimWaitVMEFinish();
+  //meCoreDMACPrimWaitVMEFinish();
 }
 
 void vmeLibClearLocalBuffer(const int dst, const int count) {
