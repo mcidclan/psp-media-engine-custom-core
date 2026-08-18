@@ -398,6 +398,7 @@ void name(void* context, void* param) {                          \
 #define VME_DMAC_TRANSFERT_REG_ITERATION_STEP 0x020 /*in word bytes*/
 #define VME_DMAC_TRANSFERT_REG_GROUP_SIZE     0x024
 #define VME_DMAC_TRANSFERT_REG_GROUP_STEPS    0x028 /*outer step, inner step*/
+#define VME_DMAC_TRANSFERT_REG_FILL_VALUE     0x02c
 
 #define VME_DMAC_ADDR                 0x440ff000
 #define VME_DMAC_BASE(offset)         (hw(VME_DMAC_ADDR | (offset)))
