@@ -64,11 +64,12 @@ void vmeLibSendCustomContext(void* context) {
   vmeLibConfigTransfer(0x1c);
 
   hw(0x440ff010) = 0x40000000 | (u32)context; // context source address
-  hw(0x440ff008) = 0x1c; // 0x1d;             // minimal control value for context transfer
+  hw(0x440ff008) = 0x0c;                      // control for context transfer
   meLibSync();
   
   meCoreDMACPrimWaitTransferFinish();
   //meCoreDMACPrimWaitVMEFinish();
+  vmeLibTrigger();
 }
 
 void vmeLibClearLocalBuffer(const int dst, const int count) {
