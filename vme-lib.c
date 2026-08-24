@@ -158,3 +158,13 @@ void vmeLibSetInnerAGU2(const int offset, const int count, const int stride) {
   hw(0x440ff038) = stride;
 }
 
+void vmeLibICNInvalidate() {
+  
+  volatile u32 VME_BASE_ADDR = VME_DATAPATH_BASE;
+  vmeLibSetFlow(3);
+  vme_icn(AGU_TOP, 0x4444);
+  vme_icn(AGU_BASE, 0x4444);
+  vme_icn(AGU_WRITE, 0x4444);
+  vmeLibTrigger();
+}
+

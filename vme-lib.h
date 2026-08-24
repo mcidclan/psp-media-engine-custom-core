@@ -448,6 +448,7 @@ extern "C" {
 void vmeLibEnable();
 void vmeLibDisable();
 void vmeLibWipe();
+void vmeLibICNInvalidate();
 
 void vmeLibConfigTransfer(const int status);
 void vmeLibSendCustomContext(void* context);
