@@ -48,9 +48,12 @@
 #define VME_CYCLE_9               0x00090000
 #define VME_CYCLE_12              0x000c0000
 
-#define vme_cyc(n) ((n) << 16)
+#define vme_cyc(n)  ((n) << 16)
 #define agu_step(n) ((n) << 16)
- 
+#define fu_code(n)  ((n) << 12)
+#define fu_sat(n)   ((n) << 7)
+#define fu_zsm(n)   ((n) << 6)
+
 // co-operand data source selectors
 #define VME_MUX_FRONT_NONE        0x00000000
 
