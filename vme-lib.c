@@ -1,3 +1,15 @@
+/*
+ * This code is custom, original work and is not derived from reverse
+ * engineering. It is an implementation based on the author's understanding
+ * of the hardware at the time this code was written.
+ *
+ * Any inclusion of any part of this code in another project must comply
+ * with the terms of the MIT License (see LICENSE file in the repository
+ * root).
+ *
+ * Copyright (c) 2026 mcidclan (m-c/d, m-cid)
+ */
+
 #include "me-lib.h"
 #include "me-core-mapper.h"
 
@@ -20,10 +32,15 @@ void vmeLibConfigTransfer(const int status) {
   meLibSync();
 }
 
+// Do not use this anywhere other than during initial startup
 void vmeLibWipe() {
   
   vmeLibConfigTransfer(0);
 
+  _vmeLibStart();
+  meCoreMemset((void*)VME_DATAPATH_BASE, 0, 0x01a8); // 0x400
+  _vmeLibFinish();
+  
   vmeLibStart();
   vme_icn(INPUT, 0x3210);
   vme_icn(FLOW, 0x3210);
@@ -55,7 +72,7 @@ void vmeLibWipe() {
   hw(0x440ff03c) = 0;
   meLibSync();
   
-  vmeLibICNInvalidate();
+  //vmeLibICNInvalidate();
 }
 
 void vmeLibSendCustomContext(void* context) {
@@ -157,13 +174,40 @@ void vmeLibSetInnerAGU2(const int offset, const int count, const int stride) {
   hw(0x440ff038) = stride;
 }
 
-void vmeLibICNInvalidate() {
+void vmeLibICNInvalidate(const int count) {
   
   volatile u32 VME_BASE_ADDR = VME_DATAPATH_BASE;
-  vmeLibSetFlow(3);
-  vme_icn(AGU_TOP, 0x4444);
-  vme_icn(AGU_BASE, 0x4444);
-  vme_icn(AGU_WRITE, 0x4444);
+  vmeLibSetFlow(VME_DEFAULT);
+  
+  vme_icn(AGU_TOP, 0);
+  vme_icn(AGU_BASE, 0);
+  vme_icn(AGU_WRITE, 0);
+  vme_icn(SWEN, fu_on(0));
+
+  vme_pe0(vme_fu(SECONDARY), vme_mux(NONE, TOP_0), fu_code(0x00c));
+  
+  vme_pe0(vme_fu(PRIMARY), vme_mux(NONE, STAGING_4), 0x250 << 12);
+  vme_pe1(vme_fu(PRIMARY), vme_mux(NONE, STAGING_4), 0x250 << 12); 
+  vme_pe2(vme_fu(PRIMARY), vme_mux(NONE, STAGING_4), 0x250 << 12);
+  vme_pe3(vme_fu(PRIMARY), vme_mux(NONE, STAGING_4), 0x250 << 12);
+  
+  vme_pe0(agu_top(MODE), agu_mode(4));
+  vme_pe0(agu_top(COUNT), 1 << 16, count - 1);
+  vme_pe0(agu_top(INNER_0), 1 << 16, 0);
+  
   vmeLibTrigger();
+  vmeLibSetFlow(VME_DEFAULT);
+  
+  vme_pe0(vme_fu(SECONDARY), 0);
+  vme_pe0(vme_fu(PRIMARY), 0);
+  vme_pe1(vme_fu(PRIMARY), 0); 
+  vme_pe2(vme_fu(PRIMARY), 0);
+  vme_pe3(vme_fu(PRIMARY), 0);
+  vme_pe0(agu_top(MODE), 0);
+  vme_pe0(agu_top(COUNT), 0);
+  vme_pe0(agu_top(INNER_0), 0);
+
+  vmeLibTrigger();
+  meCoreDMACPrimWaitVMEFinish();
 }
 

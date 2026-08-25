@@ -1,3 +1,15 @@
+/*
+ * This code is custom, original work and is not derived from reverse
+ * engineering. It is an implementation based on the author's understanding
+ * of the hardware at the time this code was written.
+ *
+ * Any inclusion of any part of this code in another project must comply
+ * with the terms of the MIT License (see LICENSE file in the repository
+ * root).
+ *
+ * Copyright (c) 2026 mcidclan (m-c/d, m-cid)
+ */
+ 
 #ifndef ME_VME_LIB_H
 #define ME_VME_LIB_H
 
@@ -142,6 +154,7 @@
 #define VME_ENABLE_FU_1         27  // 0x06c
 
 // global interconnect
+#define VME_INTERCONNECT_SWEN       27 // secondary write enable
 #define VME_INTERCONNECT_AGU_TOP    28 
 #define VME_INTERCONNECT_AGU_BASE   29
 #define VME_INTERCONNECT_AGU_WRITE  30
@@ -384,6 +397,13 @@
 #define _fu_op2(OPERATION, SOURCE)           VME_FU_OPCODE_##OPERATION##_##SOURCE
 #define _fu_op1(OPERATION)                   VME_FU_OPCODE_##OPERATION
 
+#define VME_LIB_TRIGGER_WITH(...) {                                            \
+  _vmeLibStart();                                                              \
+  volatile u32 VME_BASE_ADDR = VME_DATAPATH_BASE;                              \
+  __VA_ARGS__                                                                  \
+  vmeLibTrigger();                                                             \
+}
+
 #define VME_CONTEXT_WORD_COUNT 112
 
 #define VME_LIB_CONTEXT_BUILDER(name, param, ...)                               \
@@ -449,7 +469,7 @@ extern "C" {
 void vmeLibEnable();
 void vmeLibDisable();
 void vmeLibWipe();
-void vmeLibICNInvalidate();
+void vmeLibICNInvalidate(const int count);
 
 void vmeLibConfigTransfer(const int status);
 void vmeLibSendCustomContext(void* context);

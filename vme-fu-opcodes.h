@@ -1,4 +1,10 @@
-// WIP
+// WIP: The following are revisions of the previously tested opcodes
+// (see the 'psp-media-engine-cracking-the-unknown' project)
+// All duplicates need to be retested to make sure they are not simply
+// activating the 'k' register
+
+// TODO: Include 'k' in expressions
+
 #ifndef VME_FU_OPS
 #define VME_FU_OPS
 
@@ -37,6 +43,23 @@
 #define UN_01d             0x01d
 #define UN_01e             0x01e
 #define UN_01f             0x01f
+
+#define UN_020             0x020 // (back[n] + front[n]) (duplicate?)
+#define UN_021             0x021
+#define UN_022             0x022
+#define UN_023             0x023
+#define OP_ADD_CST         0x024 // (back[n] + b)
+#define UN_025             0x025
+#define UN_026             0x026
+#define UN_027             0x027
+#define UN_028             0x028 // (front[n] - back[n]) (duplicate?)
+#define UN_029             0x029
+#define UN_02a             0x02a
+#define UN_02b             0x02b
+#define OP_NEG_OFB         0x02c // -(back[n]) + b
+#define UN_02d             0x02d
+#define UN_02e             0x02e
+#define UN_02f             0x02f
 
 #define OP_ADD_OFA         0x030 // (back[n] + front[n]) + a (OFA = add constant a)
 #define UN_031             0x031
