@@ -53,6 +53,7 @@
 #define fu_code(n)  ((n) << 12)
 #define fu_sat(n)   ((n) << 7)
 #define fu_zsm(n)   ((n) << 6)
+#define fu_on(n)    ((n) << 28)
 
 // co-operand data source selectors
 #define VME_MUX_FRONT_NONE        0x00000000

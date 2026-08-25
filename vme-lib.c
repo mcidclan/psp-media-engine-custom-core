@@ -48,15 +48,14 @@ void vmeLibWipe() {
   vmeLibClearLocalBuffer(0, 0x2000);
   vmeLibClearLocalBuffer(0x8000, 0x2000);
   
-  // meCoreMemset((void*)VME_TOP_BUFFERS, 0, 0x8000);
-  // meCoreMemset((void*)VME_BASE_BUFFERS, 0, 0x8000);
-  
   vmeLibSetInnerAGU1(0, 0, 0);
   vmeLibSetInnerAGU2(0, 0, 0);
   hw(0x440ff01c) = 0;
   hw(0x440ff02c) = 0;
   hw(0x440ff03c) = 0;
   meLibSync();
+  
+  vmeLibICNInvalidate();
 }
 
 void vmeLibSendCustomContext(void* context) {
