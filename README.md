@@ -122,7 +122,7 @@ This will copy the .a file to your pspdev/psp/lib folder and the related headers
 
 # Technical Note
 
-This project, including the work related to VME, uses custom code and original work that was not derived from reverse engineering. Please keep in mind that these implementations are based on the author's understanding of the hardware at the time the code was written.
+This project including the work related to VME, uses custom code, original work that was not derived from reverse engineering. Please keep in mind that these implementations are based on the author's understanding of the hardware at the time the code was written.
  
 ## Contribution Guidelines
 
