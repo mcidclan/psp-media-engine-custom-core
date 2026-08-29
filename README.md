@@ -120,6 +120,10 @@ make clean; make install;
 
 This will copy the .a file to your pspdev/psp/lib folder and the related headers to the pspdev/psp/include folder. It embeds the small PRX used as a kernel bridge in a dedicated data section. At runtime, the library will extract the PRX next to the EBOOT and then load it.
 
+# Technical Note
+
+This project, including the work related to VME, uses custom code and original work that was not derived from reverse engineering. Please keep in mind that these implementations are based on the author's understanding of the hardware at the time the code was written.
+ 
 ## Contribution Guidelines
 
 ### AI-assisted development
