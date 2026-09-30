@@ -125,7 +125,7 @@ void meLibOnProcess(void) {
   
   {
     // r3 = r1 + r2
-    const u32 op = 0x00010000;
+    const u32 op = 0x00030000;
     const u32 mux = vme_mux(BASE_1, BASE_0);
     
     vme_pe2(vme_fu(PRIMARY), mux, op);
