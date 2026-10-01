@@ -15,7 +15,7 @@ target_compile_options(mehwmutex PRIVATE
 )
 
 target_link_libraries(mehwmutex
-  me-core psppower pspge pspdisplay pspctrl pspdebug
+  me-core me-core-lib psppower pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET mehwmutex TITLE "Me Hw Mutex Demo" BUILD_PRX)

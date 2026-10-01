@@ -15,7 +15,7 @@ target_compile_options(me-audio-shared PRIVATE
 )
 
 target_link_libraries(me-audio-shared
-  me-core psppower pspdisplay pspctrl pspdebug pspge pspaudio
+  me-core me-core-lib psppower pspdisplay pspctrl pspdebug pspge pspaudio
 )
 
 create_pbp_file(TARGET me-audio-shared TITLE "Me Audio Shared Buffer" BUILD_PRX)

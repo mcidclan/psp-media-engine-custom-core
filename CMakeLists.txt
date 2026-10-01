@@ -37,13 +37,13 @@ add_custom_command(
 add_custom_target(kcall_files DEPENDS kcall.S)
 
 add_library(me-core STATIC
-  me-lib.c
-  vme-lib.c
+#  me-lib.c
+#  vme-lib.c
   me-core-custom.c
   me-core-mapping.c
   context.S
-  embedded.c
-  ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
+#  embedded.c
+#  ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
 )
 
 add_library(me-core-mapper STATIC
@@ -52,19 +52,22 @@ add_library(me-core-mapper STATIC
 
 add_library(me-core-lib STATIC
   me-lib.c
-  vme-lib.c
   embedded.c
   ${CMAKE_CURRENT_BINARY_DIR}/kcall.S
 )
 
+add_library(vme-lib STATIC
+  vme-lib.c
+)
+
 add_dependencies(me-core kcall_files)
 
-foreach(target me-core me-core-lib me-core-mapper)
+foreach(target me-core me-core-lib me-core-mapper vme-lib)
   target_compile_options(${target} PRIVATE -Os -G0 -Wall -fno-pic)
   target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
 
-install(TARGETS me-core me-core-lib me-core-mapper
+install(TARGETS me-core me-core-lib me-core-mapper vme-lib
   ARCHIVE DESTINATION "$ENV{PSPDEV}/psp/lib"
 )
 

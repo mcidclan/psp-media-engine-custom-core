@@ -15,7 +15,7 @@ target_compile_options(me-core-vme PRIVATE
 )
 
 target_link_libraries(me-core-vme
-  me-core psppower pspge pspdisplay pspctrl pspdebug
+  me-core me-core-lib vme-lib psppower pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET me-core-vme TITLE "Me Core VME" BUILD_PRX)

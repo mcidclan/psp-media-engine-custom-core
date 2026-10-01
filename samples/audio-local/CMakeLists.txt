@@ -15,7 +15,7 @@ target_compile_options(audio-local PRIVATE
 )
 
 target_link_libraries(audio-local
-  me-core psppower pspge pspdisplay pspctrl pspdebug pspaudio
+  me-core me-core-lib psppower pspge pspdisplay pspctrl pspdebug pspaudio
 )
 
 create_pbp_file(TARGET audio-local TITLE "audio_hw_test" BUILD_PRX)

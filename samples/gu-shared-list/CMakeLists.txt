@@ -15,7 +15,7 @@ target_compile_options(megushared PRIVATE
 )
 
 target_link_libraries(megushared
-  me-core psppower pspgu pspge pspdisplay pspctrl pspdebug
+  me-core me-core-lib psppower pspgu pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET megushared TITLE "Me Gu Shared List" BUILD_PRX)

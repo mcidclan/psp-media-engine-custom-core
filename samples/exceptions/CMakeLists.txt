@@ -15,7 +15,7 @@ target_compile_options(meexceptions PRIVATE
 )
 
 target_link_libraries(meexceptions
-  me-core psppower pspge pspdisplay pspctrl pspdebug
+  me-core me-core-lib psppower pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET meexceptions TITLE "Me Exceptions" BUILD_PRX)

@@ -15,7 +15,7 @@ target_compile_options(mesleep PRIVATE
 )
 
 target_link_libraries(mesleep
-  me-core psppower pspge pspdisplay pspctrl pspdebug
+  me-core me-core-lib psppower pspge pspdisplay pspctrl pspdebug
 )
 
 create_pbp_file(TARGET mesleep TITLE "Me Sleep" BUILD_PRX)
