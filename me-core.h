@@ -38,8 +38,8 @@ void meLibHandler() { // size 0x108 (264)
   meLibUnlockHwUserRegisters();
   meLibUnlockMemory();
   
-  #ifndef DISABLE_VME_MINIMAL_CONFIG
-  meLibSetMinimalVmeConfig();
+  #ifndef DISABLE_AVC_CONFIG
+  meLibAVCSetTransferConfig();
   #endif
   
   asm volatile(

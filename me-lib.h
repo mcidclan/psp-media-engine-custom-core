@@ -87,21 +87,20 @@
   }                                             \
   meLibSync();                                  \
 }                                               \
-  
 
-#define meLibSetMinimalVmeConfig()              \
-{                                               \
-  hw(0xBCC00000) = -1;                          \
-  hw(0xBCC00010) = 1;                           \
-  while (hw(0xBCC00010)) {                      \
-    meLibSync();                                \
-  };                                            \
-  hw(0xBCC00070) = 0;                           \
-  hw(0xBCC00020) = -1;                          \
-  hw(0xBCC00030) = 1;                           \
-  hw(0xBCC00040) = 2; /*1*/                     \
-  meLibSync();                                  \
-}                                               \
+#define meLibAVCSetTransferConfig()               \
+{                                                 \
+  hw(0xBCC00000) = 0x1612223; /* bus ctrl */      \
+  hw(0xBCC00010) = 1;         /* status, reset */ \
+  while (hw(0xBCC00010)) {                        \
+    meLibSync();                                  \
+  };                                              \
+  hw(0xBCC00070) = 0;  /* enable */               \
+  hw(0xBCC00020) = -1; /* pacing, timing? */      \
+  hw(0xBCC00030) = 1;  /* burst */                \
+  hw(0xBCC00040) = 2;  /* route */                \
+  meLibSync();                                    \
+}
 
 #define meLibSuspendCpuIntr(var) \
   asm volatile(                  \
