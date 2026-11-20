@@ -188,12 +188,12 @@ void meLibAllocUncached32(Uncached32* const ptr, const u32 size) {
   
   if (!ptr->base) {
     
-    const u32 byteCount = size * 4;
+    const u32 byteCount = ((size + 15u) & ~15u) * 4u;
     ptr->base = memalign(64, byteCount);
     memset(ptr->base, 0, byteCount);
     sceKernelDcacheWritebackInvalidateAll();
     *(ptr->mem) = (u32*)(UNCACHED_USER_MASK | (u32)ptr->base);
-    
+
     asm volatile (
       ".set push          \n"
       ".set noreorder     \n"
@@ -207,6 +207,7 @@ void meLibAllocUncached32(Uncached32* const ptr, const u32 size) {
   else if (!size) {
     
     free(ptr->base);
+    ptr->base = NULL;
   }
   
   *(ptr->mem) = NULL;
